@@ -11,6 +11,7 @@
 
     <artifactId>eap-visualdata</artifactId>
     <packaging>pom</packaging>
+    <description>低代码可视化设计-数据可视化</description>
     <modules>
         <module>eap-visualdata-entity</module>
         <module>eap-visualdata-biz</module>

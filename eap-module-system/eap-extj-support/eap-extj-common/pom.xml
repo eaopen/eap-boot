@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>eap-extj-common</artifactId>
+    <description>扩展支持包公用模型和工具</description>
 
     <dependencies>
         <dependency>

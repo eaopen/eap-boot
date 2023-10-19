@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>eap-extj-provider</artifactId>
+    <description>扩展支持包公用服务</description>
 
     <dependencies>
         <dependency>

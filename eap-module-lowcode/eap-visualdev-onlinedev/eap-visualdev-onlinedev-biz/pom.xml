@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>eap-visualdev-onlinedev-biz</artifactId>
+    <description>低代码可视化设计-在线表单</description>
 
     <dependencies>
         <dependency>

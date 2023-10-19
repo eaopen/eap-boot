@@ -11,6 +11,7 @@
 
     <artifactId>eap-extj-support</artifactId>
     <packaging>pom</packaging>
+    <description>扩展支持包</description>
 
     <modules>
         <module>eap-extj-common</module>

@@ -11,6 +11,7 @@
 
     <artifactId>eap-extj-message</artifactId>
     <packaging>pom</packaging>
+    <description>扩展站内消息</description>
 
     <modules>
         <module>eap-extj-message-entity</module>

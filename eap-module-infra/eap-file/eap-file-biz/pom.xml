@@ -12,6 +12,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
+    <description>基础文件</description>
 
     <dependencies>
 

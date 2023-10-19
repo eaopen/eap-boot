@@ -11,6 +11,7 @@
 
     <artifactId>eap-visualdev-generater</artifactId>
     <packaging>pom</packaging>
+    <description>低代码可视化设计-代码生成</description>
     <modules>
         <module>eap-visualdev-generater-entity</module>
         <module>eap-visualdev-generater-biz</module>

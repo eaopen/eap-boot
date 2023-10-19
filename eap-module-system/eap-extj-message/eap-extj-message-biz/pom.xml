@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>eap-extj-message-biz</artifactId>
+    <description>扩展站内消息服务</description>
 
     <dependencies>
         <dependency>

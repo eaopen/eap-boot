@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>eap-visualdev-portal</artifactId>
+    <description>低代码可视化设计-门户设计</description>
 
     <packaging>pom</packaging>
 

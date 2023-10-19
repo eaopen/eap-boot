@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>eap-extj-message-rest</artifactId>
+    <description>扩展站内消息 rest接口</description>
 
     <dependencies>
         <dependency>

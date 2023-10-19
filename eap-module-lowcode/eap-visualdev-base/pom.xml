@@ -11,6 +11,7 @@
 
     <artifactId>eap-visualdev-base</artifactId>
     <packaging>pom</packaging>
+    <description>低代码可视化设计-基础工具</description>
 
     <modules>
         <module>eap-visualdev-base-entity</module>
