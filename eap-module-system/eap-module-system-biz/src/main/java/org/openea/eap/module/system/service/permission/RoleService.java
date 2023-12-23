@@ -1,10 +1,8 @@
 package org.openea.eap.module.system.service.permission;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.permission.vo.role.RoleCreateReqVO;
-import org.openea.eap.module.system.controller.admin.permission.vo.role.RoleExportReqVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.role.RolePageReqVO;
-import org.openea.eap.module.system.controller.admin.permission.vo.role.RoleUpdateReqVO;
+import org.openea.eap.module.system.controller.admin.permission.vo.role.RoleSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;
 
 import javax.validation.Valid;
@@ -15,24 +13,25 @@ import java.util.Set;
 /**
  * 角色 Service 接口
  *
+ * @author 芋道源码
  */
 public interface RoleService {
 
     /**
      * 创建角色
      *
-     * @param reqVO 创建角色信息
+     * @param createReqVO 创建角色信息
      * @param type 角色类型
      * @return 角色编号
      */
-    Long createRole(@Valid RoleCreateReqVO reqVO, Integer type);
+    Long createRole(@Valid RoleSaveReqVO createReqVO, Integer type);
 
     /**
      * 更新角色
      *
-     * @param reqVO 更新角色信息
+     * @param updateReqVO 更新角色信息
      */
-    void updateRole(@Valid RoleUpdateReqVO reqVO);
+    void updateRole(@Valid RoleSaveReqVO updateReqVO);
 
     /**
      * 删除角色
@@ -112,14 +111,6 @@ public interface RoleService {
      * @return 角色分页结果
      */
     PageResult<RoleDO> getRolePage(RolePageReqVO reqVO);
-
-    /**
-     * 获得角色列表
-     *
-     * @param reqVO 列表查询
-     * @return 角色列表
-     */
-    List<RoleDO> getRoleList(RoleExportReqVO reqVO);
 
     /**
      * 判断角色编号数组中，是否有管理员

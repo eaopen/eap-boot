@@ -1,28 +1,28 @@
 package org.openea.eap.module.infra.service.logger;
 
 import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.infra.api.logger.dto.ApiErrorLogCreateReqDTO;
-import org.openea.eap.module.infra.controller.admin.logger.vo.apierrorlog.ApiErrorLogExportReqVO;
 import org.openea.eap.module.infra.controller.admin.logger.vo.apierrorlog.ApiErrorLogPageReqVO;
-import org.openea.eap.module.infra.convert.logger.ApiErrorLogConvert;
 import org.openea.eap.module.infra.dal.dataobject.logger.ApiErrorLogDO;
 import org.openea.eap.module.infra.dal.mysql.logger.ApiErrorLogMapper;
 import org.openea.eap.module.infra.enums.logger.ApiErrorLogProcessStatusEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static org.openea.eap.module.infra.enums.ErrorCodeConstants.API_ERROR_LOG_NOT_FOUND;
-import static org.openea.eap.module.infra.enums.ErrorCodeConstants.API_ERROR_LOG_PROCESSED;
+import static org.openea.eap.module.infra.enums.ErrorCodeConstants.*;
 
 /**
  * API 错误日志 Service 实现类
  *
+ * @author 芋道源码
  */
+@Slf4j
 @Service
 @Validated
 public class ApiErrorLogServiceImpl implements ApiErrorLogService {
@@ -32,7 +32,7 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
 
     @Override
     public void createApiErrorLog(ApiErrorLogCreateReqDTO createDTO) {
-        ApiErrorLogDO apiErrorLog = ApiErrorLogConvert.INSTANCE.convert(createDTO)
+        ApiErrorLogDO apiErrorLog = BeanUtils.toBean(createDTO, ApiErrorLogDO.class)
                 .setProcessStatus(ApiErrorLogProcessStatusEnum.INIT.getStatus());
         apiErrorLogMapper.insert(apiErrorLog);
     }
@@ -40,11 +40,6 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
     @Override
     public PageResult<ApiErrorLogDO> getApiErrorLogPage(ApiErrorLogPageReqVO pageReqVO) {
         return apiErrorLogMapper.selectPage(pageReqVO);
-    }
-
-    @Override
-    public List<ApiErrorLogDO> getApiErrorLogList(ApiErrorLogExportReqVO exportReqVO) {
-        return apiErrorLogMapper.selectList(exportReqVO);
     }
 
     @Override
@@ -59,6 +54,23 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
         // 标记处理
         apiErrorLogMapper.updateById(ApiErrorLogDO.builder().id(id).processStatus(processStatus)
                 .processUserId(processUserId).processTime(LocalDateTime.now()).build());
+    }
+
+    @Override
+    @SuppressWarnings("DuplicatedCode")
+    public Integer cleanErrorLog(Integer exceedDay, Integer deleteLimit) {
+        int count = 0;
+        LocalDateTime expireDate = LocalDateTime.now().minusDays(exceedDay);
+        // 循环删除，直到没有满足条件的数据
+        for (int i = 0; i < Short.MAX_VALUE; i++) {
+            int deleteCount = apiErrorLogMapper.deleteByCreateTimeLt(expireDate, deleteLimit);
+            count += deleteCount;
+            // 达到删除预期条数，说明到底了
+            if (deleteCount < deleteLimit) {
+                break;
+            }
+        }
+        return count;
     }
 
 }

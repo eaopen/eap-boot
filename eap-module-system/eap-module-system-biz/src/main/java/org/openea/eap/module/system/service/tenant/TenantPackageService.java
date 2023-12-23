@@ -1,9 +1,8 @@
 package org.openea.eap.module.system.service.tenant;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.tenant.vo.packages.TenantPackageCreateReqVO;
 import org.openea.eap.module.system.controller.admin.tenant.vo.packages.TenantPackagePageReqVO;
-import org.openea.eap.module.system.controller.admin.tenant.vo.packages.TenantPackageUpdateReqVO;
+import org.openea.eap.module.system.controller.admin.tenant.vo.packages.TenantPackageSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.tenant.TenantPackageDO;
 
 import javax.validation.Valid;
@@ -12,6 +11,7 @@ import java.util.List;
 /**
  * 租户套餐 Service 接口
  *
+ * @author 芋道源码
  */
 public interface TenantPackageService {
 
@@ -21,14 +21,14 @@ public interface TenantPackageService {
      * @param createReqVO 创建信息
      * @return 编号
      */
-    Long createTenantPackage(@Valid TenantPackageCreateReqVO createReqVO);
+    Long createTenantPackage(@Valid TenantPackageSaveReqVO createReqVO);
 
     /**
      * 更新租户套餐
      *
      * @param updateReqVO 更新信息
      */
-    void updateTenantPackage(@Valid TenantPackageUpdateReqVO updateReqVO);
+    void updateTenantPackage(@Valid TenantPackageSaveReqVO updateReqVO);
 
     /**
      * 删除租户套餐

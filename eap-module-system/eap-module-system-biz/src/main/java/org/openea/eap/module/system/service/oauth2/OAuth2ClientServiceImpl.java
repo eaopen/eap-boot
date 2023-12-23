@@ -4,18 +4,17 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.common.util.string.StrUtils;
-import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientCreateReqVO;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientPageReqVO;
-import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientUpdateReqVO;
-import org.openea.eap.module.system.convert.auth.OAuth2ClientConvert;
+import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
 import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2ClientMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,7 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 /**
  * OAuth2.0 Client Service 实现类
  *
+ * @author 芋道源码
  */
 @Service
 @Validated
@@ -40,25 +40,25 @@ public class OAuth2ClientServiceImpl implements OAuth2ClientService {
     private OAuth2ClientMapper oauth2ClientMapper;
 
     @Override
-    public Long createOAuth2Client(OAuth2ClientCreateReqVO createReqVO) {
+    public Long createOAuth2Client(OAuth2ClientSaveReqVO createReqVO) {
         validateClientIdExists(null, createReqVO.getClientId());
         // 插入
-        OAuth2ClientDO oauth2Client = OAuth2ClientConvert.INSTANCE.convert(createReqVO);
-        oauth2ClientMapper.insert(oauth2Client);
-        return oauth2Client.getId();
+        OAuth2ClientDO client = BeanUtils.toBean(createReqVO, OAuth2ClientDO.class);
+        oauth2ClientMapper.insert(client);
+        return client.getId();
     }
 
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.OAUTH_CLIENT,
             allEntries = true) // allEntries 清空所有缓存，因为可能修改到 clientId 字段，不好清理
-    public void updateOAuth2Client(OAuth2ClientUpdateReqVO updateReqVO) {
+    public void updateOAuth2Client(OAuth2ClientSaveReqVO updateReqVO) {
         // 校验存在
         validateOAuth2ClientExists(updateReqVO.getId());
         // 校验 Client 未被占用
         validateClientIdExists(updateReqVO.getId(), updateReqVO.getClientId());
 
         // 更新
-        OAuth2ClientDO updateObj = OAuth2ClientConvert.INSTANCE.convert(updateReqVO);
+        OAuth2ClientDO updateObj = BeanUtils.toBean(updateReqVO, OAuth2ClientDO.class);
         oauth2ClientMapper.updateById(updateObj);
     }
 
@@ -118,7 +118,7 @@ public class OAuth2ClientServiceImpl implements OAuth2ClientService {
         if (client == null) {
             throw exception(OAUTH2_CLIENT_NOT_EXISTS);
         }
-        if (ObjectUtil.notEqual(client.getStatus(), CommonStatusEnum.ENABLE.getStatus())) {
+        if (CommonStatusEnum.isDisable(client.getStatus())) {
             throw exception(OAUTH2_CLIENT_DISABLE);
         }
 

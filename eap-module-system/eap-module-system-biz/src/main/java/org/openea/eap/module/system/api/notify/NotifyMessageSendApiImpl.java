@@ -1,7 +1,6 @@
 package org.openea.eap.module.system.api.notify;
 
 import org.openea.eap.module.system.api.notify.dto.NotifySendSingleToUserReqDTO;
-import org.openea.eap.module.system.service.notify.NotifyMessageService;
 import org.openea.eap.module.system.service.notify.NotifySendService;
 import org.springframework.stereotype.Service;
 

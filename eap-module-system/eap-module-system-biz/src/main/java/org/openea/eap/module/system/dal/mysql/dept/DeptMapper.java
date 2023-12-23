@@ -29,4 +29,5 @@ public interface DeptMapper extends BaseMapperX<DeptDO> {
     default List<DeptDO> selectListByParentId(Collection<Long> parentIds) {
         return selectList(DeptDO::getParentId, parentIds);
     }
+
 }

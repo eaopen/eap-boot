@@ -1,11 +1,6 @@
 package org.openea.eap.module.system.service.auth;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.google.common.annotations.VisibleForTesting;
-import com.xingyuv.captcha.model.common.ResponseModel;
-import com.xingyuv.captcha.model.vo.CaptchaVO;
-import com.xingyuv.captcha.service.CaptchaService;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.util.monitor.TracerUtils;
@@ -28,10 +23,15 @@ import org.openea.eap.module.system.service.member.MemberService;
 import org.openea.eap.module.system.service.oauth2.OAuth2TokenService;
 import org.openea.eap.module.system.service.social.SocialUserService;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import com.google.common.annotations.VisibleForTesting;
+import com.xingyuv.captcha.model.common.ResponseModel;
+import com.xingyuv.captcha.model.vo.CaptchaVO;
+import com.xingyuv.captcha.service.CaptchaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Validator;
 import java.util.Objects;
 
@@ -42,28 +42,28 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 /**
  * Auth Service 实现类
  *
+ * @author 芋道源码
  */
-//@Service
-//@ConditionalOnMissingBean(AdminAuthService.class)
+@Service
 @Slf4j
 public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Resource
-    protected AdminUserService userService;
+    private AdminUserService userService;
     @Resource
-    protected LoginLogService loginLogService;
+    private LoginLogService loginLogService;
     @Resource
-    protected OAuth2TokenService oauth2TokenService;
+    private OAuth2TokenService oauth2TokenService;
     @Resource
-    protected SocialUserService socialUserService;
+    private SocialUserService socialUserService;
     @Resource
-    protected MemberService memberService;
+    private MemberService memberService;
     @Resource
-    protected Validator validator;
+    private Validator validator;
     @Resource
-    protected CaptchaService captchaService;
+    private CaptchaService captchaService;
     @Resource
-    protected SmsCodeApi smsCodeApi;
+    private SmsCodeApi smsCodeApi;
 
     /**
      * 验证码的开关，默认为 true
@@ -85,17 +85,13 @@ public class AdminAuthServiceImpl implements AdminAuthService {
             throw exception(AUTH_LOGIN_BAD_CREDENTIALS);
         }
         // 校验是否禁用
-        if (ObjectUtil.notEqual(user.getStatus(), CommonStatusEnum.ENABLE.getStatus())) {
+        if (CommonStatusEnum.isDisable(user.getStatus())) {
             createLoginLog(user.getId(), username, logTypeEnum, LoginResultEnum.USER_DISABLED);
             throw exception(AUTH_LOGIN_USER_DISABLED);
         }
         return user;
     }
 
-    @Override
-    public AuthLoginRespVO login(AuthLoginReqVO reqVO, HttpServletRequest request){
-        return login(reqVO);
-    }
     @Override
     public AuthLoginRespVO login(AuthLoginReqVO reqVO) {
         // 校验验证码
@@ -138,7 +134,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return createTokenAfterLoginSuccess(user.getId(), reqVO.getMobile(), LoginLogTypeEnum.LOGIN_MOBILE);
     }
 
-    protected void createLoginLog(Long userId, String username,
+    private void createLoginLog(Long userId, String username,
                                 LoginLogTypeEnum logTypeEnum, LoginResultEnum loginResult) {
         // 插入登录日志
         LoginLogCreateReqDTO reqDTO = new LoginLogCreateReqDTO();
@@ -177,7 +173,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     }
 
     @VisibleForTesting
-    protected void validateCaptcha(AuthLoginReqVO reqVO) {
+    void validateCaptcha(AuthLoginReqVO reqVO) {
         // 如果验证码关闭，则不进行校验
         if (!captchaEnable) {
             return;
@@ -195,11 +191,11 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         }
     }
 
-    protected AuthLoginRespVO createTokenAfterLoginSuccess(Long userId, String username, LoginLogTypeEnum logType) {
+    private AuthLoginRespVO createTokenAfterLoginSuccess(Long userId, String username, LoginLogTypeEnum logType) {
         // 插入登陆日志
         createLoginLog(userId, username, logType, LoginResultEnum.SUCCESS);
         // 创建访问令牌
-        OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(userId, username, getUserType().getValue(),
+        OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(userId, getUserType().getValue(),
                 OAuth2ClientConstants.CLIENT_ID_DEFAULT, null);
         // 构建返回结果
         return AuthConvert.INSTANCE.convert(accessTokenDO);
@@ -222,7 +218,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         createLogoutLog(accessTokenDO.getUserId(), accessTokenDO.getUserType(), logType);
     }
 
-    protected void createLogoutLog(Long userId, Integer userType, Integer logType) {
+    private void createLogoutLog(Long userId, Integer userType, Integer logType) {
         LoginLogCreateReqDTO reqDTO = new LoginLogCreateReqDTO();
         reqDTO.setLogType(logType);
         reqDTO.setTraceId(TracerUtils.getTraceId());
@@ -239,7 +235,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         loginLogService.createLoginLog(reqDTO);
     }
 
-    protected String getUsername(Long userId) {
+    private String getUsername(Long userId) {
         if (userId == null) {
             return null;
         }
@@ -247,7 +243,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return user != null ? user.getUsername() : null;
     }
 
-    protected UserTypeEnum getUserType() {
+    private UserTypeEnum getUserType() {
         return UserTypeEnum.ADMIN;
     }
 

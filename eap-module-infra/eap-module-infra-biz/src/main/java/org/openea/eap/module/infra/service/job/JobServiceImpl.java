@@ -1,13 +1,11 @@
 package org.openea.eap.module.infra.service.job;
 
 import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.quartz.core.scheduler.SchedulerManager;
 import org.openea.eap.framework.quartz.core.util.CronUtils;
-import org.openea.eap.module.infra.controller.admin.job.vo.job.JobCreateReqVO;
-import org.openea.eap.module.infra.controller.admin.job.vo.job.JobExportReqVO;
 import org.openea.eap.module.infra.controller.admin.job.vo.job.JobPageReqVO;
-import org.openea.eap.module.infra.controller.admin.job.vo.job.JobUpdateReqVO;
-import org.openea.eap.module.infra.convert.job.JobConvert;
+import org.openea.eap.module.infra.controller.admin.job.vo.job.JobSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.job.JobDO;
 import org.openea.eap.module.infra.dal.mysql.job.JobMapper;
 import org.openea.eap.module.infra.enums.job.JobStatusEnum;
@@ -21,12 +19,13 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static org.openea.eap.module.infra.enums.ErrorCodeConstants.*;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.containsAny;
+import static org.openea.eap.module.infra.enums.ErrorCodeConstants.*;
 
 /**
  * 定时任务 Service 实现类
  *
+ * @author 芋道源码
  */
 @Service
 @Validated
@@ -40,14 +39,14 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long createJob(JobCreateReqVO createReqVO) throws SchedulerException {
+    public Long createJob(JobSaveReqVO createReqVO) throws SchedulerException {
         validateCronExpression(createReqVO.getCronExpression());
         // 校验唯一性
         if (jobMapper.selectByHandlerName(createReqVO.getHandlerName()) != null) {
             throw exception(JOB_HANDLER_EXISTS);
         }
         // 插入
-        JobDO job = JobConvert.INSTANCE.convert(createReqVO);
+        JobDO job = BeanUtils.toBean(createReqVO, JobDO.class);
         job.setStatus(JobStatusEnum.INIT.getStatus());
         fillJobMonitorTimeoutEmpty(job);
         jobMapper.insert(job);
@@ -65,7 +64,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateJob(JobUpdateReqVO updateReqVO) throws SchedulerException {
+    public void updateJob(JobSaveReqVO updateReqVO) throws SchedulerException {
         validateCronExpression(updateReqVO.getCronExpression());
         // 校验存在
         JobDO job = validateJobExists(updateReqVO.getId());
@@ -74,7 +73,7 @@ public class JobServiceImpl implements JobService {
             throw exception(JOB_UPDATE_ONLY_NORMAL_STATUS);
         }
         // 更新
-        JobDO updateObj = JobConvert.INSTANCE.convert(updateReqVO);
+        JobDO updateObj = BeanUtils.toBean(updateReqVO, JobDO.class);
         fillJobMonitorTimeoutEmpty(updateObj);
         jobMapper.updateById(updateObj);
 
@@ -149,18 +148,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobDO> getJobList(Collection<Long> ids) {
-        return jobMapper.selectBatchIds(ids);
-    }
-
-    @Override
     public PageResult<JobDO> getJobPage(JobPageReqVO pageReqVO) {
 		return jobMapper.selectPage(pageReqVO);
-    }
-
-    @Override
-    public List<JobDO> getJobList(JobExportReqVO exportReqVO) {
-		return jobMapper.selectList(exportReqVO);
     }
 
     private static void fillJobMonitorTimeoutEmpty(JobDO job) {

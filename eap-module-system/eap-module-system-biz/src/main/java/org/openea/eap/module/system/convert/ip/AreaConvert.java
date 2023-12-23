@@ -2,6 +2,7 @@ package org.openea.eap.module.system.convert.ip;
 
 import org.openea.eap.framework.ip.core.Area;
 import org.openea.eap.module.system.controller.admin.ip.vo.AreaNodeRespVO;
+import org.openea.eap.module.system.controller.app.ip.vo.AppAreaNodeRespVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -13,5 +14,7 @@ public interface AreaConvert {
     AreaConvert INSTANCE = Mappers.getMapper(AreaConvert.class);
 
     List<AreaNodeRespVO> convertList(List<Area> list);
+
+    List<AppAreaNodeRespVO> convertList3(List<Area> list);
 
 }

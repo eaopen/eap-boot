@@ -1,32 +1,30 @@
 package org.openea.eap.module.system.controller.admin.auth;
 
-import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
-import org.openea.eap.framework.common.util.collection.SetUtils;
 import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.framework.security.config.SecurityProperties;
-import org.openea.eap.framework.security.core.LoginUser;
+import org.openea.eap.framework.security.core.util.SecurityFrameworkUtils;
 import org.openea.eap.module.system.controller.admin.auth.vo.*;
 import org.openea.eap.module.system.convert.auth.AuthConvert;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.enums.logger.LoginLogTypeEnum;
-import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 import org.openea.eap.module.system.service.auth.AdminAuthService;
 import org.openea.eap.module.system.service.permission.MenuService;
 import org.openea.eap.module.system.service.permission.PermissionService;
 import org.openea.eap.module.system.service.permission.RoleService;
-import org.openea.eap.module.system.service.social.SocialUserService;
+import org.openea.eap.module.system.service.social.SocialClientService;
 import org.openea.eap.module.system.service.user.AdminUserService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,16 +32,13 @@ import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertSet;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
-import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUser;
-import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.obtainAuthorization;
-import static java.util.Collections.singleton;
 
 @Tag(name = "管理后台 - 认证")
 @RestController
@@ -58,13 +53,13 @@ public class AuthController {
     private AdminUserService userService;
     @Resource
     private RoleService roleService;
-
     @Resource
     private MenuService menuService;
     @Resource
     private PermissionService permissionService;
     @Resource
-    private SocialUserService socialUserService;
+    private SocialClientService socialClientService;
+
     @Resource
     private SecurityProperties securityProperties;
 
@@ -72,8 +67,8 @@ public class AuthController {
     @PermitAll
     @Operation(summary = "使用账号密码登录")
     @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
-    public CommonResult<AuthLoginRespVO> login(@RequestBody @Valid AuthLoginReqVO reqVO, HttpServletRequest request) {
-        return success(authService.login(reqVO, request));
+    public CommonResult<AuthLoginRespVO> login(@RequestBody @Valid AuthLoginReqVO reqVO) {
+        return success(authService.login(reqVO));
     }
 
     @PostMapping("/logout")
@@ -81,7 +76,8 @@ public class AuthController {
     @Operation(summary = "登出系统")
     @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
     public CommonResult<Boolean> logout(HttpServletRequest request) {
-        String token = obtainAuthorization(request, securityProperties.getTokenHeader());
+        String token = SecurityFrameworkUtils.obtainAuthorization(request,
+                securityProperties.getTokenHeader(), securityProperties.getTokenParameter());
         if (StrUtil.isNotBlank(token)) {
             authService.logout(token, LoginLogTypeEnum.LOGOUT_SELF.getType());
         }
@@ -100,55 +96,27 @@ public class AuthController {
     @GetMapping("/get-permission-info")
     @Operation(summary = "获取登录用户的权限信息")
     public CommonResult<AuthPermissionInfoRespVO> getPermissionInfo() {
-        // 获得用户信息
+        // 1.1 获得用户信息
         AdminUserDO user = userService.getUser(getLoginUserId());
         if (user == null) {
             return null;
         }
-        // 获得角色列表
+
+        // 1.2 获得角色列表
         Set<Long> roleIds = permissionService.getUserRoleIdListByUserId(getLoginUserId());
-        List<RoleDO> roleList = roleService.getRoleListFromCache(roleIds);
-        roleList.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // 移除禁用的角色
-
-        // 获得菜单列表
-//        Set<Long> menuIds = permissionService.getRoleMenuListByRoleId(convertSet(roleList, RoleDO::getId));
-//        List<MenuDO> menuList = menuService.getMenuList(menuIds);
-//        menuList.removeIf(menu -> !CommonStatusEnum.ENABLE.getStatus().equals(menu.getStatus()));
-        List<MenuDO> menuList = permissionService.getUserMenuListByUser(user.getId(), user.getUsername());
-
-        // i18n
-        menuList = menuService.toI18n(menuList);
-        // 拼接结果返回
-        return success(AuthConvert.INSTANCE.convert(user, roleList, menuList));
-    }
-
-    /**
-     * 获得登录用户的菜单列表
-     * @return list(menu)
-     * @deprecated  将合并到权限资源数据中get-permission-info，不再单独调用
-     */
-    @GetMapping("/list-menus")
-    @Operation(summary = "获得登录用户的菜单列表")
-    public CommonResult<List<AuthMenuRespVO>> getMenuList() {
-        // 获得角色列表
-        Set<Long> roleIds = permissionService.getUserRoleIdListByUserId(getLoginUserId());
-        List<RoleDO> roleList = roleService.getRoleListFromCache(roleIds);
-        roleList.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // 移除禁用的角色
-        // 获得用户拥有的菜单列表
-        Set<Long> menuIds = permissionService.getRoleMenuListByRoleId(convertSet(roleList, RoleDO::getId));
-        List<MenuDO> menuList = menuService.getMenuList(menuIds);
-        menuList.removeIf(menu -> !CommonStatusEnum.ENABLE.getStatus().equals(menu.getStatus()));
-        // i18n
-        menuList = menuService.toI18n(menuList);
-        // 转换成 Tree 结构返回
-        List<AuthPermissionInfoRespVO.MenuVO> listMenuTree = AuthConvert.INSTANCE.buildMenuTree(menuList);
-        // 数据格式转换
-        List<AuthMenuRespVO> listMenuTree2 = new ArrayList<>();
-        for(AuthPermissionInfoRespVO.MenuVO menuVO: listMenuTree){
-            AuthMenuRespVO menuRespVO = new AuthMenuRespVO();
-            BeanUtil.copyProperties(menuVO, menuRespVO);
+        if (CollUtil.isEmpty(roleIds)) {
+            return success(AuthConvert.INSTANCE.convert(user, Collections.emptyList(), Collections.emptyList()));
         }
-        return success(listMenuTree2);
+        List<RoleDO> roles = roleService.getRoleList(roleIds);
+        roles.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // 移除禁用的角色
+
+        // 1.3 获得菜单列表
+        Set<Long> menuIds = permissionService.getRoleMenuListByRoleId(convertSet(roles, RoleDO::getId));
+        List<MenuDO> menuList = menuService.getMenuList(menuIds);
+        menuList.removeIf(menu -> !CommonStatusEnum.ENABLE.getStatus().equals(menu.getStatus())); // 移除禁用的菜单
+
+        // 2. 拼接结果返回
+        return success(AuthConvert.INSTANCE.convert(user, roles, menuList));
     }
 
     // ========== 短信登录相关 ==========
@@ -180,8 +148,9 @@ public class AuthController {
             @Parameter(name = "redirectUri", description = "回调路径")
     })
     public CommonResult<String> socialLogin(@RequestParam("type") Integer type,
-                                                    @RequestParam("redirectUri") String redirectUri) {
-        return CommonResult.success(socialUserService.getAuthorizeUrl(type, redirectUri));
+                                            @RequestParam("redirectUri") String redirectUri) {
+        return success(socialClientService.getAuthorizeUrl(
+                type, UserTypeEnum.ADMIN.getValue(), redirectUri));
     }
 
     @PostMapping("/social-login")

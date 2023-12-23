@@ -1,12 +1,10 @@
 package org.openea.eap.module.system.service.sms;
 
-import org.openea.eap.framework.common.pojo.CommonResult;
-import org.openea.eap.module.system.controller.admin.sms.vo.log.SmsLogExportReqVO;
+import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.controller.admin.sms.vo.log.SmsLogPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsLogDO;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsTemplateDO;
 import org.openea.eap.module.system.dal.mysql.sms.SmsLogMapper;
-import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.enums.sms.SmsReceiveStatusEnum;
 import org.openea.eap.module.system.enums.sms.SmsSendStatusEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -55,13 +52,12 @@ public class SmsLogServiceImpl implements SmsLogService {
     }
 
     @Override
-    public void updateSmsSendResult(Long id, Integer sendCode, String sendMsg,
+    public void updateSmsSendResult(Long id, Boolean success,
                                     String apiSendCode, String apiSendMsg,
                                     String apiRequestId, String apiSerialNo) {
-        SmsSendStatusEnum sendStatus = CommonResult.isSuccess(sendCode) ?
-                SmsSendStatusEnum.SUCCESS : SmsSendStatusEnum.FAILURE;
-        smsLogMapper.updateById(SmsLogDO.builder().id(id).sendStatus(sendStatus.getStatus())
-                .sendTime(LocalDateTime.now()).sendCode(sendCode).sendMsg(sendMsg)
+        SmsSendStatusEnum sendStatus = success ? SmsSendStatusEnum.SUCCESS : SmsSendStatusEnum.FAILURE;
+        smsLogMapper.updateById(SmsLogDO.builder().id(id)
+                .sendStatus(sendStatus.getStatus()).sendTime(LocalDateTime.now())
                 .apiSendCode(apiSendCode).apiSendMsg(apiSendMsg)
                 .apiRequestId(apiRequestId).apiSerialNo(apiSerialNo).build());
     }
@@ -78,11 +74,6 @@ public class SmsLogServiceImpl implements SmsLogService {
     @Override
     public PageResult<SmsLogDO> getSmsLogPage(SmsLogPageReqVO pageReqVO) {
         return smsLogMapper.selectPage(pageReqVO);
-    }
-
-    @Override
-    public List<SmsLogDO> getSmsLogList(SmsLogExportReqVO exportReqVO) {
-        return smsLogMapper.selectList(exportReqVO);
     }
 
 }

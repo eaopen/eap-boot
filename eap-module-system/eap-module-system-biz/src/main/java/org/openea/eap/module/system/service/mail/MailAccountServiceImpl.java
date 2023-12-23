@@ -1,14 +1,14 @@
 package org.openea.eap.module.system.service.mail;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountCreateReqVO;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountPageReqVO;
-import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountUpdateReqVO;
-import org.openea.eap.module.system.convert.mail.MailAccountConvert;
+import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.mail.MailAccountDO;
 import org.openea.eap.module.system.dal.mysql.mail.MailAccountMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -38,31 +38,30 @@ public class MailAccountServiceImpl implements MailAccountService {
     private MailTemplateService mailTemplateService;
 
     @Override
-    public Long createMailAccount(MailAccountCreateReqVO createReqVO) {
-        // 插入
-        MailAccountDO account = MailAccountConvert.INSTANCE.convert(createReqVO);
+    public Long createMailAccount(MailAccountSaveReqVO createReqVO) {
+        MailAccountDO account = BeanUtils.toBean(createReqVO, MailAccountDO.class);
         mailAccountMapper.insert(account);
         return account.getId();
     }
 
     @Override
-    @Cacheable(value = RedisKeyConstants.MAIL_ACCOUNT, key = "#updateReqVO.id")
-    public void updateMailAccount(MailAccountUpdateReqVO updateReqVO) {
+    @CacheEvict(value = RedisKeyConstants.MAIL_ACCOUNT, key = "#updateReqVO.id")
+    public void updateMailAccount(MailAccountSaveReqVO updateReqVO) {
         // 校验是否存在
         validateMailAccountExists(updateReqVO.getId());
 
         // 更新
-        MailAccountDO updateObj = MailAccountConvert.INSTANCE.convert(updateReqVO);
+        MailAccountDO updateObj = BeanUtils.toBean(updateReqVO, MailAccountDO.class);
         mailAccountMapper.updateById(updateObj);
     }
 
     @Override
-    @Cacheable(value = RedisKeyConstants.MAIL_ACCOUNT, key = "#id")
+    @CacheEvict(value = RedisKeyConstants.MAIL_ACCOUNT, key = "#id")
     public void deleteMailAccount(Long id) {
         // 校验是否存在账号
         validateMailAccountExists(id);
         // 校验是否存在关联模版
-        if (mailTemplateService.countByAccountId(id) > 0) {
+        if (mailTemplateService.getMailTemplateCountByAccountId(id) > 0) {
             throw exception(MAIL_ACCOUNT_RELATE_TEMPLATE_EXISTS);
         }
 

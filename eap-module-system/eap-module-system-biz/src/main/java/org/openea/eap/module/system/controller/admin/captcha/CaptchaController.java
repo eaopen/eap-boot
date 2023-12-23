@@ -17,10 +17,6 @@ import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * 验证码
- *
- */
 @Tag(name = "管理后台 - 验证码")
 @RestController("adminCaptchaController")
 @RequestMapping("/system/captcha")

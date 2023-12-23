@@ -1,9 +1,8 @@
 package org.openea.eap.module.system.service.notify;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.notify.vo.template.NotifyTemplateCreateReqVO;
 import org.openea.eap.module.system.controller.admin.notify.vo.template.NotifyTemplatePageReqVO;
-import org.openea.eap.module.system.controller.admin.notify.vo.template.NotifyTemplateUpdateReqVO;
+import org.openea.eap.module.system.controller.admin.notify.vo.template.NotifyTemplateSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.notify.NotifyTemplateDO;
 
 import javax.validation.Valid;
@@ -22,14 +21,14 @@ public interface NotifyTemplateService {
      * @param createReqVO 创建信息
      * @return 编号
      */
-    Long createNotifyTemplate(@Valid NotifyTemplateCreateReqVO createReqVO);
+    Long createNotifyTemplate(@Valid NotifyTemplateSaveReqVO createReqVO);
 
     /**
      * 更新站内信模版
      *
      * @param updateReqVO 更新信息
      */
-    void updateNotifyTemplate(@Valid NotifyTemplateUpdateReqVO updateReqVO);
+    void updateNotifyTemplate(@Valid NotifyTemplateSaveReqVO updateReqVO);
 
     /**
      * 删除站内信模版

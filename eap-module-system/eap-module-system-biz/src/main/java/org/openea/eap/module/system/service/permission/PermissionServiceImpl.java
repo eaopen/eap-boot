@@ -4,11 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.baomidou.dynamic.datasource.annotation.DSTransactional;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
@@ -23,6 +18,11 @@ import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
 import org.openea.eap.module.system.enums.permission.DataScopeEnum;
 import org.openea.eap.module.system.service.dept.DeptService;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Suppliers;
+import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -35,12 +35,13 @@ import java.util.function.Supplier;
 
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertSet;
 import static org.openea.eap.framework.common.util.json.JsonUtils.toJsonString;
-import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
 /**
  * 权限 Service 实现类
+ *
+ * @author 芋道源码
  */
-//@Service
+@Service
 @Slf4j
 public class PermissionServiceImpl implements PermissionService {
 
@@ -50,13 +51,13 @@ public class PermissionServiceImpl implements PermissionService {
     private UserRoleMapper userRoleMapper;
 
     @Resource
-    protected RoleService roleService;
+    private RoleService roleService;
     @Resource
-    protected MenuService menuService;
+    private MenuService menuService;
     @Resource
-    protected DeptService deptService;
+    private DeptService deptService;
     @Resource
-    protected AdminUserService userService;
+    private AdminUserService userService;
 
     @Override
     public boolean hasAnyPermissions(Long userId, String... permissions) {
@@ -137,8 +138,9 @@ public class PermissionServiceImpl implements PermissionService {
         // 获得角色拥有菜单编号
         Set<Long> dbMenuIds = convertSet(roleMenuMapper.selectListByRoleId(roleId), RoleMenuDO::getMenuId);
         // 计算新增和删除的菜单编号
-        Collection<Long> createMenuIds = CollUtil.subtract(menuIds, dbMenuIds);
-        Collection<Long> deleteMenuIds = CollUtil.subtract(dbMenuIds, menuIds);
+        Set<Long> menuIdList = CollUtil.emptyIfNull(menuIds);
+        Collection<Long> createMenuIds = CollUtil.subtract(menuIdList, dbMenuIds);
+        Collection<Long> deleteMenuIds = CollUtil.subtract(dbMenuIds, menuIdList);
         // 执行新增和删除。对于已经授权的菜单，不用做任何处理
         if (CollUtil.isNotEmpty(createMenuIds)) {
             roleMenuMapper.insertBatch(CollectionUtils.convertList(createMenuIds, menuId -> {
@@ -194,28 +196,6 @@ public class PermissionServiceImpl implements PermissionService {
         return convertSet(roleMenuMapper.selectListByMenuId(menuId), RoleMenuDO::getRoleId);
     }
 
-    @Override
-    public List<MenuDO> getUserMenuListByUser(Long userId, String userKey){
-        List<MenuDO> menuList = null;
-        // 获得角色列表
-        Set<Long> roleIds = getUserRoleIdListByUserId(userId);
-        if(CollectionUtils.isAnyEmpty(roleIds)){
-            return menuList;
-        }
-        List<RoleDO> roleList = roleService.getRoleListFromCache(roleIds);
-        roleList.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // 移除禁用的角色
-
-        // 获得菜单列表
-        Set<Long> menuIds = getRoleMenuListByRoleId(convertSet(roleList, RoleDO::getId));
-        if(CollectionUtils.isAnyEmpty()){
-            return menuList;
-        }
-        menuList = menuService.getMenuList(menuIds);
-        menuList.removeIf(menu -> !CommonStatusEnum.ENABLE.getStatus().equals(menu.getStatus()));
-
-        return menuList;
-    }
-
     // ========== 用户-角色的相关方法  ==========
 
     @Override
@@ -226,8 +206,9 @@ public class PermissionServiceImpl implements PermissionService {
         Set<Long> dbRoleIds = convertSet(userRoleMapper.selectListByUserId(userId),
                 UserRoleDO::getRoleId);
         // 计算新增和删除的角色编号
-        Collection<Long> createRoleIds = CollUtil.subtract(roleIds, dbRoleIds);
-        Collection<Long> deleteMenuIds = CollUtil.subtract(dbRoleIds, roleIds);
+        Set<Long> roleIdList = CollUtil.emptyIfNull(roleIds);
+        Collection<Long> createRoleIds = CollUtil.subtract(roleIdList, dbRoleIds);
+        Collection<Long> deleteMenuIds = CollUtil.subtract(dbRoleIds, roleIdList);
         // 执行新增和删除。对于已经授权的角色，不用做任何处理
         if (!CollectionUtil.isEmpty(createRoleIds)) {
             userRoleMapper.insertBatch(CollectionUtils.convertList(createRoleIds, roleId -> {

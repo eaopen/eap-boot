@@ -1,12 +1,11 @@
 package org.openea.eap.module.system.api.oauth2;
 
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCheckRespDTO;
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCreateReqDTO;
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenRespDTO;
-import org.openea.eap.module.system.convert.auth.OAuth2TokenConvert;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.service.oauth2.OAuth2TokenService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -14,8 +13,9 @@ import javax.annotation.Resource;
 /**
  * OAuth2.0 Token API 实现类
  *
+ * @author 芋道源码
  */
-@Service("oauth2TokenApi")
+@Service
 public class OAuth2TokenApiImpl implements OAuth2TokenApi {
 
     @Resource
@@ -25,24 +25,25 @@ public class OAuth2TokenApiImpl implements OAuth2TokenApi {
     public OAuth2AccessTokenRespDTO createAccessToken(OAuth2AccessTokenCreateReqDTO reqDTO) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(
                 reqDTO.getUserId(), reqDTO.getUserType(), reqDTO.getClientId(), reqDTO.getScopes());
-        return OAuth2TokenConvert.INSTANCE.convert2(accessTokenDO);
+        return BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class);
     }
 
     @Override
     public OAuth2AccessTokenCheckRespDTO checkAccessToken(String accessToken) {
-        return OAuth2TokenConvert.INSTANCE.convert(oauth2TokenService.checkAccessToken(accessToken));
+        OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.checkAccessToken(accessToken);
+        return BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenCheckRespDTO.class);
     }
 
     @Override
     public OAuth2AccessTokenRespDTO removeAccessToken(String accessToken) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.removeAccessToken(accessToken);
-        return OAuth2TokenConvert.INSTANCE.convert2(accessTokenDO);
+        return BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class);
     }
 
     @Override
     public OAuth2AccessTokenRespDTO refreshAccessToken(String refreshToken, String clientId) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.refreshAccessToken(refreshToken, clientId);
-        return OAuth2TokenConvert.INSTANCE.convert2(accessTokenDO);
+        return BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class);
     }
 
 }

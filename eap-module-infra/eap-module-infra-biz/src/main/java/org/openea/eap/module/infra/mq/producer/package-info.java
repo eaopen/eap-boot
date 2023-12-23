@@ -1,4 +1,4 @@
 /**
- * 占位符，避免缩进
+ * 消息队列的生产者
  */
 package org.openea.eap.module.infra.mq.producer;

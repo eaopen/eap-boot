@@ -17,7 +17,7 @@ import static org.openea.eap.framework.common.util.date.DateUtils.FORMAT_YEAR_MO
 @ToString(callSuper = true)
 public class ErrorCodePageReqVO extends PageParam {
 
-    @Schema(description = "错误码类型,参见 ErrorCodeTypeEnum 枚举类", example = "1")
+    @Schema(description = "错误码类型，参见 ErrorCodeTypeEnum 枚举类", example = "1")
     private Integer type;
 
     @Schema(description = "应用名", example = "dashboard")

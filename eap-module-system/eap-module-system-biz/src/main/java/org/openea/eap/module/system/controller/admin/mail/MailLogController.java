@@ -2,9 +2,9 @@ package org.openea.eap.module.system.controller.admin.mail;
 
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.mail.vo.log.MailLogPageReqVO;
 import org.openea.eap.module.system.controller.admin.mail.vo.log.MailLogRespVO;
-import org.openea.eap.module.system.convert.mail.MailLogConvert;
 import org.openea.eap.module.system.dal.dataobject.mail.MailLogDO;
 import org.openea.eap.module.system.service.mail.MailLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +34,7 @@ public class MailLogController {
     @PreAuthorize("@ss.hasPermission('system:mail-log:query')")
     public CommonResult<PageResult<MailLogRespVO>> getMailLogPage(@Valid MailLogPageReqVO pageVO) {
         PageResult<MailLogDO> pageResult = mailLogService.getMailLogPage(pageVO);
-        return success(MailLogConvert.INSTANCE.convertPage(pageResult));
+        return success(BeanUtils.toBean(pageResult, MailLogRespVO.class));
     }
 
     @GetMapping("/get")
@@ -42,8 +42,8 @@ public class MailLogController {
     @Parameter(name = "id", description = "编号", required = true, example = "1024")
     @PreAuthorize("@ss.hasPermission('system:mail-log:query')")
     public CommonResult<MailLogRespVO> getMailTemplate(@RequestParam("id") Long id) {
-        MailLogDO mailLogDO = mailLogService.getMailLog(id);
-        return success(MailLogConvert.INSTANCE.convert(mailLogDO));
+        MailLogDO log = mailLogService.getMailLog(id);
+        return success(BeanUtils.toBean(log, MailLogRespVO.class));
     }
 
 }

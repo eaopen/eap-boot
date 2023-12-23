@@ -22,18 +22,22 @@
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-system-api</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-infra-api</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
 
         <!-- 业务组件 -->
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-spring-boot-starter-biz-operatelog</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-boot-starter-biz-tenant</artifactId>
         </dependency>
 
         <!-- Web 相关 -->
@@ -42,10 +46,19 @@
             <artifactId>eap-spring-boot-starter-security</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- DB 相关 -->
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-spring-boot-starter-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId> <!-- 代码生成器，使用它解析表结构 -->
         </dependency>
 
         <dependency>
@@ -65,13 +78,6 @@
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-spring-boot-starter-mq</artifactId>
-        </dependency>
-
-        <!-- Test 测试相关 -->
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- 工具类相关 -->
@@ -108,11 +114,6 @@
             <artifactId>eap-spring-boot-starter-file</artifactId>
         </dependency>
 
-        <!-- WebSocket -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

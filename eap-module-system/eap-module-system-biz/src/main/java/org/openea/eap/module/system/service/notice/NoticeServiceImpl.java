@@ -1,10 +1,9 @@
 package org.openea.eap.module.system.service.notice;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.notice.vo.NoticeCreateReqVO;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.notice.vo.NoticePageReqVO;
-import org.openea.eap.module.system.controller.admin.notice.vo.NoticeUpdateReqVO;
-import org.openea.eap.module.system.convert.notice.NoticeConvert;
+import org.openea.eap.module.system.controller.admin.notice.vo.NoticeSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.notice.NoticeDO;
 import org.openea.eap.module.system.dal.mysql.notice.NoticeMapper;
 import com.google.common.annotations.VisibleForTesting;
@@ -18,6 +17,7 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.NOTICE_NOT_F
 /**
  * 通知公告 Service 实现类
  *
+ * @author 芋道源码
  */
 @Service
 public class NoticeServiceImpl implements NoticeService {
@@ -26,18 +26,18 @@ public class NoticeServiceImpl implements NoticeService {
     private NoticeMapper noticeMapper;
 
     @Override
-    public Long createNotice(NoticeCreateReqVO reqVO) {
-        NoticeDO notice = NoticeConvert.INSTANCE.convert(reqVO);
+    public Long createNotice(NoticeSaveReqVO createReqVO) {
+        NoticeDO notice = BeanUtils.toBean(createReqVO, NoticeDO.class);
         noticeMapper.insert(notice);
         return notice.getId();
     }
 
     @Override
-    public void updateNotice(NoticeUpdateReqVO reqVO) {
+    public void updateNotice(NoticeSaveReqVO updateReqVO) {
         // 校验是否存在
-        validateNoticeExists(reqVO.getId());
+        validateNoticeExists(updateReqVO.getId());
         // 更新通知公告
-        NoticeDO updateObj = NoticeConvert.INSTANCE.convert(reqVO);
+        NoticeDO updateObj = BeanUtils.toBean(updateReqVO, NoticeDO.class);
         noticeMapper.updateById(updateObj);
     }
 

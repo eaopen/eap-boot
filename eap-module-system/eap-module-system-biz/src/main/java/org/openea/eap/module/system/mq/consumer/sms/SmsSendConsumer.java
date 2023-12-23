@@ -2,8 +2,9 @@ package org.openea.eap.module.system.mq.consumer.sms;
 
 import org.openea.eap.module.system.mq.message.sms.SmsSendMessage;
 import org.openea.eap.module.system.service.sms.SmsSendService;
-import org.openea.eap.framework.mq.core.stream.AbstractStreamMessageListener;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -15,12 +16,13 @@ import javax.annotation.Resource;
  */
 @Component
 @Slf4j
-public class SmsSendConsumer extends AbstractStreamMessageListener<SmsSendMessage> {
+public class SmsSendConsumer {
 
     @Resource
     private SmsSendService smsSendService;
 
-    @Override
+    @EventListener
+    @Async // Spring Event 默认在 Producer 发送的线程，通过 @Async 实现异步
     public void onMessage(SmsSendMessage message) {
         log.info("[onMessage][消息内容({})]", message);
         smsSendService.doSendSms(message);

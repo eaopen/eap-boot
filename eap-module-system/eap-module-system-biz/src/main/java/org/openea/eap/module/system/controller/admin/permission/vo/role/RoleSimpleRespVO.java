@@ -7,15 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Schema(description = "管理后台 - 角色精简信息 Response VO")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class RoleSimpleRespVO {
 
     @Schema(description = "角色编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     private Long id;
-
-    @Schema(description = "角色编码", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "ADMIN")
-    private String code;
 
     @Schema(description = "角色名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
     private String name;

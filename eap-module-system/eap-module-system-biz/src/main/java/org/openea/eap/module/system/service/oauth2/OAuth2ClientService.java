@@ -1,9 +1,8 @@
 package org.openea.eap.module.system.service.oauth2;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientCreateReqVO;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientPageReqVO;
-import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientUpdateReqVO;
+import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
 
 import javax.validation.Valid;
@@ -14,6 +13,7 @@ import java.util.Collection;
  *
  * 从功能上，和 JdbcClientDetailsService 的功能，提供客户端的操作
  *
+ * @author 芋道源码
  */
 public interface OAuth2ClientService {
 
@@ -23,14 +23,14 @@ public interface OAuth2ClientService {
      * @param createReqVO 创建信息
      * @return 编号
      */
-    Long createOAuth2Client(@Valid OAuth2ClientCreateReqVO createReqVO);
+    Long createOAuth2Client(@Valid OAuth2ClientSaveReqVO createReqVO);
 
     /**
      * 更新 OAuth2 客户端
      *
      * @param updateReqVO 更新信息
      */
-    void updateOAuth2Client(@Valid OAuth2ClientUpdateReqVO updateReqVO);
+    void updateOAuth2Client(@Valid OAuth2ClientSaveReqVO updateReqVO);
 
     /**
      * 删除 OAuth2 客户端
@@ -86,4 +86,5 @@ public interface OAuth2ClientService {
      */
     OAuth2ClientDO validOAuthClientFromCache(String clientId, String clientSecret, String authorizedGrantType,
                                              Collection<String> scopes, String redirectUri);
+
 }

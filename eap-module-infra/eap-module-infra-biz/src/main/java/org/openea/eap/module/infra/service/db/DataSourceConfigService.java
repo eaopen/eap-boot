@@ -1,7 +1,6 @@
 package org.openea.eap.module.infra.service.db;
 
-import org.openea.eap.module.infra.controller.admin.db.vo.DataSourceConfigCreateReqVO;
-import org.openea.eap.module.infra.controller.admin.db.vo.DataSourceConfigUpdateReqVO;
+import org.openea.eap.module.infra.controller.admin.db.vo.DataSourceConfigSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
 
 import javax.validation.Valid;
@@ -10,6 +9,7 @@ import java.util.List;
 /**
  * 数据源配置 Service 接口
  *
+ * @author 芋道源码
  */
 public interface DataSourceConfigService {
 
@@ -19,14 +19,14 @@ public interface DataSourceConfigService {
      * @param createReqVO 创建信息
      * @return 编号
      */
-    Long createDataSourceConfig(@Valid DataSourceConfigCreateReqVO createReqVO);
+    Long createDataSourceConfig(@Valid DataSourceConfigSaveReqVO createReqVO);
 
     /**
      * 更新数据源配置
      *
      * @param updateReqVO 更新信息
      */
-    void updateDataSourceConfig(@Valid DataSourceConfigUpdateReqVO updateReqVO);
+    void updateDataSourceConfig(@Valid DataSourceConfigSaveReqVO updateReqVO);
 
     /**
      * 删除数据源配置

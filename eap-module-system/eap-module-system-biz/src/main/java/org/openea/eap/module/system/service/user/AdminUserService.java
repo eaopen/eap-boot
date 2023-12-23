@@ -1,7 +1,6 @@
 package org.openea.eap.module.system.service.user;
 
 import cn.hutool.core.collection.CollUtil;
-import org.openea.eap.extj.base.Pagination;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdatePasswordReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdateReqVO;
@@ -16,23 +15,24 @@ import java.util.*;
 /**
  * 后台用户 Service 接口
  *
+ * @author 芋道源码
  */
 public interface AdminUserService {
 
     /**
      * 创建用户
      *
-     * @param reqVO 用户信息
+     * @param createReqVO 用户信息
      * @return 用户编号
      */
-    Long createUser(@Valid UserCreateReqVO reqVO);
+    Long createUser(@Valid UserSaveReqVO createReqVO);
 
     /**
      * 修改用户
      *
-     * @param reqVO 用户信息
+     * @param updateReqVO 用户信息
      */
-    void updateUser(@Valid UserUpdateReqVO reqVO);
+    void updateUser(@Valid UserSaveReqVO updateReqVO);
 
     /**
      * 更新用户的最后登陆信息
@@ -146,13 +146,6 @@ public interface AdminUserService {
     List<AdminUserDO> getUserList(Collection<Long> ids);
 
     /**
-     * 分页获取用户列表
-     * @param pagination
-     * @param filterCurrentUser
-     * @return
-     */
-    PageResult<AdminUserDO> getUserList(Pagination pagination, Boolean filterCurrentUser);
-    /**
      * 校验用户们是否有效。如下情况，视为无效：
      * 1. 用户编号不存在
      * 2. 用户被禁用
@@ -173,14 +166,6 @@ public interface AdminUserService {
         }
         return CollectionUtils.convertMap(getUserList(ids), AdminUserDO::getId);
     }
-
-    /**
-     * 获得用户列表
-     *
-     * @param reqVO 列表请求
-     * @return 用户列表
-     */
-    List<AdminUserDO> getUserList(UserExportReqVO reqVO);
 
     /**
      * 获得用户列表，基于昵称模糊匹配

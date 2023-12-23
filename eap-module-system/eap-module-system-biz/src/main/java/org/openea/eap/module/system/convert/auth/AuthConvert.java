@@ -1,6 +1,6 @@
 package org.openea.eap.module.system.convert.auth;
 
-
+import cn.hutool.core.collection.CollUtil;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeSendReqDTO;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeUseReqDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
@@ -9,11 +9,10 @@ import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
+import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -48,7 +47,7 @@ public interface AuthConvert {
      * @return 菜单树
      */
     default List<AuthPermissionInfoRespVO.MenuVO> buildMenuTree(List<MenuDO> menuList) {
-        if(ObjectUtils.isEmpty(menuList)){
+        if (CollUtil.isEmpty(menuList)) {
             return Collections.emptyList();
         }
         // 移除按钮
@@ -65,7 +64,7 @@ public interface AuthConvert {
             // 获得父节点
             AuthPermissionInfoRespVO.MenuVO parentNode = treeNodeMap.get(childNode.getParentId());
             if (parentNode == null) {
-                LoggerFactory.getLogger(getClass()).warn("[buildRouterTree][resource({}) 找不到父资源({})]",
+                LoggerFactory.getLogger(getClass()).error("[buildRouterTree][resource({}) 找不到父资源({})]",
                         childNode.getId(), childNode.getParentId());
                 return;
             }

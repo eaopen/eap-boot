@@ -1,20 +1,17 @@
 package org.openea.eap.module.system.service.dict;
 
 import cn.hutool.core.collection.CollUtil;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
-import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataCreateReqVO;
-import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataExportReqVO;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataPageReqVO;
-import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataUpdateReqVO;
-import org.openea.eap.module.system.convert.dict.DictDataConvert;
+import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictTypeDO;
 import org.openea.eap.module.system.dal.mysql.dict.DictDataMapper;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,42 +26,35 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 /**
  * 字典数据 Service 实现类
  *
+ * @author ruoyi
  */
 @Service
-@ConditionalOnMissingBean(DictDataService.class)
 @Slf4j
 public class DictDataServiceImpl implements DictDataService {
 
     /**
      * 排序 dictType > sort
      */
-    protected static final Comparator<DictDataDO> COMPARATOR_TYPE_AND_SORT = Comparator
+    private static final Comparator<DictDataDO> COMPARATOR_TYPE_AND_SORT = Comparator
             .comparing(DictDataDO::getDictType)
             .thenComparingInt(DictDataDO::getSort);
 
     @Resource
-    protected DictTypeService dictTypeService;
+    private DictTypeService dictTypeService;
 
     @Resource
-    protected DictDataMapper dictDataMapper;
+    private DictDataMapper dictDataMapper;
 
     @Override
-    public List<DictDataDO> getDictDataList() {
-        List<DictDataDO> list = dictDataMapper.selectList();
+    public List<DictDataDO> getDictDataList(Integer status, String dictType) {
+        List<DictDataDO> list = dictDataMapper.selectListByStatusAndDictType(status, dictType);
         list.sort(COMPARATOR_TYPE_AND_SORT);
         return list;
     }
 
     @Override
-    public PageResult<DictDataDO> getDictDataPage(DictDataPageReqVO reqVO) {
-        return dictDataMapper.selectPage(reqVO);
-    }
-
-    @Override
-    public List<DictDataDO> getDictDataList(DictDataExportReqVO reqVO) {
-        List<DictDataDO> list = dictDataMapper.selectList(reqVO);
-        list.sort(COMPARATOR_TYPE_AND_SORT);
-        return list;
+    public PageResult<DictDataDO> getDictDataPage(DictDataPageReqVO pageReqVO) {
+        return dictDataMapper.selectPage(pageReqVO);
     }
 
     @Override
@@ -73,23 +63,29 @@ public class DictDataServiceImpl implements DictDataService {
     }
 
     @Override
-    public Long createDictData(DictDataCreateReqVO reqVO) {
-        // 校验正确性
-        validateDictDataForCreateOrUpdate(null, reqVO.getValue(), reqVO.getDictType());
+    public Long createDictData(DictDataSaveReqVO createReqVO) {
+        // 校验字典类型有效
+        validateDictTypeExists(createReqVO.getDictType());
+        // 校验字典数据的值的唯一性
+        validateDictDataValueUnique(null, createReqVO.getDictType(), createReqVO.getValue());
 
         // 插入字典类型
-        DictDataDO dictData = DictDataConvert.INSTANCE.convert(reqVO);
+        DictDataDO dictData = BeanUtils.toBean(createReqVO, DictDataDO.class);
         dictDataMapper.insert(dictData);
         return dictData.getId();
     }
 
     @Override
-    public void updateDictData(DictDataUpdateReqVO reqVO) {
-        // 校验正确性
-        validateDictDataForCreateOrUpdate(reqVO.getId(), reqVO.getValue(), reqVO.getDictType());
+    public void updateDictData(DictDataSaveReqVO updateReqVO) {
+        // 校验自己存在
+        validateDictDataExists(updateReqVO.getId());
+        // 校验字典类型有效
+        validateDictTypeExists(updateReqVO.getDictType());
+        // 校验字典数据的值的唯一性
+        validateDictDataValueUnique(updateReqVO.getId(), updateReqVO.getDictType(), updateReqVO.getValue());
 
         // 更新字典类型
-        DictDataDO updateObj = DictDataConvert.INSTANCE.convert(reqVO);
+        DictDataDO updateObj = BeanUtils.toBean(updateReqVO, DictDataDO.class);
         dictDataMapper.updateById(updateObj);
     }
 
@@ -103,17 +99,8 @@ public class DictDataServiceImpl implements DictDataService {
     }
 
     @Override
-    public long countByDictType(String dictType) {
+    public long getDictDataCountByDictType(String dictType) {
         return dictDataMapper.selectCountByDictType(dictType);
-    }
-
-    private void validateDictDataForCreateOrUpdate(Long id, String value, String dictType) {
-        // 校验自己存在
-        validateDictDataExists(id);
-        // 校验字典类型有效
-        validateDictTypeExists(dictType);
-        // 校验字典数据的值的唯一性
-        validateDictDataValueUnique(id, dictType, value);
     }
 
     @VisibleForTesting
@@ -175,11 +162,6 @@ public class DictDataServiceImpl implements DictDataService {
     @Override
     public DictDataDO getDictData(String dictType, String value) {
         return dictDataMapper.selectByDictTypeAndValue(dictType, value);
-    }
-
-    @Override
-    public List<DictDataDO> getDictData(String dictType) {
-        return dictDataMapper.selectByDictType(dictType);
     }
 
     @Override

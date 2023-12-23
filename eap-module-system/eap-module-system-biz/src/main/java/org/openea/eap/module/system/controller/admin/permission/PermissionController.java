@@ -23,6 +23,7 @@ import static org.openea.eap.framework.common.pojo.CommonResult.success;
 /**
  * 权限 Controller，提供赋予用户、角色的权限的 API 接口
  *
+ * @author 芋道源码
  */
 @Tag(name = "管理后台 - 权限")
 @RestController
@@ -33,17 +34,6 @@ public class PermissionController {
     private PermissionService permissionService;
     @Resource
     private TenantService tenantService;
-
-    /**
-     * @deprecated replace by getRoleMenuList
-     */
-    @Operation(summary = "获得角色拥有的菜单编号")
-    @Parameter(name = "roleId", description = "角色编号", required = true)
-    @GetMapping("/list-role-resources")
-    @PreAuthorize("@ss.hasPermission('system:permission:assign-role-menu')")
-    public CommonResult<Set<Long>> listRoleMenus(Long roleId) {
-        return success(permissionService.getRoleMenuListByRoleId(roleId));
-    }
 
     @Operation(summary = "获得角色拥有的菜单编号")
     @Parameter(name = "roleId", description = "角色编号", required = true)

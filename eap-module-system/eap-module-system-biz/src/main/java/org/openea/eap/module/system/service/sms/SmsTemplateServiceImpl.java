@@ -1,35 +1,28 @@
 package org.openea.eap.module.system.service.sms;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.framework.common.util.collection.CollectionUtils;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.sms.core.client.SmsClient;
-import org.openea.eap.framework.sms.core.client.SmsClientFactory;
-import org.openea.eap.framework.sms.core.client.SmsCommonResult;
 import org.openea.eap.framework.sms.core.client.dto.SmsTemplateRespDTO;
-import org.openea.eap.module.system.controller.admin.sms.vo.template.SmsTemplateCreateReqVO;
-import org.openea.eap.module.system.controller.admin.sms.vo.template.SmsTemplateExportReqVO;
+import org.openea.eap.framework.sms.core.enums.SmsTemplateAuditStatusEnum;
 import org.openea.eap.module.system.controller.admin.sms.vo.template.SmsTemplatePageReqVO;
-import org.openea.eap.module.system.controller.admin.sms.vo.template.SmsTemplateUpdateReqVO;
-import org.openea.eap.module.system.convert.sms.SmsTemplateConvert;
+import org.openea.eap.module.system.controller.admin.sms.vo.template.SmsTemplateSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsChannelDO;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsTemplateDO;
 import org.openea.eap.module.system.dal.mysql.sms.SmsTemplateMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
-import org.openea.eap.module.system.mq.producer.sms.SmsProducer;
 import com.google.common.annotations.VisibleForTesting;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -59,11 +52,8 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     @Resource
     private SmsChannelService smsChannelService;
 
-    @Resource
-    private SmsClientFactory smsClientFactory;
-
     @Override
-    public Long createSmsTemplate(SmsTemplateCreateReqVO createReqVO) {
+    public Long createSmsTemplate(SmsTemplateSaveReqVO createReqVO) {
         // 校验短信渠道
         SmsChannelDO channelDO = validateSmsChannel(createReqVO.getChannelId());
         // 校验短信编码是否重复
@@ -72,7 +62,7 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
         validateApiTemplate(createReqVO.getChannelId(), createReqVO.getApiTemplateId());
 
         // 插入
-        SmsTemplateDO template = SmsTemplateConvert.INSTANCE.convert(createReqVO);
+        SmsTemplateDO template = BeanUtils.toBean(createReqVO, SmsTemplateDO.class);
         template.setParams(parseTemplateContentParams(template.getContent()));
         template.setChannelCode(channelDO.getCode());
         smsTemplateMapper.insert(template);
@@ -83,7 +73,7 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.SMS_TEMPLATE,
             allEntries = true) // allEntries 清空所有缓存，因为可能修改到 code 字段，不好清理
-    public void updateSmsTemplate(SmsTemplateUpdateReqVO updateReqVO) {
+    public void updateSmsTemplate(SmsTemplateSaveReqVO updateReqVO) {
         // 校验存在
         validateSmsTemplateExists(updateReqVO.getId());
         // 校验短信渠道
@@ -94,7 +84,7 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
         validateApiTemplate(updateReqVO.getChannelId(), updateReqVO.getApiTemplateId());
 
         // 更新
-        SmsTemplateDO updateObj = SmsTemplateConvert.INSTANCE.convert(updateReqVO);
+        SmsTemplateDO updateObj = BeanUtils.toBean(updateReqVO, SmsTemplateDO.class);
         updateObj.setParams(parseTemplateContentParams(updateObj.getContent()));
         updateObj.setChannelCode(channelDO.getCode());
         smsTemplateMapper.updateById(updateObj);
@@ -134,12 +124,7 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     }
 
     @Override
-    public List<SmsTemplateDO> getSmsTemplateList(SmsTemplateExportReqVO exportReqVO) {
-        return smsTemplateMapper.selectList(exportReqVO);
-    }
-
-    @Override
-    public Long countByChannelId(Long channelId) {
+    public Long getSmsTemplateCountByChannelId(Long channelId) {
         return smsTemplateMapper.selectCountByChannelId(channelId);
     }
 
@@ -149,7 +134,7 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
         if (channelDO == null) {
             throw exception(SMS_CHANNEL_NOT_EXISTS);
         }
-        if (!Objects.equals(channelDO.getStatus(), CommonStatusEnum.ENABLE.getStatus())) {
+        if (CommonStatusEnum.isDisable(channelDO.getStatus())) {
             throw exception(SMS_CHANNEL_DISABLE);
         }
         return channelDO;
@@ -179,11 +164,26 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     @VisibleForTesting
     void validateApiTemplate(Long channelId, String apiTemplateId) {
         // 获得短信模板
-        SmsClient smsClient = smsClientFactory.getSmsClient(channelId);
+        SmsClient smsClient = smsChannelService.getSmsClient(channelId);
         Assert.notNull(smsClient, String.format("短信客户端(%d) 不存在", channelId));
-        SmsCommonResult<SmsTemplateRespDTO> templateResult = smsClient.getSmsTemplate(apiTemplateId);
-        // 校验短信模板是否正确
-        templateResult.checkError();
+        SmsTemplateRespDTO template;
+        try {
+            template = smsClient.getSmsTemplate(apiTemplateId);
+        } catch (Throwable ex) {
+            throw exception(SMS_TEMPLATE_API_ERROR, ExceptionUtil.getRootCauseMessage(ex));
+        }
+        // 校验短信模版
+        if (template == null) {
+            throw exception(SMS_TEMPLATE_API_NOT_FOUND);
+        }
+        if (Objects.equals(template.getAuditStatus(), SmsTemplateAuditStatusEnum.CHECKING.getStatus())) {
+            throw exception(SMS_TEMPLATE_API_AUDIT_CHECKING);
+        }
+        if (Objects.equals(template.getAuditStatus(), SmsTemplateAuditStatusEnum.FAIL.getStatus())) {
+            throw exception(SMS_TEMPLATE_API_AUDIT_FAIL, template.getAuditReason());
+        }
+        Assert.equals(template.getAuditStatus(), SmsTemplateAuditStatusEnum.SUCCESS.getStatus(),
+                String.format("短信模板(%s) 审核状态(%d) 不正确", apiTemplateId, template.getAuditStatus()));
     }
 
     @Override
@@ -195,6 +195,5 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     List<String> parseTemplateContentParams(String content) {
         return ReUtil.findAllGroup1(PATTERN_PARAMS, content);
     }
-
 
 }

@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.api.dept;
 
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.dept.dto.DeptRespDTO;
-import org.openea.eap.module.system.convert.dept.DeptConvert;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.service.dept.DeptService;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * 部门 API 实现类
  *
+ * @author 芋道源码
  */
 @Service
 public class DeptApiImpl implements DeptApi {
@@ -23,13 +24,13 @@ public class DeptApiImpl implements DeptApi {
     @Override
     public DeptRespDTO getDept(Long id) {
         DeptDO dept = deptService.getDept(id);
-        return DeptConvert.INSTANCE.convert03(dept);
+        return BeanUtils.toBean(dept, DeptRespDTO.class);
     }
 
     @Override
     public List<DeptRespDTO> getDeptList(Collection<Long> ids) {
         List<DeptDO> depts = deptService.getDeptList(ids);
-        return DeptConvert.INSTANCE.convertList03(depts);
+        return BeanUtils.toBean(depts, DeptRespDTO.class);
     }
 
     @Override

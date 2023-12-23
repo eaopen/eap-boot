@@ -1,8 +1,7 @@
 package org.openea.eap.module.system.service.permission;
 
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuCreateReqVO;
+import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSaveVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuListReqVO;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuUpdateReqVO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 
 import java.util.Collection;
@@ -11,23 +10,24 @@ import java.util.List;
 /**
  * 菜单 Service 接口
  *
+ * @author 芋道源码
  */
 public interface MenuService {
 
     /**
      * 创建菜单
      *
-     * @param reqVO 菜单信息
+     * @param createReqVO 菜单信息
      * @return 创建出来的菜单编号
      */
-    Long createMenu(MenuCreateReqVO reqVO);
+    Long createMenu(MenuSaveVO createReqVO);
 
     /**
      * 更新菜单
      *
-     * @param reqVO 菜单信息
+     * @param updateReqVO 菜单信息
      */
-    void updateMenu(MenuUpdateReqVO reqVO);
+    void updateMenu(MenuSaveVO updateReqVO);
 
     /**
      * 删除菜单
@@ -84,12 +84,4 @@ public interface MenuService {
      */
     List<MenuDO> getMenuList(Collection<Long> ids);
 
-    /**
-     * 菜单国际化
-     * @param menus
-     * @return
-     */
-    List<MenuDO> toI18n(List<MenuDO> menus);
-
-    Integer updateMenuI18n();
 }

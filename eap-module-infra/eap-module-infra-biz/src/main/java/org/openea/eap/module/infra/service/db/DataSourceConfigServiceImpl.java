@@ -1,9 +1,8 @@
 package org.openea.eap.module.infra.service.db;
 
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.mybatis.core.util.JdbcUtils;
-import org.openea.eap.module.infra.controller.admin.db.vo.DataSourceConfigCreateReqVO;
-import org.openea.eap.module.infra.controller.admin.db.vo.DataSourceConfigUpdateReqVO;
-import org.openea.eap.module.infra.convert.db.DataSourceConfigConvert;
+import org.openea.eap.module.infra.controller.admin.db.vo.DataSourceConfigSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
 import org.openea.eap.module.infra.dal.mysql.db.DataSourceConfigMapper;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
@@ -22,6 +21,7 @@ import static org.openea.eap.module.infra.enums.ErrorCodeConstants.DATA_SOURCE_C
 /**
  * 数据源配置 Service 实现类
  *
+ * @author 芋道源码
  */
 @Service
 @Validated
@@ -34,21 +34,21 @@ public class DataSourceConfigServiceImpl implements DataSourceConfigService {
     private DynamicDataSourceProperties dynamicDataSourceProperties;
 
     @Override
-    public Long createDataSourceConfig(DataSourceConfigCreateReqVO createReqVO) {
-        DataSourceConfigDO dataSourceConfig = DataSourceConfigConvert.INSTANCE.convert(createReqVO);
-        validateConnectionOK(dataSourceConfig);
+    public Long createDataSourceConfig(DataSourceConfigSaveReqVO createReqVO) {
+        DataSourceConfigDO config = BeanUtils.toBean(createReqVO, DataSourceConfigDO.class);
+        validateConnectionOK(config);
 
         // 插入
-        dataSourceConfigMapper.insert(dataSourceConfig);
+        dataSourceConfigMapper.insert(config);
         // 返回
-        return dataSourceConfig.getId();
+        return config.getId();
     }
 
     @Override
-    public void updateDataSourceConfig(DataSourceConfigUpdateReqVO updateReqVO) {
+    public void updateDataSourceConfig(DataSourceConfigSaveReqVO updateReqVO) {
         // 校验存在
         validateDataSourceConfigExists(updateReqVO.getId());
-        DataSourceConfigDO updateObj = DataSourceConfigConvert.INSTANCE.convert(updateReqVO);
+        DataSourceConfigDO updateObj = BeanUtils.toBean(updateReqVO, DataSourceConfigDO.class);
         validateConnectionOK(updateObj);
 
         // 更新

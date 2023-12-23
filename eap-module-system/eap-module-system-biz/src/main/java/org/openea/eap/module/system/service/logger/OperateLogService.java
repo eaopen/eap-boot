@@ -2,15 +2,13 @@ package org.openea.eap.module.system.service.logger;
 
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.api.logger.dto.OperateLogCreateReqDTO;
-import org.openea.eap.module.system.controller.admin.logger.vo.operatelog.OperateLogExportReqVO;
 import org.openea.eap.module.system.controller.admin.logger.vo.operatelog.OperateLogPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.logger.OperateLogDO;
-
-import java.util.List;
 
 /**
  * 操作日志 Service 接口
  *
+ * @author 芋道源码
  */
 public interface OperateLogService {
 
@@ -24,17 +22,9 @@ public interface OperateLogService {
     /**
      * 获得操作日志分页列表
      *
-     * @param reqVO 分页条件
+     * @param pageReqVO 分页条件
      * @return 操作日志分页列表
      */
-    PageResult<OperateLogDO> getOperateLogPage(OperateLogPageReqVO reqVO);
-
-    /**
-     * 获得操作日志列表
-     *
-     * @param reqVO 列表条件
-     * @return 日志列表
-     */
-    List<OperateLogDO> getOperateLogList(OperateLogExportReqVO reqVO);
+    PageResult<OperateLogDO> getOperateLogPage(OperateLogPageReqVO pageReqVO);
 
 }

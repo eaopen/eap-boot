@@ -1,10 +1,8 @@
 package org.openea.eap.module.infra.convert.config;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.infra.controller.admin.config.vo.ConfigCreateReqVO;
-import org.openea.eap.module.infra.controller.admin.config.vo.ConfigExcelVO;
 import org.openea.eap.module.infra.controller.admin.config.vo.ConfigRespVO;
-import org.openea.eap.module.infra.controller.admin.config.vo.ConfigUpdateReqVO;
+import org.openea.eap.module.infra.controller.admin.config.vo.ConfigSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.config.ConfigDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,15 +17,12 @@ public interface ConfigConvert {
 
     PageResult<ConfigRespVO> convertPage(PageResult<ConfigDO> page);
 
+    List<ConfigRespVO> convertList(List<ConfigDO> list);
+
     @Mapping(source = "configKey", target = "key")
     ConfigRespVO convert(ConfigDO bean);
 
     @Mapping(source = "key", target = "configKey")
-    ConfigDO convert(ConfigCreateReqVO bean);
-
-    ConfigDO convert(ConfigUpdateReqVO bean);
-
-    @Mapping(source = "configKey", target = "key")
-    List<ConfigExcelVO> convertList(List<ConfigDO> list);
+    ConfigDO convert(ConfigSaveReqVO bean);
 
 }

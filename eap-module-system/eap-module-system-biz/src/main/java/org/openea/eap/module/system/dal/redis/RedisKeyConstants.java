@@ -5,6 +5,7 @@ import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 /**
  * System Redis Key 枚举类
  *
+ * @author 芋道源码
  */
 public interface RedisKeyConstants {
 
@@ -97,5 +98,4 @@ public interface RedisKeyConstants {
      * VALUE 数据格式：String 模版信息
      */
     String SMS_TEMPLATE = "sms_template";
-
 }

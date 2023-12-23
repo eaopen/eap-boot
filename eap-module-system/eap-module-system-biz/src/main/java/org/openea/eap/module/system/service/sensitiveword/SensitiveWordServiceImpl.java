@@ -1,28 +1,29 @@
 package org.openea.eap.module.system.service.sensitiveword;
 
 import cn.hutool.core.collection.CollUtil;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.framework.common.util.collection.CollectionUtils;
+import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.module.system.controller.admin.sensitiveword.vo.SensitiveWordPageReqVO;
+import org.openea.eap.module.system.controller.admin.sensitiveword.vo.SensitiveWordSaveVO;
+import org.openea.eap.module.system.dal.dataobject.sensitiveword.SensitiveWordDO;
+import org.openea.eap.module.system.dal.mysql.sensitiveword.SensitiveWordMapper;
+import org.openea.eap.module.system.util.collection.SimpleTrie;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.framework.common.util.collection.CollectionUtils;
-import org.openea.eap.module.system.controller.admin.sensitiveword.vo.SensitiveWordCreateReqVO;
-import org.openea.eap.module.system.controller.admin.sensitiveword.vo.SensitiveWordExportReqVO;
-import org.openea.eap.module.system.controller.admin.sensitiveword.vo.SensitiveWordPageReqVO;
-import org.openea.eap.module.system.controller.admin.sensitiveword.vo.SensitiveWordUpdateReqVO;
-import org.openea.eap.module.system.convert.sensitiveword.SensitiveWordConvert;
-import org.openea.eap.module.system.dal.dataobject.sensitiveword.SensitiveWordDO;
-import org.openea.eap.module.system.dal.mysql.sensitiveword.SensitiveWordMapper;
-import org.openea.eap.module.system.util.collection.SimpleTrie;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.filterList;
@@ -33,11 +34,17 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.SENSITIVE_WO
 /**
  * 敏感词 Service 实现类
  *
+ * @author 永不言败
  */
 @Service
 @Slf4j
 @Validated
 public class SensitiveWordServiceImpl implements SensitiveWordService {
+
+    /**
+     * 是否开启敏感词功能
+     */
+    public static Boolean ENABLED = false;
 
     /**
      * 敏感词列表缓存
@@ -72,6 +79,10 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
      */
     @PostConstruct
     public void initLocalCache() {
+        if (!ENABLED) {
+            return;
+        }
+
         // 第一步：查询数据
         List<SensitiveWordDO> sensitiveWords = sensitiveWordMapper.selectList();
         log.info("[initLocalCache][缓存敏感词，数量为:{}]", sensitiveWords.size());
@@ -112,7 +123,7 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
      *
      * 目的：多节点部署时，通过轮询”通知“所有节点，进行刷新
      */
-    //@Scheduled(initialDelay = 60, fixedRate = 60, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(initialDelay = 60, fixedRate = 60, timeUnit = TimeUnit.SECONDS)
     public void refreshLocalCache() {
         // 情况一：如果缓存里没有数据，则直接刷新缓存
         if (CollUtil.isEmpty(sensitiveWordCache)) {
@@ -128,12 +139,12 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    public Long createSensitiveWord(SensitiveWordCreateReqVO createReqVO) {
+    public Long createSensitiveWord(SensitiveWordSaveVO createReqVO) {
         // 校验唯一性
         validateSensitiveWordNameUnique(null, createReqVO.getName());
 
         // 插入
-        SensitiveWordDO sensitiveWord = SensitiveWordConvert.INSTANCE.convert(createReqVO);
+        SensitiveWordDO sensitiveWord = BeanUtils.toBean(createReqVO, SensitiveWordDO.class);
         sensitiveWordMapper.insert(sensitiveWord);
 
         // 刷新缓存
@@ -142,13 +153,13 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    public void updateSensitiveWord(SensitiveWordUpdateReqVO updateReqVO) {
+    public void updateSensitiveWord(SensitiveWordSaveVO updateReqVO) {
         // 校验唯一性
         validateSensitiveWordExists(updateReqVO.getId());
         validateSensitiveWordNameUnique(updateReqVO.getId(), updateReqVO.getName());
 
         // 更新
-        SensitiveWordDO updateObj = SensitiveWordConvert.INSTANCE.convert(updateReqVO);
+        SensitiveWordDO updateObj = BeanUtils.toBean(updateReqVO, SensitiveWordDO.class);
         sensitiveWordMapper.updateById(updateObj);
 
         // 刷新缓存
@@ -202,17 +213,15 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
     }
 
     @Override
-    public List<SensitiveWordDO> getSensitiveWordList(SensitiveWordExportReqVO exportReqVO) {
-        return sensitiveWordMapper.selectList(exportReqVO);
-    }
-
-    @Override
     public Set<String> getSensitiveWordTagSet() {
         return sensitiveWordTagsCache;
     }
 
     @Override
     public List<String> validateText(String text, List<String> tags) {
+        Assert.isTrue(ENABLED, "敏感词功能未开启，请将 ENABLED 设置为 true");
+
+        // 无标签时，默认所有
         if (CollUtil.isEmpty(tags)) {
             return defaultSensitiveWordTrie.validate(text);
         }
@@ -230,6 +239,9 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
 
     @Override
     public boolean isTextValid(String text, List<String> tags) {
+        Assert.isTrue(ENABLED, "敏感词功能未开启，请将 ENABLED 设置为 true");
+
+        // 无标签时，默认所有
         if (CollUtil.isEmpty(tags)) {
             return defaultSensitiveWordTrie.isValid(text);
         }
@@ -239,6 +251,7 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
             if (trie == null) {
                 continue;
             }
+            // 如果有一个标签不合法，则返回 false 不合法
             if (!trie.isValid(text)) {
                 return false;
             }

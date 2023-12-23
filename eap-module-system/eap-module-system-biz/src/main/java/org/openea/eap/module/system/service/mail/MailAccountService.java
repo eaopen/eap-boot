@@ -1,9 +1,8 @@
 package org.openea.eap.module.system.service.mail;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountCreateReqVO;
 import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountPageReqVO;
-import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountUpdateReqVO;
+import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.mail.MailAccountDO;
 
 import javax.validation.Valid;
@@ -23,14 +22,14 @@ public interface MailAccountService {
      * @param createReqVO 邮箱账号信息
      * @return 编号
      */
-    Long createMailAccount(@Valid MailAccountCreateReqVO createReqVO);
+    Long createMailAccount(@Valid MailAccountSaveReqVO createReqVO);
 
     /**
      * 修改邮箱账号
      *
      * @param updateReqVO 邮箱账号信息
      */
-    void updateMailAccount(@Valid MailAccountUpdateReqVO updateReqVO);
+    void updateMailAccount(@Valid MailAccountSaveReqVO updateReqVO);
 
     /**
      * 删除邮箱账号

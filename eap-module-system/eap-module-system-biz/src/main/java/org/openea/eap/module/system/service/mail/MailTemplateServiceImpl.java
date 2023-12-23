@@ -3,16 +3,15 @@ package org.openea.eap.module.system.service.mail;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.mail.vo.template.MailTemplateCreateReqVO;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.mail.vo.template.MailTemplatePageReqVO;
-import org.openea.eap.module.system.controller.admin.mail.vo.template.MailTemplateUpdateReqVO;
-import org.openea.eap.module.system.convert.mail.MailTemplateConvert;
+import org.openea.eap.module.system.controller.admin.mail.vo.template.MailTemplateSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.mail.MailTemplateDO;
 import org.openea.eap.module.system.dal.mysql.mail.MailTemplateMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -48,12 +47,12 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     private MailTemplateMapper mailTemplateMapper;
 
     @Override
-    public Long createMailTemplate(MailTemplateCreateReqVO createReqVO) {
+    public Long createMailTemplate(MailTemplateSaveReqVO createReqVO) {
         // 校验 code 是否唯一
         validateCodeUnique(null, createReqVO.getCode());
 
         // 插入
-        MailTemplateDO template = MailTemplateConvert.INSTANCE.convert(createReqVO)
+        MailTemplateDO template = BeanUtils.toBean(createReqVO, MailTemplateDO.class)
                 .setParams(parseTemplateContentParams(createReqVO.getContent()));
         mailTemplateMapper.insert(template);
         return template.getId();
@@ -62,14 +61,14 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     @Override
     @CacheEvict(cacheNames = RedisKeyConstants.NOTIFY_TEMPLATE,
             allEntries = true) // allEntries 清空所有缓存，因为可能修改到 code 字段，不好清理
-    public void updateMailTemplate(@Valid MailTemplateUpdateReqVO updateReqVO) {
+    public void updateMailTemplate(@Valid MailTemplateSaveReqVO updateReqVO) {
         // 校验是否存在
         validateMailTemplateExists(updateReqVO.getId());
         // 校验 code 是否唯一
         validateCodeUnique(updateReqVO.getId(),updateReqVO.getCode());
 
         // 更新
-        MailTemplateDO updateObj = MailTemplateConvert.INSTANCE.convert(updateReqVO)
+        MailTemplateDO updateObj = BeanUtils.toBean(updateReqVO, MailTemplateDO.class)
                 .setParams(parseTemplateContentParams(updateReqVO.getContent()));
         mailTemplateMapper.updateById(updateObj);
     }
@@ -132,7 +131,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     }
 
     @Override
-    public long countByAccountId(Long accountId) {
+    public long getMailTemplateCountByAccountId(Long accountId) {
         return mailTemplateMapper.selectCountByAccountId(accountId);
     }
 

@@ -2,9 +2,8 @@ package org.openea.eap.module.system.service.sms;
 
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.sms.core.client.SmsClient;
-import org.openea.eap.module.system.controller.admin.sms.vo.channel.SmsChannelCreateReqVO;
 import org.openea.eap.module.system.controller.admin.sms.vo.channel.SmsChannelPageReqVO;
-import org.openea.eap.module.system.controller.admin.sms.vo.channel.SmsChannelUpdateReqVO;
+import org.openea.eap.module.system.controller.admin.sms.vo.channel.SmsChannelSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsChannelDO;
 
 import javax.validation.Valid;
@@ -14,7 +13,7 @@ import java.util.List;
  * 短信渠道 Service 接口
  *
  * @author zzf
- * @date 2021/1/25 9:24
+ * @since 2021/1/25 9:24
  */
 public interface SmsChannelService {
 
@@ -24,14 +23,14 @@ public interface SmsChannelService {
      * @param createReqVO 创建信息
      * @return 编号
      */
-    Long createSmsChannel(@Valid SmsChannelCreateReqVO createReqVO);
+    Long createSmsChannel(@Valid SmsChannelSaveReqVO createReqVO);
 
     /**
      * 更新短信渠道
      *
      * @param updateReqVO 更新信息
      */
-    void updateSmsChannel(@Valid SmsChannelUpdateReqVO updateReqVO);
+    void updateSmsChannel(@Valid SmsChannelSaveReqVO updateReqVO);
 
     /**
      * 删除短信渠道
@@ -78,6 +77,5 @@ public interface SmsChannelService {
      * @return 短信客户端
      */
     SmsClient getSmsClient(String code);
-
 
 }

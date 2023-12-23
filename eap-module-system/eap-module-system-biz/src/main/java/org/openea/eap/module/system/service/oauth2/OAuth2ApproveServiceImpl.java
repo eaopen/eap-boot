@@ -20,6 +20,7 @@ import static org.openea.eap.framework.common.util.collection.CollectionUtils.co
 /**
  * OAuth2 批准 Service 实现类
  *
+ * @author 芋道源码
  */
 @Service
 @Validated
