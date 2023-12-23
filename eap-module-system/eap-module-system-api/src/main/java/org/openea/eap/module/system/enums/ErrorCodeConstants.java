@@ -171,4 +171,9 @@ public interface ErrorCodeConstants {
     // ========== 站内信发送 1-002-028-000 ==========
     ErrorCode NOTIFY_SEND_TEMPLATE_PARAM_MISS = new ErrorCode(1_002_028_000, "模板参数({})缺失");
 
+
+    // 国际化异常
+    ErrorCode LANG_TYPE_NOT_EXISTS = new ErrorCode(1002051010, "国际化语言不存在");
+    ErrorCode I18N_JSON_DATA_NOT_EXISTS = new ErrorCode(1002051020, "国际化翻译不存在");
+
 }

@@ -3,10 +3,7 @@ package org.openea.eap.module.system.controller.admin.permission;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuListReqVO;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuRespVO;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSaveVO;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSimpleRespVO;
+import org.openea.eap.module.system.controller.admin.permission.vo.menu.*;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.service.permission.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +32,7 @@ public class MenuController {
     @PostMapping("/create")
     @Operation(summary = "创建菜单")
     @PreAuthorize("@ss.hasPermission('system:menu:create')")
-    public CommonResult<Long> createMenu(@Valid @RequestBody MenuSaveVO createReqVO) {
+    public CommonResult<Long> createMenu(@Valid @RequestBody MenuCreateReqVO createReqVO) {
         Long menuId = menuService.createMenu(createReqVO);
         return success(menuId);
     }
@@ -43,7 +40,7 @@ public class MenuController {
     @PutMapping("/update")
     @Operation(summary = "修改菜单")
     @PreAuthorize("@ss.hasPermission('system:menu:update')")
-    public CommonResult<Boolean> updateMenu(@Valid @RequestBody MenuSaveVO updateReqVO) {
+    public CommonResult<Boolean> updateMenu(@Valid @RequestBody MenuUpdateReqVO updateReqVO) {
         menuService.updateMenu(updateReqVO);
         return success(true);
     }
@@ -82,6 +79,14 @@ public class MenuController {
     public CommonResult<MenuRespVO> getMenu(Long id) {
         MenuDO menu = menuService.getMenu(id);
         return success(BeanUtils.toBean(menu, MenuRespVO.class));
+    }
+
+    @GetMapping("/checkI18n")
+    @Operation(summary = "检查菜单国际化", description = "检查及更新菜单国际化数据")
+    public CommonResult<Integer> checkI18n() {
+        // async invoke
+        menuService.updateMenuI18n();
+        return success(0);
     }
 
 }

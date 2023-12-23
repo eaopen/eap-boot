@@ -7,6 +7,7 @@ spring:
 
   main:
     allow-circular-references: true # 允许循环依赖，因为项目是三层架构，无法避免这个情况。
+    allow-bean-definition-overriding: true
 
   # Servlet 配置
   servlet:
@@ -33,6 +34,10 @@ spring:
     type: REDIS
     redis:
       time-to-live: 1h # 设置过期时间为 1 小时
+
+  messages:
+    basename: i18n/messages,i18n/eap-msg
+    encoding: UTF-8
 
 --- #################### 接口文档配置 ####################
 

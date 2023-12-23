@@ -196,6 +196,28 @@ public class PermissionServiceImpl implements PermissionService {
         return convertSet(roleMenuMapper.selectListByMenuId(menuId), RoleMenuDO::getRoleId);
     }
 
+    @Override
+    public List<MenuDO> getUserMenuListByUser(Long userId, String userKey){
+        List<MenuDO> menuList = null;
+        // 获得角色列表
+        Set<Long> roleIds = getUserRoleIdListByUserId(userId);
+        if(CollectionUtils.isAnyEmpty(roleIds)){
+            return menuList;
+        }
+        List<RoleDO> roleList = roleService.getRoleListFromCache(roleIds);
+        roleList.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // 移除禁用的角色
+
+        // 获得菜单列表
+        Set<Long> menuIds = getRoleMenuListByRoleId(convertSet(roleList, RoleDO::getId));
+        if(CollectionUtils.isAnyEmpty()){
+            return menuList;
+        }
+        menuList = menuService.getMenuList(menuIds);
+        menuList.removeIf(menu -> !CommonStatusEnum.ENABLE.getStatus().equals(menu.getStatus()));
+
+        return menuList;
+    }
+
     // ========== 用户-角色的相关方法  ==========
 
     @Override

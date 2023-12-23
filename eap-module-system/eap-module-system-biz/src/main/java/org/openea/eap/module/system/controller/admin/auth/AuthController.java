@@ -111,9 +111,13 @@ public class AuthController {
         roles.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // 移除禁用的角色
 
         // 1.3 获得菜单列表
-        Set<Long> menuIds = permissionService.getRoleMenuListByRoleId(convertSet(roles, RoleDO::getId));
-        List<MenuDO> menuList = menuService.getMenuList(menuIds);
-        menuList.removeIf(menu -> !CommonStatusEnum.ENABLE.getStatus().equals(menu.getStatus())); // 移除禁用的菜单
+//        Set<Long> menuIds = permissionService.getRoleMenuListByRoleId(convertSet(roles, RoleDO::getId));
+//        List<MenuDO> menuList = menuService.getMenuList(menuIds);
+//        menuList.removeIf(menu -> !CommonStatusEnum.ENABLE.getStatus().equals(menu.getStatus())); // 移除禁用的菜单
+        List<MenuDO> menuList = permissionService.getUserMenuListByUser(user.getId(), user.getUsername());
+
+        // i18n
+        menuList = menuService.toI18n(menuList);
 
         // 2. 拼接结果返回
         return success(AuthConvert.INSTANCE.convert(user, roles, menuList));

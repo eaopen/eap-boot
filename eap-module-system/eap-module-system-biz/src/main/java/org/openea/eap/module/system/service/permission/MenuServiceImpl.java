@@ -1,25 +1,32 @@
 package org.openea.eap.module.system.service.permission;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.util.object.BeanUtils;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSaveVO;
+import org.openea.eap.framework.i18n.core.I18nUtil;
+import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuCreateReqVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuListReqVO;
+import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuUpdateReqVO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.mysql.permission.MenuMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
 import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
+import org.openea.eap.module.system.service.language.I18nDataService;
 import org.openea.eap.module.system.service.tenant.TenantService;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
@@ -43,10 +50,14 @@ public class MenuServiceImpl implements MenuService {
     @Lazy // 延迟，避免循环依赖报错
     private TenantService tenantService;
 
+    @Resource
+    @Lazy // 延迟，避免循环依赖报错
+    private I18nDataService i18nDataService;
+
     @Override
     @CacheEvict(value = RedisKeyConstants.PERMISSION_MENU_ID_LIST, key = "#createReqVO.permission",
             condition = "#createReqVO.permission != null")
-    public Long createMenu(MenuSaveVO createReqVO) {
+    public Long createMenu(MenuCreateReqVO createReqVO) {
         // 校验父菜单存在
         validateParentMenu(createReqVO.getParentId(), null);
         // 校验菜单（自己）
@@ -63,7 +74,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @CacheEvict(value = RedisKeyConstants.PERMISSION_MENU_ID_LIST,
             allEntries = true) // allEntries 清空所有缓存，因为 permission 如果变更，涉及到新老两个 permission。直接清理，简单有效
-    public void updateMenu(MenuSaveVO updateReqVO) {
+    public void updateMenu(MenuUpdateReqVO updateReqVO) {
         // 校验更新的菜单是否存在
         if (menuMapper.selectById(updateReqVO.getId()) == null) {
             throw exception(MENU_NOT_EXISTS);
@@ -125,13 +136,125 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public MenuDO getMenu(Long id) {
-        return menuMapper.selectById(id);
+        MenuDO menu = menuMapper.selectById(id);
+        // query i18n
+        String i18nKey = getI18nKey(menu);
+        if(ObjectUtil.isNotEmpty(i18nKey)){
+            JSONObject json = i18nDataService.getI18nJsonByKey(i18nKey);
+            if(json!=null){
+                menu.setI18nJson(json.toString());
+            }
+        }
+        return menu;
     }
 
     @Override
     public List<MenuDO> getMenuList(Collection<Long> ids) {
         return menuMapper.selectBatchIds(ids);
     }
+
+    @Override
+    public List<MenuDO> toI18n(List<MenuDO> menus) {
+        if(!I18nUtil.enableI18n() || menus==null){
+            return menus;
+        }
+        for(MenuDO menu: menus){
+            String i18nKey = getI18nKey(menu);
+            String i18nLabel = I18nUtil.t(i18nKey, menu.getName());
+            checkMissI18nKey(menu, i18nLabel);
+            if(StrUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(menu.getName())){
+                menu.setName(i18nLabel);
+            }
+        }
+        return menus;
+    }
+
+    @Override
+    @Async
+    public Integer updateMenuI18n() {
+        int count = 0;
+        // 1. prepare will i18n menus
+        // 范围包含db中菜单以及缺少翻译的菜单mapMissI18nMenu，两者有重复
+        List<MenuDO> menuList =  this.getMenuList();
+        Map<String, MenuDO> mapCheckI18n = new HashMap<>();
+        for(MenuDO menu: menuList){
+            String alias = menu.getAlias();
+            if(ObjectUtil.isEmpty(alias)){
+                alias = checkAlias(menu);
+                if(ObjectUtil.isEmpty(alias)) {
+                    alias = i18nDataService.convertEnKey(menu.getName(), "menu");
+                }
+                if(ObjectUtil.isNotEmpty(alias)) {
+                    menu.setAlias(alias);
+                    menuMapper.updateById(menu);
+                }
+            }
+            if(ObjectUtil.isNotEmpty(alias)) {
+                alias = menu.getType() + "__" + alias;
+                if(!mapCheckI18n.containsKey(alias)){
+                    mapCheckI18n.put(alias, menu);
+                }
+            }
+        }
+        for(String key: mapMissI18nMenu.keySet()){
+            if(!mapCheckI18n.containsKey(key)){
+                mapCheckI18n.put(key, mapMissI18nMenu.get(key));
+            }
+        }
+        // 2. check i18n
+        i18nDataService.translateMenu(mapCheckI18n.values());
+        return count;
+    }
+
+
+    // 本地存储，如集群部署可存储到redis中
+    private Map<String, MenuDO> mapMissI18nMenu = new Hashtable<>();
+
+    /**
+     * 国际化翻译补漏机制 - 检查是否需要补翻译
+     *
+     * 保持未翻译菜单由定时任务或其他操作执行翻译
+     *
+     * @param menu
+     * @param i18nLabel
+     */
+    private void checkMissI18nKey(MenuDO menu, String i18nLabel){
+        // 排除默认语言，默认为中文
+        if("zh".equalsIgnoreCase(LocaleContextHolder.getLocale().getLanguage())){
+            return;
+        }
+        // 已有不同的翻译，无需处理
+        if(i18nLabel !=null && !i18nLabel.equals(menu.getName())){
+            return;
+        }
+        String alias =  menu.getAlias();
+        if(ObjectUtil.isNotEmpty(alias)) {
+            alias = menu.getType() + "__" + alias;
+            if(!mapMissI18nMenu.containsKey(alias)){
+                mapMissI18nMenu.put(alias, menu);
+            }
+        }
+    }
+
+    public static String getI18nKey(MenuDO menu){
+        String i18nKey = null;
+        if(MenuTypeEnum.BUTTON.getType().equals(menu.getType())){
+            i18nKey = "button.";
+        }else{
+            i18nKey = "menu.";
+        }
+        String alias =  checkAlias(menu);
+        if(ObjectUtil.isEmpty(alias) || "null".equalsIgnoreCase(alias)){
+            alias = null;
+        }
+        if(ObjectUtil.isNotEmpty(alias)){
+            i18nKey += alias;
+        }else{
+            i18nKey = null;
+        }
+        return i18nKey;
+    }
+
 
     /**
      * 校验父菜单是否合法
@@ -203,6 +326,73 @@ public class MenuServiceImpl implements MenuService {
             menu.setIcon("");
             menu.setPath("");
         }
+
+        // init alias for i18n
+        checkAlias(menu);
+    }
+
+    private static String checkAlias(MenuDO menu){
+        String alias =  menu.getAlias();
+        if("null".equalsIgnoreCase(alias)){
+            alias = null;
+        }
+        if(ObjectUtil.isNotEmpty(alias)){
+            return alias;
+        }
+        if (MenuTypeEnum.BUTTON.getType().equals(menu.getType())) {
+            if(ObjectUtil.isNotEmpty(menu.getPermission()) ){
+                // 转驼峰格式, 只保留后面2部分
+                // system:user:query => userQuery
+                // infra:api-access-log:query => apiAccessLogQuery
+                alias = menu.getPermission();
+                int last = 0;
+                last = alias.lastIndexOf(":");
+                if(last>0){
+                    last = alias.substring(0, last-1).lastIndexOf(":");
+                    if(last>0){
+                        alias = alias.substring(last+1, alias.length());
+                    }
+                }
+                alias = alias.replaceAll(":","-");
+                alias = StrUtil.toCamelCase(alias,'-');
+            }
+        }
+        if(ObjectUtil.isEmpty(alias) && ObjectUtil.isNotEmpty(menu.getPath())){
+            if(!menu.getPath().startsWith("http")
+                    && !menu.getPath().startsWith("#")){
+                // /system 去首/
+                alias = menu.getPath();
+                if(alias.startsWith("/")){
+                    alias = alias.substring(1, alias.length());
+                }
+                // 去除参数?
+                if(alias.indexOf("?")>0){
+                    alias = alias.substring(0, alias.indexOf("?"));
+                }
+                // 转驼峰格式
+                alias = alias.replaceAll("/","-");
+                alias = StrUtil.toCamelCase(alias,'-');
+            }
+        }
+        if(ObjectUtil.isEmpty(alias)
+                && MenuTypeEnum.MENU.getType().equals(menu.getType())){
+            // menu
+            if(ObjectUtil.isNotEmpty(menu.getComponentName()) ){
+                // 首字母改小写
+                alias = StrUtil.lowerFirst(menu.getComponentName());
+            }else if(ObjectUtil.isNotEmpty(menu.getComponent()) ) {
+                // 转驼峰格式 infra/job/index => infraJob
+                alias = menu.getComponent();
+                if(alias.endsWith("/index")){
+                    alias = alias.substring(0, alias.length()-6);
+                }
+                alias = StrUtil.toCamelCase(alias,'/');
+            }
+        }
+        if(ObjectUtil.isNotEmpty(alias)){
+            menu.setAlias(alias);
+        }
+        return alias;
     }
 
 }

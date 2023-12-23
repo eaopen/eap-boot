@@ -18,6 +18,7 @@
 
         <module>eap-spring-boot-starter-biz-operatelog</module>
         <module>eap-spring-boot-starter-biz-dict</module>
+        <module>eap-spring-boot-starter-biz-i18n</module>
 
         <module>eap-spring-boot-starter-biz-data-permission</module>
         <module>eap-spring-boot-starter-biz-error-code</module>
