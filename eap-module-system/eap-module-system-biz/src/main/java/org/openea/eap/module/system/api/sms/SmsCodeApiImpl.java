@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 /**
  * 短信验证码 API 实现类
  *
- * @author 芋道源码
  */
 @Service
 @Validated

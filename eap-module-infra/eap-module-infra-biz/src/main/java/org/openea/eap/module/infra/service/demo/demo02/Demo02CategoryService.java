@@ -10,7 +10,6 @@ import org.openea.eap.module.infra.dal.dataobject.demo.demo02.Demo02CategoryDO;
 /**
  * 示例分类 Service 接口
  *
- * @author 芋道源码
  */
 public interface Demo02CategoryService {
 

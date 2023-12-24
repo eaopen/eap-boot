@@ -20,7 +20,6 @@ import static org.openea.eap.module.infra.enums.ErrorCodeConstants.*;
 /**
  * API 错误日志 Service 实现类
  *
- * @author 芋道源码
  */
 @Slf4j
 @Service

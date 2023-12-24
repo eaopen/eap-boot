@@ -10,7 +10,6 @@ import static org.openea.eap.framework.web.core.util.WebFrameworkUtils.HEADER_TE
 /**
  * 多租户 Util
  *
- * @author 芋道源码
  */
 public class TenantUtils {
 

@@ -32,7 +32,6 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.SOCIAL_USER_
 /**
  * 社交用户 Service 实现类
  *
- * @author 芋道源码
  */
 @Service
 @Validated

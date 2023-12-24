@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * 错误码配置类
  *
- * @author 芋道源码
  */
 @AutoConfiguration
 @ConditionalOnProperty(prefix = "eap.error-code", value = "enable", matchIfMissing = true) // 允许使用 eap.error-code.enable=false 禁用访问日志

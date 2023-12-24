@@ -47,7 +47,6 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 /**
  * 后台用户 Service 实现类
  *
- * @author 芋道源码
  */
 @Service("adminUserService")
 @Slf4j

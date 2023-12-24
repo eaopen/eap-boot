@@ -7,7 +7,6 @@ import org.openea.eap.framework.common.util.json.JsonUtils;
  *
  * 对 WebSocketMessageSender 进行封装，提供给其它模块使用
  *
- * @author 芋道源码
  */
 public interface WebSocketSenderApi {
 

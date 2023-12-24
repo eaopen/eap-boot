@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 /**
  * 基础实体对象
  *
- * @author 芋道源码
  */
 @Data
 public abstract class BaseDO implements Serializable {

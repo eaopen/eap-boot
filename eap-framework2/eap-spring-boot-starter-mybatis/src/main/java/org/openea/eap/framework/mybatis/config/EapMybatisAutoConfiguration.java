@@ -18,7 +18,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 /**
  * MyBaits 配置类
  *
- * @author 芋道源码
  */
 @AutoConfiguration
 @MapperScan(value = "${eap.info.base-package}", annotationClass = Mapper.class,

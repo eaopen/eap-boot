@@ -48,7 +48,6 @@ import static org.openea.eap.framework.common.exception.enums.GlobalErrorCodeCon
  * <p>
  * 但是，如果声明 @OperateLog 注解时，将 enable 属性设置为 false 时，强制不记录。
  *
- * @author 芋道源码
  */
 @Aspect
 @Slf4j

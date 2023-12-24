@@ -11,6 +11,8 @@
     <modules>
         <module>eap-module-infra-api</module>
         <module>eap-module-infra-biz</module>
+        <module>eap-file</module>
+        <module>eap-module-infra-rest</module>
     </modules>
     <artifactId>eap-module-infra</artifactId>
     <packaging>pom</packaging>

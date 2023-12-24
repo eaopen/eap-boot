@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 /**
  * WebSocket 发送器的 API 实现类
  *
- * @author 芋道源码
  */
 @Component
 public class WebSocketSenderApiImpl implements WebSocketSenderApi {

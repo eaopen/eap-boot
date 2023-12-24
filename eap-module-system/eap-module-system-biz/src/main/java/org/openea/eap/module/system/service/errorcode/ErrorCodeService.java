@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * 错误码 Service 接口
  *
- * @author 芋道源码
  */
 public interface ErrorCodeService {
 

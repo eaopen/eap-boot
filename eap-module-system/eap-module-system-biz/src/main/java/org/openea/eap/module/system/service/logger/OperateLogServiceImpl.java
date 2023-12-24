@@ -25,7 +25,6 @@ import static org.openea.eap.module.system.dal.dataobject.logger.OperateLogDO.RE
 /**
  * 操作日志 Service 实现类
  *
- * @author 芋道源码
  */
 @Service
 @Validated

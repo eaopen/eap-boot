@@ -14,7 +14,6 @@ import javax.validation.Valid;
 /**
  * 社交应用 Service 接口
  *
- * @author 芋道源码
  */
 public interface SocialClientService {
 

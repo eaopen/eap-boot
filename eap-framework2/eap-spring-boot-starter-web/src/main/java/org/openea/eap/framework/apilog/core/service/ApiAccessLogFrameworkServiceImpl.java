@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Async;
  *
  * 基于 {@link ApiAccessLogApi} 服务，记录访问日志
  *
- * @author 芋道源码
  */
 @RequiredArgsConstructor
 public class ApiAccessLogFrameworkServiceImpl implements ApiAccessLogFrameworkService {

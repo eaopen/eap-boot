@@ -3,7 +3,6 @@ package org.openea.eap.framework.apilog.core.service;
 /**
  * API 错误日志 Framework Service 接口
  *
- * @author 芋道源码
  */
 public interface ApiErrorLogFrameworkService {
 

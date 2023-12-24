@@ -39,7 +39,6 @@ import static org.openea.eap.framework.common.util.json.JsonUtils.toJsonString;
 /**
  * 权限 Service 实现类
  *
- * @author 芋道源码
  */
 @Service
 @Slf4j

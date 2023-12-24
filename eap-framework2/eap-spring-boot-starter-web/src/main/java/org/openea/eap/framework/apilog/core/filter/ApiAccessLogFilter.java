@@ -28,7 +28,6 @@ import static org.openea.eap.framework.common.util.json.JsonUtils.toJsonString;
 /**
  * API 访问日志 Filter
  *
- * @author 芋道源码
  */
 @Slf4j
 public class ApiAccessLogFilter extends ApiRequestFilter {

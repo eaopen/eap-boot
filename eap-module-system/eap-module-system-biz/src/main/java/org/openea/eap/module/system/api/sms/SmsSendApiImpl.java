@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 /**
  * 短信发送 API 接口
  *
- * @author 芋道源码
  */
 @Service
 @Validated

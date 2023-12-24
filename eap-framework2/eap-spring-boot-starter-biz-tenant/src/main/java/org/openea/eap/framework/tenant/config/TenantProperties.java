@@ -9,7 +9,6 @@ import java.util.Set;
 /**
  * 多租户配置
  *
- * @author 芋道源码
  */
 @ConfigurationProperties(prefix = "eap.tenant")
 @Data
