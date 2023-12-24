@@ -74,6 +74,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private UserPostMapper userPostMapper;
 
     @Resource
+    @Lazy // 延迟，不需要及时加载
     private FileApi fileApi;
 
     @Override
