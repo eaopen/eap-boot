@@ -1,9 +1,6 @@
 package org.openea.eap.framework.mybatis.core.mapper;
 
 import cn.hutool.core.collection.CollUtil;
-import org.openea.eap.framework.common.pojo.PageParam;
-import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.framework.mybatis.core.util.MyBatisUtils;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,8 +9,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.github.yulichang.base.MPJBaseMapper;
-import com.github.yulichang.interfaces.MPJBaseJoin;
 import org.apache.ibatis.annotations.Param;
+import org.openea.eap.framework.common.pojo.PageParam;
+import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.framework.mybatis.core.util.MyBatisUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +23,7 @@ import java.util.List;
  * 1. {@link BaseMapper} 为 MyBatis Plus 的基础接口，提供基础的 CRUD 能力
  * 2. {@link MPJBaseMapper} 为 MyBatis Plus Join 的基础接口，提供连表 Join 能力
  */
-public interface BaseMapperX<T> extends MPJBaseMapper<T> {
+public interface BaseMapperX<T> extends BaseMapper<T> {
 
     default PageResult<T> selectPage(PageParam pageParam, @Param("ew") Wrapper<T> queryWrapper) {
         // 特殊：不分页，直接查询全部
@@ -40,12 +39,12 @@ public interface BaseMapperX<T> extends MPJBaseMapper<T> {
         return new PageResult<>(mpPage.getRecords(), mpPage.getTotal());
     }
 
-    default <DTO> PageResult<DTO> selectJoinPage(PageParam pageParam, Class<DTO> resultTypeClass, MPJBaseJoin<T> joinQueryWrapper) {
-        IPage<DTO> mpPage = MyBatisUtils.buildPage(pageParam);
-        selectJoinPage(mpPage, resultTypeClass, joinQueryWrapper);
-        // 转换返回
-        return new PageResult<>(mpPage.getRecords(), mpPage.getTotal());
-    }
+//    default <DTO> PageResult<DTO> selectJoinPage(PageParam pageParam, Class<DTO> resultTypeClass, MPJBaseJoin<T> joinQueryWrapper) {
+//        IPage<DTO> mpPage = MyBatisUtils.buildPage(pageParam);
+//        selectJoinPage(mpPage, resultTypeClass, joinQueryWrapper);
+//        // 转换返回
+//        return new PageResult<>(mpPage.getRecords(), mpPage.getTotal());
+//    }
 
     default T selectOne(String field, Object value) {
         return selectOne(new QueryWrapper<T>().eq(field, value));

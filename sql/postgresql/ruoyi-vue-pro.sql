@@ -3932,7 +3932,7 @@ VALUES (114, '表单构建', 'infra:build:list', 2, 2, 2, 'build', 'build', 'inf
 INSERT INTO "system_menu" ("id", "name", "permission", "type", "sort", "parent_id", "path", "icon", "component",
                            "status", "visible", "keep_alive", "creator", "create_time", "updater", "update_time",
                            "deleted", "component_name", "always_show")
-VALUES (115, '代码生成', 'infra:codegen:query', 2, 1, 2, 'codegen', 'code', 'infra/codegen/index', 0, 't', 't', 'admin',
+VALUES (115, '代码生成', 'lowcode:codegen:query', 2, 1, 2, 'codegen', 'code', 'lowcode/codegen/index', 0, 't', 't', 'admin',
         '2021-01-05 17:03:48', '1', '2022-04-20 17:03:10', 0, NULL, '1');
 INSERT INTO "system_menu" ("id", "name", "permission", "type", "sort", "parent_id", "path", "icon", "component",
                            "status", "visible", "keep_alive", "creator", "create_time", "updater", "update_time",
@@ -4202,27 +4202,27 @@ VALUES (1054, '任务导出', 'infra:job:export', 3, 7, 110, '', '', '', 0, 't',
 INSERT INTO "system_menu" ("id", "name", "permission", "type", "sort", "parent_id", "path", "icon", "component",
                            "status", "visible", "keep_alive", "creator", "create_time", "updater", "update_time",
                            "deleted", "component_name", "always_show")
-VALUES (1056, '生成修改', 'infra:codegen:update', 3, 2, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
+VALUES (1056, '生成修改', 'lowcode:codegen:update', 3, 2, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
         '1', '2022-04-20 17:03:10', 0, NULL, '1');
 INSERT INTO "system_menu" ("id", "name", "permission", "type", "sort", "parent_id", "path", "icon", "component",
                            "status", "visible", "keep_alive", "creator", "create_time", "updater", "update_time",
                            "deleted", "component_name", "always_show")
-VALUES (1057, '生成删除', 'infra:codegen:delete', 3, 3, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
+VALUES (1057, '生成删除', 'lowcode:codegen:delete', 3, 3, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
         '1', '2022-04-20 17:03:10', 0, NULL, '1');
 INSERT INTO "system_menu" ("id", "name", "permission", "type", "sort", "parent_id", "path", "icon", "component",
                            "status", "visible", "keep_alive", "creator", "create_time", "updater", "update_time",
                            "deleted", "component_name", "always_show")
-VALUES (1058, '导入代码', 'infra:codegen:create', 3, 2, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
+VALUES (1058, '导入代码', 'lowcode:codegen:create', 3, 2, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
         '1', '2022-04-20 17:03:10', 0, NULL, '1');
 INSERT INTO "system_menu" ("id", "name", "permission", "type", "sort", "parent_id", "path", "icon", "component",
                            "status", "visible", "keep_alive", "creator", "create_time", "updater", "update_time",
                            "deleted", "component_name", "always_show")
-VALUES (1059, '预览代码', 'infra:codegen:preview', 3, 4, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
+VALUES (1059, '预览代码', 'lowcode:codegen:preview', 3, 4, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
         '1', '2022-04-20 17:03:10', 0, NULL, '1');
 INSERT INTO "system_menu" ("id", "name", "permission", "type", "sort", "parent_id", "path", "icon", "component",
                            "status", "visible", "keep_alive", "creator", "create_time", "updater", "update_time",
                            "deleted", "component_name", "always_show")
-VALUES (1060, '生成代码', 'infra:codegen:download', 3, 5, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
+VALUES (1060, '生成代码', 'lowcode:codegen:download', 3, 5, 115, '', '', '', 0, 't', 't', 'admin', '2021-01-05 17:03:48',
         '1', '2022-04-20 17:03:10', 0, NULL, '1');
 INSERT INTO "system_menu" ("id", "name", "permission", "type", "sort", "parent_id", "path", "icon", "component",
                            "status", "visible", "keep_alive", "creator", "create_time", "updater", "update_time",

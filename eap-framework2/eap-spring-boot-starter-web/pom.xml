@@ -53,6 +53,8 @@
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-infra-api</artifactId> <!-- 需要使用它，进行操作日志的记录 -->
             <version>${revision}</version>
+            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
 
         <!-- xss -->

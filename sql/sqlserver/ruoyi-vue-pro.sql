@@ -6580,7 +6580,7 @@ GO
 INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'114', N'表单构建', N'infra:build:list', N'2', N'2', N'2', N'build', N'build', N'infra/build/index', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
 GO
 
-INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'115', N'代码生成', N'infra:codegen:query', N'2', N'1', N'2', N'codegen', N'code', N'infra/codegen/index', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
+INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'115', N'代码生成', N'lowcode:codegen:query', N'2', N'1', N'2', N'codegen', N'code', N'lowcode/codegen/index', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
 GO
 
 INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'116', N'系统接口', N'infra:swagger:list', N'2', N'3', N'2', N'swagger', N'swagger', N'infra/swagger/index', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
@@ -6742,19 +6742,19 @@ GO
 INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1054', N'任务导出', N'infra:job:export', N'3', N'7', N'110', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'', N'2022-04-20 17:03:10.0000000', N'0')
 GO
 
-INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1056', N'生成修改', N'infra:codegen:update', N'3', N'2', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
+INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1056', N'生成修改', N'lowcode:codegen:update', N'3', N'2', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
 GO
 
-INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1057', N'生成删除', N'infra:codegen:delete', N'3', N'3', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
+INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1057', N'生成删除', N'lowcode:codegen:delete', N'3', N'3', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
 GO
 
-INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1058', N'导入代码', N'infra:codegen:create', N'3', N'2', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
+INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1058', N'导入代码', N'lowcode:codegen:create', N'3', N'2', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
 GO
 
-INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1059', N'预览代码', N'infra:codegen:preview', N'3', N'4', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
+INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1059', N'预览代码', N'lowcode:codegen:preview', N'3', N'4', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
 GO
 
-INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1060', N'生成代码', N'infra:codegen:download', N'3', N'5', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
+INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1060', N'生成代码', N'lowcode:codegen:download', N'3', N'5', N'115', N'', N'', N'', N'0', N'1', N'1', N'admin', N'2021-01-05 17:03:48.0000000', N'1', N'2022-04-20 17:03:10.0000000', N'0')
 GO
 
 INSERT INTO [dbo].[system_menu] ([id], [name], [permission], [type], [sort], [parent_id], [path], [icon], [component], [status], [visible], [keep_alive], [creator], [create_time], [updater], [update_time], [deleted]) VALUES (N'1063', N'设置角色菜单权限', N'system:permission:assign-role-menu', N'3', N'6', N'101', N'', N'', N'', N'0', N'1', N'1', N'', N'2021-01-06 17:53:44.0000000', N'', N'2022-04-20 17:03:10.0000000', N'0')

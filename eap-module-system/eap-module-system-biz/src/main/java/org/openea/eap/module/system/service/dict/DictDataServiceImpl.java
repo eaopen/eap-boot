@@ -5,6 +5,7 @@ import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataExportReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataPageReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
@@ -28,7 +29,7 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
  *
  * @author ruoyi
  */
-@Service
+//@Service
 @Slf4j
 public class DictDataServiceImpl implements DictDataService {
 
@@ -40,10 +41,10 @@ public class DictDataServiceImpl implements DictDataService {
             .thenComparingInt(DictDataDO::getSort);
 
     @Resource
-    private DictTypeService dictTypeService;
+    protected DictTypeService dictTypeService;
 
     @Resource
-    private DictDataMapper dictDataMapper;
+    protected DictDataMapper dictDataMapper;
 
     @Override
     public List<DictDataDO> getDictDataList(Integer status, String dictType) {
@@ -55,6 +56,25 @@ public class DictDataServiceImpl implements DictDataService {
     @Override
     public PageResult<DictDataDO> getDictDataPage(DictDataPageReqVO pageReqVO) {
         return dictDataMapper.selectPage(pageReqVO);
+    }
+
+    @Override
+    public List<DictDataDO> getDictDataList(DictDataExportReqVO reqVO) {
+        List<DictDataDO> list = dictDataMapper.selectList(reqVO);
+        list.sort(COMPARATOR_TYPE_AND_SORT);
+        return list;
+    }
+
+    /**
+     * 获得字典数据列表
+     *
+     * @return 字典数据全列表
+     */
+    @Override
+    public List<DictDataDO> getDictDataList() {
+        List<DictDataDO> list = dictDataMapper.selectList();
+        list.sort(COMPARATOR_TYPE_AND_SORT);
+        return list;
     }
 
     @Override
@@ -167,6 +187,11 @@ public class DictDataServiceImpl implements DictDataService {
     @Override
     public DictDataDO parseDictData(String dictType, String label) {
         return dictDataMapper.selectByDictTypeAndLabel(dictType, label);
+    }
+
+    @Override
+    public List<DictDataDO> getDictData(String dictType) {
+        return dictDataMapper.selectByDictType(dictType);
     }
 
 }

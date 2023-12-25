@@ -22,24 +22,39 @@
             <version>${project.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-visualdev-base-rest</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-visualdev-portal-rest</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--        </dependency>-->
+        <!-- fix bug, 继续使用infra/codegen -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-lowcode-codegen</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-visualdev-onlinedev-rest</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--        </dependency>-->
+        <!-- 在线可视化设计 -->
 
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-base-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-portal-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-form-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-onlinedev-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 

@@ -1,5 +1,6 @@
 package org.openea.eap.module.infra.dal.dataobject.codegen;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
 import org.openea.eap.module.infra.enums.codegen.CodegenFrontTypeEnum;
@@ -16,6 +17,7 @@ import lombok.experimental.Accessors;
 /**
  * 代码生成 table 表定义
  *
+ * @author 芋道源码
  */
 @TableName(value = "infra_codegen_table", autoResultMap = true)
 @KeySequence("infra_codegen_table_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
@@ -27,7 +29,7 @@ public class CodegenTableDO extends BaseDO {
     /**
      * ID 编号
      */
-    @TableId
+    @TableId(type= IdType.AUTO)
     private Long id;
 
     /**

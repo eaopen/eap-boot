@@ -18,22 +18,19 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <modules>
 
 
 <!--        &lt;!&ndash; 在线设计模块 基础 &ndash;&gt;-->
-<!--        <module>eap-visualdev-base</module>-->
+        <module>eap-visualdev-base</module>
 
 <!--        &lt;!&ndash; 在线设计模块 &ndash;&gt;-->
-<!--        <module>eap-visualdev-onlinedev</module>-->
-<!--        <module>eap-visualdev-portal</module>-->
+        <module>eap-visualdev-form</module>
+        <module>eap-visualdev-onlinedev</module>
+        <module>eap-visualdev-portal</module>
 
-<!--        &lt;!&ndash; 数据大屏设计 &ndash;&gt;-->
-<!--        <module>eap-visualdata</module>-->
-<!--        &lt;!&ndash; 报表 &ndash;&gt;-->
-<!--        <module>eap-lowcode-report</module>-->
-
+        <!-- 代码生成 -->
+        <module>eap-lowcode-codegen</module>
 
         <!-- 整合 lowcode 服务 -->
         <module>eap-module-lowcode-biz</module>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.eaopen</groupId>
+        <artifactId>eap-module-system</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>eap-system-extj</artifactId>
+    <packaging>pom</packaging>
+    <description>扩展支持包</description>
+
+
+    <properties>
+        <!-- extj-message 集成社交软件 版本配置 -->
+        <dingtalk.verssion>1.0</dingtalk.verssion>
+        <aliyun-java-sdk-core.version>4.6.3</aliyun-java-sdk-core.version>
+        <aliyun-java-sdk-dysmsapi.version>2.2.1</aliyun-java-sdk-dysmsapi.version>
+        <dysmsapi.version>2.0.8</dysmsapi.version>
+        <tencentcloud-sdk-java.version>3.1.758</tencentcloud-sdk-java.version>
+    </properties>
+
+    <modules>
+        <module>eap-system-extj-common</module>
+        <module>eap-system-extj-provider</module>
+
+        <!-- 扩展站内消息 -->
+        <module>eap-extj-message-entity</module>
+        <module>eap-extj-message-biz</module>
+        <module>eap-extj-message-rest</module>
+    </modules>
+
+
+</project>

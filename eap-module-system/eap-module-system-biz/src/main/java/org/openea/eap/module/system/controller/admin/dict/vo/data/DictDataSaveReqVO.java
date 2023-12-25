@@ -35,6 +35,9 @@ public class DictDataSaveReqVO {
     @Size(max = 100, message = "字典类型长度不能超过100个字符")
     private String dictType;
 
+    @Schema(description = "数据类型 data/json/sql, 默认为data")
+    private String dataType;
+
     @Schema(description = "状态,见 CommonStatusEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @NotNull(message = "状态不能为空")
     @InEnum(value = CommonStatusEnum.class, message = "修改状态必须是 {value}")
@@ -48,5 +51,7 @@ public class DictDataSaveReqVO {
 
     @Schema(description = "备注", example = "我是一个角色")
     private String remark;
+
+
 
 }

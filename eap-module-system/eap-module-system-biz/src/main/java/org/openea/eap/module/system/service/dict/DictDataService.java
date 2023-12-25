@@ -1,6 +1,7 @@
 package org.openea.eap.module.system.service.dict;
 
 import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataExportReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataPageReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
@@ -56,6 +57,13 @@ public interface DictDataService {
     PageResult<DictDataDO> getDictDataPage(DictDataPageReqVO pageReqVO);
 
     /**
+     * 获得字典数据列表
+     *
+     * @return 字典数据全列表
+     */
+    List<DictDataDO> getDictDataList();
+
+    /**
      * 获得字典数据详情
      *
      * @param id 字典数据编号
@@ -99,4 +107,22 @@ public interface DictDataService {
      */
     DictDataDO parseDictData(String dictType, String label);
 
+
+    /**
+     * 获得字典数据列表
+     *
+     * @param reqVO 列表请求
+     * @return 字典数据列表
+     */
+    List<DictDataDO> getDictDataList(DictDataExportReqVO reqVO);
+
+
+
+    /**
+     * 根据字典类型获得指定的字典数据
+     *
+     * @param dictType 字典类型
+     * @return 字典数据
+     */
+    List<DictDataDO> getDictData(String dictType);
 }

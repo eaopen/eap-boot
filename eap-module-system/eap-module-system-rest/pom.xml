@@ -15,6 +15,7 @@
     <description>
         system 模块下，我们放通用业务，支撑上层的核心业务。
         例如说：用户、部门、权限、数据字典等等
+        大部分controller仍放在eap-module-system-biz中
     </description>
 
     <dependencies>

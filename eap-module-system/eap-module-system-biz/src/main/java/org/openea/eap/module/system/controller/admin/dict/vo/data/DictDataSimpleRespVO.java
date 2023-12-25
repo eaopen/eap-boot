@@ -10,6 +10,9 @@ public class DictDataSimpleRespVO {
     @Schema(description = "字典类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "gender")
     private String dictType;
 
+    @Schema(description = "字典键值ID", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "1")
+    private Long id;
+
     @Schema(description = "字典键值", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     private String value;
 

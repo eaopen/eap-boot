@@ -1,6 +1,10 @@
 package org.openea.eap.module.system.service.sensitiveword;
 
 import cn.hutool.core.collection.CollUtil;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
@@ -10,10 +14,6 @@ import org.openea.eap.module.system.controller.admin.sensitiveword.vo.SensitiveW
 import org.openea.eap.module.system.dal.dataobject.sensitiveword.SensitiveWordDO;
 import org.openea.eap.module.system.dal.mysql.sensitiveword.SensitiveWordMapper;
 import org.openea.eap.module.system.util.collection.SimpleTrie;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -123,7 +123,8 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
      *
      * 目的：多节点部署时，通过轮询”通知“所有节点，进行刷新
      */
-    @Scheduled(initialDelay = 60, fixedRate = 60, timeUnit = TimeUnit.SECONDS)
+    //todo fix proxy-target-class
+    //@Scheduled(initialDelay = 60, fixedRate = 60, timeUnit = TimeUnit.SECONDS)
     public void refreshLocalCache() {
         // 情况一：如果缓存里没有数据，则直接刷新缓存
         if (CollUtil.isEmpty(sensitiveWordCache)) {

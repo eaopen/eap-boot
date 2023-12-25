@@ -6,6 +6,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.exception.ServiceException;
+import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.framework.common.util.object.BeanUtils;
@@ -253,6 +254,11 @@ public class AdminUserServiceImpl implements AdminUserService {
             return Collections.emptyList();
         }
         return userMapper.selectBatchIds(ids);
+    }
+
+    @Override
+    public PageResult<AdminUserDO> getUserList(PageParam page, String keyword, Boolean filterCurrentUser) {
+        return userMapper.selectListByPage(page, keyword, filterCurrentUser);
     }
 
     @Override

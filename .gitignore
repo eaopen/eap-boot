@@ -31,6 +31,8 @@ hs_err_pid*
 /.project
 /.settings/
 
+script/mvn/settings.xml
+
 **/target/
 
 **/node_modules/
@@ -44,8 +46,8 @@ refer/**
 **/pom.xml.versionsBackup
 
 .flattened-pom.xml
-**/.flattened-pom.xml
 
+**/.impl
 
 docker/openea-docker-login.sh
 
