@@ -52,11 +52,11 @@ public class PermissionServiceImpl implements PermissionService {
     @Resource
     private RoleService roleService;
     @Resource
-    private MenuService menuService;
+    protected MenuService menuService;
     @Resource
     private DeptService deptService;
     @Resource
-    private AdminUserService userService;
+    protected AdminUserService userService;
 
     @Override
     public boolean hasAnyPermissions(Long userId, String... permissions) {

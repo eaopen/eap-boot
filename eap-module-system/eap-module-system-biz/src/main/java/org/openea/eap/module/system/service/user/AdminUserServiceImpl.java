@@ -57,7 +57,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     private String userInitPassword;
 
     @Resource
-    private AdminUserMapper userMapper;
+    protected AdminUserMapper userMapper;
 
     @Resource
     private DeptService deptService;

@@ -31,6 +31,15 @@
             <artifactId>eap-module-infra-rest</artifactId>
             <version>${revision}</version>
         </dependency>
+
+        <!-- 集成Obpm平台 -->
+        <!-- EapObpmConfiguration重载服务 authService,userService,permissionService -->
+<!--        <dependency>-->
+<!--            <groupId>io.github.eaopen</groupId>-->
+<!--            <artifactId>eap-integration-obpm</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-lowcode-rest</artifactId>

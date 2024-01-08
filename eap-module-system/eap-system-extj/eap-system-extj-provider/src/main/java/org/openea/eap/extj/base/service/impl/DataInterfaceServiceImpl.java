@@ -417,7 +417,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                         return ActionResult.success(obj != null ? obj : new ArrayList<>());
                     }
                 }
-            } else if (entity.getDataType() == 3) {
+            } else if (entity.getDataType() == 3) {  //api
                 JSONObject jsonObject = new JSONObject();
                 if (showMap == null) {
                     if (entity.getCheckType() == null || entity.getCheckType() == 0) {
@@ -876,7 +876,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
             List<DataInterfaceModel> jsonToListMap = JsonUtil.getJsonToList(requestParameters, DataInterfaceModel.class);
             if (jsonToListMap != null) {
                 // 判断是否为get，get从url上拼接
-                if ("6".equals(requestMethod)) {
+                if ("6".equals(requestMethod)) {  //get=6
                     path += !path.contains("?") ? "?" : "&";
                     if (Objects.nonNull(map)) {
                         for (String field : map.keySet()) {
@@ -887,7 +887,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                         path = parameterHandler(path, jsonToListMap);
                     }
                     requestMethod = "GET";
-                } else {
+                } else {  //post=7
                     // 判断是否使用默认值
                     if (Objects.nonNull(map)) {
                         for (String field : map.keySet()) {
@@ -910,7 +910,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
             if (pagination != null) {
                 List<PageParamModel> pageParameters = pageModel.getPageParameters();
                 for (PageParamModel pageParameter : pageParameters) {
-                    if ("6".equals(entity.getRequestMethod())) {
+                    if ("6".equals(entity.getRequestMethod())) {  //get=6
                         path += !path.contains("?") ? "?" : "";
                         if (pageParameter.getFieldName().equals(DataInterfaceVarEnum.PAGESIZE.getCondition().replace("@", ""))) {
                             path += pageParameter.getField() + "=" + pagination.getPageSize() + "&";
@@ -921,7 +921,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                         if (pageParameter.getFieldName().equals(DataInterfaceVarEnum.CURRENTPAGE.getCondition().replace("@", ""))) {
                             path += pageParameter.getField() + "=" + pagination.getCurrentPage() + "&";
                         }
-                    } else {
+                    } else {  //post=7
                         if (pageParameter.getFieldName().equals(DataInterfaceVarEnum.PAGESIZE.getCondition().replace("@", ""))) {
                             jsonObject.put(pageParameter.getField(), pagination.getPageSize());
                         }
@@ -944,7 +944,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     showKey = showMap.keySet().iterator().next();
                     showValue = showMap.values().iterator().next();
                 }
-                if ("6".equals(entity.getRequestMethod())) {
+                if ("6".equals(entity.getRequestMethod())) { //get=6
                     PageParamModel pageParamModel = parameters.stream().filter(t -> t.getFieldName().equals(DataInterfaceVarEnum.SHOWKEY.getCondition().replace("@", ""))).findFirst().orElse(new PageParamModel());
                     if (path.contains("{" + pageParamModel.getField() + "}") && path.indexOf("{" + pageParamModel.getField() + "}") < path.lastIndexOf("?")) {
                         path = path.replace("{" + pageParamModel.getField() + "}", showValue != null ? String.valueOf(showValue) : "");
@@ -952,7 +952,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     else {
                         path += pageParamModel.getField() + "=" + showValue;
                     }
-                } else {
+                } else { //post=7
                     jsonObject.put(showKey, showValue);
                 }
             }
@@ -960,7 +960,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
             if (StringUtil.isEmpty(token)) {
                 token = EapUserProvider.getToken();
             }
-            String jsonObjects = jsonObject.size() > 0 ? jsonObject.toJSONString() : null;
+
             // 请求头
             if (StringUtil.isNotEmpty(requestHeaders)) {
                 List<Map<String, Object>> requestHeader = JsonUtil.getJsonToListMap(requestHeaders);
@@ -972,6 +972,27 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     }
                 }
             }
+
+            // body json or x-www-form-urlencoded
+            boolean isBodyJson = true;
+            if(jsonObject.containsKey("content-type")){
+                if(jsonObject.getString("content-type").indexOf("x-www-form-urlencoded")>0){
+                    isBodyJson = false;
+                }
+            }
+            String jsonObjects = null;
+            if(jsonObject.size() > 0){
+                if(isBodyJson){
+                    jsonObjects = jsonObject.toJSONString();
+                }else{
+                    Set<String> keys = jsonObject.keySet();
+                    for(String key: keys){
+                        if(jsonObjects!=null) jsonObjects+= "&";
+                        jsonObjects += key + "=" + jsonObject.getString(key);
+                    }
+                }
+            }
+            //String jsonObjects = jsonObject.size() > 0 ? jsonObject.toJSONString() : null;
             get = HttpUtil.httpRequest(path, requestMethod, jsonObjects, token, jsonObject.size() > 0 ? JsonUtil.getObjectToString(jsonObject) : null);
             return get;
         } else {

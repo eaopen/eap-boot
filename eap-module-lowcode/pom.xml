@@ -19,8 +19,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
-
-
 <!--        &lt;!&ndash; 在线设计模块 基础 &ndash;&gt;-->
         <module>eap-visualdev-base</module>
 
@@ -31,6 +29,8 @@
 
         <!-- 代码生成 -->
         <module>eap-lowcode-codegen</module>
+
+        <module>eap-integration-obpm</module>
 
         <!-- 整合 lowcode 服务 -->
         <module>eap-module-lowcode-biz</module>

@@ -20,6 +20,12 @@ public class LoginUser {
      * 用户编号
      */
     private Long id;
+
+    /**
+     * 用户key(username)
+     */
+    private String userKey;
+
     /**
      * 用户类型
      *
