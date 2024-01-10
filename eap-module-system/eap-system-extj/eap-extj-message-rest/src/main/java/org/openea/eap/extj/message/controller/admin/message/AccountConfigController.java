@@ -52,7 +52,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @Tag(name = "账号配置功能", description = "message")
-@RequestMapping("/api/message/AccountConfig")
+@RequestMapping("/extn/message/AccountConfig")
 public class AccountConfigController extends SuperController<AccountConfigService, AccountConfigEntity> {
 
     @Autowired

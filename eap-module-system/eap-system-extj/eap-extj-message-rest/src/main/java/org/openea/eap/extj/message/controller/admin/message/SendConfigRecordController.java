@@ -37,7 +37,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @Tag(name = "发送配置使用记录", description = "message")
-@RequestMapping("/api/message/SendConfigRecord")
+@RequestMapping("/extn/message/SendConfigRecord")
 public class SendConfigRecordController extends SuperController<SendConfigRecordService, SendConfigRecordEntity> {
 
 

@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @Tag(name = "消息模板（新）", description = "message")
-@RequestMapping("/api/message/MessageTemplateConfig")
+@RequestMapping("/extn/message/MessageTemplateConfig")
 public class MessageTemplateConfigController extends SuperController<MessageTemplateConfigService, MessageTemplateConfigEntity> {
 
     @Autowired

@@ -27,7 +27,7 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @Tag(name = "短链接跳转", description = "message")
-@RequestMapping("/api/message/ShortLink")
+@RequestMapping("/extn/message/ShortLink")
 public class ShortLinkController extends SuperController<ShortLinkService, ShortLinkEntity> {
     @Autowired
     private UserProvider userProvider;

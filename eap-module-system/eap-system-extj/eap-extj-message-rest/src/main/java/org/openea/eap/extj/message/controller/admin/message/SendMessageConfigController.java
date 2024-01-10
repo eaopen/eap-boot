@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @Tag(name = "消息发送配置", description = "message")
-@RequestMapping("/api/message/SendMessageConfig")
+@RequestMapping("/extn/message/SendMessageConfig")
 public class SendMessageConfigController extends SuperController<SendMessageConfigService, SendMessageConfigEntity> {
     @Autowired
     private FileExport fileExport;
@@ -62,7 +62,7 @@ public class SendMessageConfigController extends SuperController<SendMessageConf
 
     @Autowired
     private ConfigValueUtil configValueUtil;
-    
+
     @Autowired
     private UserProvider userProvider;
     @Autowired

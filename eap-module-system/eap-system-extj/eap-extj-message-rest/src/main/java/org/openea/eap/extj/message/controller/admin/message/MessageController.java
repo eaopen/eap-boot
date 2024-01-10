@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  */
 @Tag(name = "系统公告", description = "Message")
 @RestController
-@RequestMapping("/api/message")
+@RequestMapping("/extn/message")
 public class MessageController extends SuperController<MessageService, MessageEntity> {
 
     @Autowired

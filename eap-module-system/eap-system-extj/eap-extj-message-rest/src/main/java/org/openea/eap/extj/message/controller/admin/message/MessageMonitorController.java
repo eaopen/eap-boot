@@ -37,7 +37,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @Tag(name = "消息监控", description = "message")
-@RequestMapping("/api/message/MessageMonitor")
+@RequestMapping("/extn/message/MessageMonitor")
 public class MessageMonitorController extends SuperController<MessageMonitorService, MessageMonitorEntity> {
 
 

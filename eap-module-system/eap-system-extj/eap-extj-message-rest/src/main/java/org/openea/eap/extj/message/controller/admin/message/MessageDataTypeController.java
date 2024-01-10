@@ -33,7 +33,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @Tag(name = "消息中心类型数据", description = "message")
-@RequestMapping("/api/message/MessageDataType")
+@RequestMapping("/extn/message/MessageDataType")
 public class MessageDataTypeController extends SuperController<MessageDataTypeService, MessageDataTypeEntity> {
 
 

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Tag(name = "消息会话接口", description = "imreply")
 @RestController
-@RequestMapping("/api/message/imreply")
+@RequestMapping("/extn/message/imreply")
 public class ImReplyController extends SuperController<ImReplyService, ImReplyEntity> {
     @Autowired
     private ImReplyService imReplyService;
