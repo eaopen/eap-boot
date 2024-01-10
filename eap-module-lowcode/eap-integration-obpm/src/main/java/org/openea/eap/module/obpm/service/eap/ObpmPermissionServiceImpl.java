@@ -101,7 +101,11 @@ public class ObpmPermissionServiceImpl extends PermissionServiceImpl implements 
         //menuDO.setPermission( bean.getPermission() );
         // status/visible/keepAlive/alwaysShow
         menu.setStatus(CommonStatusEnum.ENABLE.getStatus());
-        menu.setVisible(true);
+        if(sysRes.getInt("enable")==0){
+            menu.setVisible(false);
+        }else{
+            menu.setVisible(true);
+        }
         menu.setKeepAlive(true);
         menu.setAlwaysShow(true);
 
