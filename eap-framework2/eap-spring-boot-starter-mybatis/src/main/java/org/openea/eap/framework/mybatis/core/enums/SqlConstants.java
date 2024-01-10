@@ -14,6 +14,10 @@ public class SqlConstants {
     public static DbType DB_TYPE;
 
     public static void init(DbType dbType) {
+        if (dbType == null) {
+            // default mysql
+            dbType = DbType.MYSQL;
+        }
         DB_TYPE = dbType;
     }
 

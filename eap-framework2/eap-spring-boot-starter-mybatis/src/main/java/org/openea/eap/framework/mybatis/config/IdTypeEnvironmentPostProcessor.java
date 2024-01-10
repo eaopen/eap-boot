@@ -93,6 +93,7 @@ public class IdTypeEnvironmentPostProcessor implements EnvironmentPostProcessor 
     }
 
     public static DbType getDbType(ConfigurableEnvironment environment) {
+        DbType dbType = null;
         String primary = environment.getProperty(DATASOURCE_DYNAMIC_KEY + "." + "primary");
         if (StrUtil.isEmpty(primary)) {
             return null;
@@ -101,7 +102,9 @@ public class IdTypeEnvironmentPostProcessor implements EnvironmentPostProcessor 
         if (StrUtil.isEmpty(url)) {
             return null;
         }
-        return JdbcUtils.getDbType(url);
+        dbType = JdbcUtils.getDbType(url);
+
+        return dbType;
     }
 
 }
