@@ -12,6 +12,7 @@ import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.service.permission.PermissionService;
 import org.openea.eap.module.system.service.permission.PermissionServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Primary;
 
 import javax.annotation.Resource;
 import java.nio.charset.Charset;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 
 @Service
+@Primary
 @Slf4j
 public class ObpmPermissionServiceImpl extends PermissionServiceImpl implements PermissionService {
 

@@ -21,22 +21,22 @@ import org.springframework.context.annotation.Primary;
 @Configurable
 public class EapObpmConfiguration  {
 
-    @Bean
-    @Primary
-    public AdminAuthService authService(){
-        return EapAppUtil.getBean(ObpmAuthServiceImpl.class);
-    }
+//    @Bean
+//    @Primary
+//    public AdminAuthService authService(){
+//        return EapAppUtil.getBean(ObpmAuthServiceImpl.class);
+//    }
 
-    @Bean
-    @Primary
-    public AdminUserService userService(){
-        return EapAppUtil.getBean(ObpmUserServiceImpl.class);
-    }
+//    @Bean
+//    @Primary
+//    public AdminUserService userService(){
+//        return EapAppUtil.getBean(ObpmUserServiceImpl.class);
+//    }
 
-    @Bean
-    @Primary
-    public PermissionService permissionService() {
-        return EapAppUtil.getBean(ObpmPermissionServiceImpl.class);
-    }
+//    @Bean
+//    @Primary
+//    public PermissionService permissionService() {
+//        return EapAppUtil.getBean(ObpmPermissionServiceImpl.class);
+//    }
 
 }

@@ -12,14 +12,15 @@ import org.openea.eap.module.system.service.auth.AdminAuthServiceImpl;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Primary;
 
 import javax.annotation.Resource;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 
-@Primary
 @Service
+@Primary
 @Slf4j
 public class ObpmAuthServiceImpl extends AdminAuthServiceImpl implements AdminAuthService {
 

@@ -10,8 +10,10 @@ import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.service.user.AdminUserService;
 import org.openea.eap.module.system.service.user.AdminUserServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Primary;
 
 @Service
+@Primary
 @Slf4j
 public class ObpmUserServiceImpl extends AdminUserServiceImpl implements AdminUserService {
 
