@@ -28,6 +28,16 @@ public class ObpmPermissionServiceImpl extends PermissionServiceImpl implements 
     @Resource
     private ObmpClientService obmpClientService;
 
+
+    /**
+     * 集成obpm后原来topMenu排序迁移量
+     */
+    public static int menu_top_pos = 1000;
+    /**
+     * 集成obpm后原来MenuId迁移量
+     */
+    public static int menu_id_pos = 5000000;
+
     @Override
     public List<MenuDO> getUserMenuListByUser(Long userId, String userKey){
         // 1. eap menu
@@ -46,16 +56,16 @@ public class ObpmPermissionServiceImpl extends PermissionServiceImpl implements 
         if(!menuList2.isEmpty()){
             // obpm 菜单所有id/parentId + 2000000（避免同eap菜单冲突）
             for(MenuDO menu: menuList2){
-                menu.setId(menu.getId()+2000000);
+                menu.setId(menu.getId()+menu_id_pos);
                 if(menu.getParentId()!=0L){
-                    menu.setParentId(menu.getParentId()+2000000);
+                    menu.setParentId(menu.getParentId()+menu_id_pos);
                 }
             }
             // eap 顶层菜单排序sort + 1000
             if(menuList!=null){
                 for(MenuDO menu: menuList){
                     if(menu.getParentId()==0L){
-                        menu.setSort(1000+menu.getSort());
+                        menu.setSort(menu_top_pos+menu.getSort());
                     }
                     menuList2.add(menu);
                 }
