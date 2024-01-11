@@ -36,6 +36,12 @@ public class FileServiceImpl implements FileService {
     @Override
     @SneakyThrows
     public String createFile(String name, String path, byte[] content) {
+        return createFile(null, name, path, content);
+    }
+
+    @Override
+    @SneakyThrows
+    public String createFile(FileDO file, String name, String path, byte[] content) {
         // 计算默认的 path 名
         String type = FileTypeUtils.getMineType(content, name);
         if (StrUtil.isEmpty(path)) {
@@ -52,7 +58,9 @@ public class FileServiceImpl implements FileService {
         String url = client.upload(content, path, type);
 
         // 保存到数据库
-        FileDO file = new FileDO();
+        if(file==null){
+            file = new FileDO();
+        }
         file.setConfigId(client.getId());
         file.setName(name);
         file.setPath(path);

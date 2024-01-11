@@ -27,6 +27,7 @@ public interface FileService {
      * @return 文件路径
      */
     String createFile(String name, String path, byte[] content);
+    String createFile(FileDO file, String name, String path, byte[] content);
 
     /**
      * 删除文件
