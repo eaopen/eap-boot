@@ -112,7 +112,15 @@ public class ObpmProxyController {
         if(port!=-1 && port!=80 && port!=443){
             strHost += ":"+port;
         }
+        //host/Origin/Referer
         headers.put("host", strHost);
+
+        // dev environment use localhost
+        if(headers.containsKey("Origin")
+                && ((String)headers.get("Origin")).indexOf("localhost")>0){
+            headers.put("Origin", url);
+            headers.put("Referer", url);
+        }
     }
 
     private void checkHeaderAuth(Map<String, String> headers){
