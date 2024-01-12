@@ -93,7 +93,7 @@ public abstract class AbstractWebSocketMessageSender implements WebSocketMessage
             // 2. 执行发送
             try {
                 session.sendMessage(new TextMessage(payload));
-                log.info("[doSend][session({}) 发送消息成功，message({})]", session.getId(), message);
+                log.debug("[doSend][session({}) 发送消息成功，message({})]", session.getId(), message);
             } catch (IOException ex) {
                 log.error("[doSend][session({}) 发送消息失败，message({})]", session.getId(), message, ex);
             }

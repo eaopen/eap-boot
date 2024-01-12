@@ -41,11 +41,11 @@
 <!--        </dependency>-->
 
         <!-- 集成平台内IM消息 -->
-        <!--        <dependency>-->
-        <!--            <groupId>io.github.eaopen</groupId>-->
-        <!--            <artifactId>eap-extj-message-rest</artifactId>-->
-        <!--            <version>${project.version}</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-extj-message-rest</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <dependency>
             <groupId>io.github.eaopen</groupId>

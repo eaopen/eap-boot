@@ -4,18 +4,15 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableMap;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.Strings;
 import org.openea.eap.extj.base.PageModel;
 import org.openea.eap.extj.base.UserInfo;
 import org.openea.eap.extj.base.service.SysconfigService;
 import org.openea.eap.extj.config.ConfigValueUtil;
-import org.openea.eap.extj.message.service.ImContentService;
-import org.openea.eap.extj.message.service.MessageService;
-import org.openea.eap.extj.message.service.UserDeviceService;
-import org.openea.eap.extj.message.util.*;
-import org.openea.eap.extj.message.util.unipush.UinPush;
 import org.openea.eap.extj.message.entity.ImContentEntity;
 import org.openea.eap.extj.message.entity.MessageEntity;
+import org.openea.eap.extj.message.model.ImUnreadNumModel;
 import org.openea.eap.extj.message.model.message.PaginationMessage;
 import org.openea.eap.extj.message.model.websocket.onconnettion.OnConnectionModel;
 import org.openea.eap.extj.message.model.websocket.onconnettion.OnLineModel;
@@ -23,15 +20,16 @@ import org.openea.eap.extj.message.model.websocket.receivemessage.ReceiveMessage
 import org.openea.eap.extj.message.model.websocket.savafile.ImageMessageModel;
 import org.openea.eap.extj.message.model.websocket.savafile.VoiceMessageModel;
 import org.openea.eap.extj.message.model.websocket.savamessage.SavaMessageModel;
-import org.openea.eap.extj.message.model.ImUnreadNumModel;
+import org.openea.eap.extj.message.service.ImContentService;
+import org.openea.eap.extj.message.service.MessageService;
+import org.openea.eap.extj.message.service.UserDeviceService;
+import org.openea.eap.extj.message.util.*;
+import org.openea.eap.extj.message.util.unipush.UinPush;
 import org.openea.eap.extj.model.BaseSystemInfo;
 import org.openea.eap.extj.permission.entity.UserEntity;
 import org.openea.eap.extj.permission.service.UserService;
 import org.openea.eap.extj.util.*;
-import org.openea.eap.extj.util.Constants;
-import org.openea.eap.extj.util.JsonUtil;
 import org.openea.eap.extj.util.context.SpringContext;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.extj.util.data.DataSourceContextHolder;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,8 +38,10 @@ import org.springframework.util.ObjectUtils;
 import javax.validation.constraints.NotNull;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 //@ServerEndpoint(value = "/api/message/websocket/{token}")
-@ServerEndpoint("/websocket/message")
+//@ServerEndpoint("/websocket/message")
 @Scope("prototype")
 public class MessageWebSocket {
 

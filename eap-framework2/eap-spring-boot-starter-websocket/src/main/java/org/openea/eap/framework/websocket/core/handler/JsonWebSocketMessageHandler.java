@@ -70,10 +70,16 @@ public class JsonWebSocketMessageHandler extends TextWebSocketHandler {
                 return;
             }
             // 2.3 处理消息
-            Type type = TypeUtil.getTypeArgument(messageListener.getClass(), 0);
-            Object messageObj = JsonUtils.parseObject(jsonMessage.getContent(), type);
             Long tenantId = WebSocketFrameworkUtils.getTenantId(session);
-            TenantUtils.execute(tenantId, () -> messageListener.onMessage(session, messageObj));
+            Type type = TypeUtil.getTypeArgument(messageListener.getClass(), 0);
+            if(String.class.getTypeName().equals(type.getTypeName())){
+                String messageObj = jsonMessage.getContent();
+                TenantUtils.execute(tenantId, () -> messageListener.onMessage(session, messageObj));
+            }else{
+                Object messageObj = JsonUtils.parseObject(jsonMessage.getContent(), type);
+                TenantUtils.execute(tenantId, () -> messageListener.onMessage(session, messageObj));
+            }
+
         } catch (Throwable ex) {
             log.error("[handleTextMessage][session({}) message({}) 处理异常]", session.getId(), message.getPayload());
         }

@@ -52,6 +52,7 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
                 userSessionsMap = userSessions.get(user.getUserType());
             }
         }
+        // todo 多端登录待扩展
         CopyOnWriteArrayList<WebSocketSession> sessions = userSessionsMap.get(user.getId());
         if (sessions == null) {
             sessions = new CopyOnWriteArrayList<>();

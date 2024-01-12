@@ -3,6 +3,7 @@ package org.openea.eap.module.system.controller.admin.user;
 import cn.hutool.core.collection.CollUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.controller.admin.user.vo.user.ImUserListVo;
@@ -44,6 +45,7 @@ public class UserImController {
     @PreAuthorize("@ss.hasPermission('system:user:list')")
     public CommonResult<PageResult<ImUserListVo>> getImUserPage(@Valid UserPageReqVO reqVO) {
         // 获得用户分页列表
+        reqVO.setStatus(CommonStatusEnum.ENABLE.getStatus());
         PageResult<AdminUserDO> pageResult = userService.getUserPage(reqVO);
         if (CollUtil.isEmpty(pageResult.getList())) {
             return success(new PageResult<>(pageResult.getTotal())); // 返回空
