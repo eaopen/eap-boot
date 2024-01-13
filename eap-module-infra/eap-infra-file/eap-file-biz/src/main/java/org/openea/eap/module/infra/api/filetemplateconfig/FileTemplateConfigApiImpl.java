@@ -37,7 +37,7 @@ public class FileTemplateConfigApiImpl implements FileTemplateConfigApi {
                 if (fileDo != null) {
                     File file = HttpUtil.downloadFileFromUrl(fileDo.getUrl(), FileUtil.getTmpDirPath() + "/"
                             + RandomUtil.randomString(12)
-                            + ","
+                            + "."
                             + FileUtil.getSuffix(fileDo.getName()));
                     return FileUtil.getAbsolutePath(file);
                 }

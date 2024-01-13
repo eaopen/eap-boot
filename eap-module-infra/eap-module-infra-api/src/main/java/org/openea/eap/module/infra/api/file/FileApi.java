@@ -1,5 +1,7 @@
 package org.openea.eap.module.infra.api.file;
 
+import cn.hutool.json.JSONObject;
+
 /**
  * 文件 API 接口
  *
@@ -36,5 +38,15 @@ public interface FileApi {
      * @return 文件路径
      */
     String createFile(String name, String path, byte[] content);
+
+    /**
+     * 保存文件，并返回文件的id
+     *
+     * @param name 文件名称
+     * @param path 文件路径
+     * @param content 文件内容
+     * @return 文件路径
+     */
+    JSONObject updateFile(String name, String path, byte[] content);
 
 }
