@@ -4,9 +4,10 @@ import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePageReqVO;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.infra.dal.dataobject.file.FileDO;
 
+import java.util.List;
+
 /**
  * 文件 Service 接口
- *
  */
 public interface FileService {
 
@@ -21,13 +22,14 @@ public interface FileService {
     /**
      * 保存文件，并返回文件的访问路径
      *
-     * @param name 文件名称
-     * @param path 文件路径
+     * @param name    文件名称
+     * @param path    文件路径
      * @param content 文件内容
      * @return 文件路径
      */
     String createFile(String name, String path, byte[] content);
-    String createFile(FileDO file, String name, String path, byte[] content);
+
+    FileDO uploadFile(String name, String path, byte[] content);
 
     /**
      * 删除文件
@@ -40,9 +42,16 @@ public interface FileService {
      * 获得文件内容
      *
      * @param configId 配置编号
-     * @param path 文件路径
+     * @param path     文件路径
      * @return 文件内容
      */
     byte[] getFileContent(Long configId, String path) throws Exception;
 
+    /**
+     * 根据你文件ids获取文件
+     *
+     * @param ids 配置编号
+     * @return 文件内容
+     */
+    List<FileDO> getByIds(String ids);
 }

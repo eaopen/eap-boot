@@ -27,6 +27,7 @@ import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 
 @Tag(name = "管理后台 - 文件存储")
 @RestController
@@ -41,10 +42,11 @@ public class FileController {
     @PostMapping("/upload")
     @Operation(summary = "上传文件")
     @OperateLog(logArgs = false) // 上传文件，没有记录操作日志的必要
-    public CommonResult<String> uploadFile(FileUploadReqVO uploadReqVO) throws Exception {
+    public CommonResult<FileDO> uploadFile(FileUploadReqVO uploadReqVO) throws Exception {
         MultipartFile file = uploadReqVO.getFile();
         String path = uploadReqVO.getPath();
-        return CommonResult.success(fileService.createFile(file.getOriginalFilename(), path, IoUtil.readBytes(file.getInputStream())));
+        FileDO fileDo = fileService.uploadFile(file.getOriginalFilename(), path, IoUtil.readBytes(file.getInputStream()));;
+        return CommonResult.success(fileDo);
     }
 
     @DeleteMapping("/delete")
@@ -59,7 +61,7 @@ public class FileController {
     @GetMapping("/{configId}/get/**")
     @PermitAll
     @Operation(summary = "下载文件")
-    @Parameter(name = "configId", description = "配置编号",  required = true)
+    @Parameter(name = "configId", description = "配置编号", required = true)
     public void getFileContent(HttpServletRequest request,
                                HttpServletResponse response,
                                @PathVariable("configId") Long configId) throws Exception {
@@ -85,6 +87,15 @@ public class FileController {
     public CommonResult<PageResult<FileRespVO>> getFilePage(@Valid FilePageReqVO pageVO) {
         PageResult<FileDO> pageResult = fileService.getFilePage(pageVO);
         return CommonResult.success(BeanUtils.toBean(pageResult, FileRespVO.class));
+    }
+
+    @GetMapping("/getByIds")
+    @Operation(summary = "根据ids获得多个文件信息")
+    @Parameter(name = "id", description = "编号", required = true)
+    @PreAuthorize("@ss.hasPermission('infra:file:query')")
+    public CommonResult<List<FileRespVO>> getByIds(@RequestParam("ids") String ids) {
+        List<FileDO> list = fileService.getByIds(ids);
+        return CommonResult.success(BeanUtils.toBean(list, FileRespVO.class));
     }
 
 }

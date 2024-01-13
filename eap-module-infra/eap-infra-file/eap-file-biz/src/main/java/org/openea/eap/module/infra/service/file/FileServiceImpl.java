@@ -1,5 +1,7 @@
 package org.openea.eap.module.infra.service.file;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
@@ -15,6 +17,7 @@ import org.openea.eap.module.infra.enums.ErrorCodeConstants;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 文件 Service 实现类
@@ -36,12 +39,13 @@ public class FileServiceImpl implements FileService {
     @Override
     @SneakyThrows
     public String createFile(String name, String path, byte[] content) {
-        return createFile(null, name, path, content);
+        FileDO fileDO = uploadFile(name, path, content);
+        return fileDO.getUrl();
     }
 
     @Override
     @SneakyThrows
-    public String createFile(FileDO file, String name, String path, byte[] content) {
+    public FileDO uploadFile(String name, String path, byte[] content) {
         // 计算默认的 path 名
         String type = FileTypeUtils.getMineType(content, name);
         if (StrUtil.isEmpty(path)) {
@@ -58,9 +62,7 @@ public class FileServiceImpl implements FileService {
         String url = client.upload(content, path, type);
 
         // 保存到数据库
-        if(file==null){
-            file = new FileDO();
-        }
+        FileDO file = new FileDO();
         file.setConfigId(client.getId());
         file.setName(name);
         file.setPath(path);
@@ -68,7 +70,7 @@ public class FileServiceImpl implements FileService {
         file.setType(type);
         file.setSize(content.length);
         fileMapper.insert(file);
-        return url;
+        return file;
     }
 
     @Override
@@ -98,6 +100,18 @@ public class FileServiceImpl implements FileService {
         FileClient client = fileConfigService.getFileClient(configId);
         Assert.notNull(client, "客户端({}) 不能为空", configId);
         return client.getContent(path);
+    }
+
+    /**
+     * 根据你文件ids获取文件
+     *
+     * @param ids 配置编号
+     * @return 文件内容
+     */
+    @Override
+    public List<FileDO> getByIds(String ids) {
+        List<FileDO> list = fileMapper.selectBatchIds(ListUtil.toList(ids.split(",")));
+        return CollUtil.isEmpty(list) ? CollUtil.newArrayList(list) : list;
     }
 
 }
