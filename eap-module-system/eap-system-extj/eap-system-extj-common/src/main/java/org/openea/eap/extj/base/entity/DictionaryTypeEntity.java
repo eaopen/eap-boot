@@ -1,14 +1,13 @@
 package org.openea.eap.extj.base.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
  * 字典分类
  */
 @Data
-@TableName("base_dictionarytype")
+//@TableName("base_dictionarytype")
 public class DictionaryTypeEntity extends SuperExtendEntity.SuperExtendSortEntity<String> {
 
     /**

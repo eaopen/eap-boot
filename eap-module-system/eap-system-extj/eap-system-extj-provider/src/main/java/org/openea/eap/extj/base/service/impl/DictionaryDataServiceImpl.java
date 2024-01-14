@@ -1,5 +1,6 @@
 package org.openea.eap.extj.base.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.openea.eap.extj.base.entity.DictionaryDataEntity;
@@ -16,6 +17,10 @@ import org.openea.eap.extj.exception.DataException;
 import org.openea.eap.extj.util.*;
 import org.openea.eap.extj.util.enums.ModuleTypeEnum;
 import org.openea.eap.extj.util.file.FileExport;
+import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
+import org.openea.eap.module.system.dal.dataobject.dict.DictTypeDO;
+import org.openea.eap.module.system.service.dict.DictDataService;
+import org.openea.eap.module.system.service.dict.DictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -26,6 +31,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * 迁移到 eap字典表
+ */
 @Service
 public class DictionaryDataServiceImpl extends SuperServiceImpl<DictionaryDataMapper, DictionaryDataEntity> implements DictionaryDataService {
 
@@ -38,38 +46,80 @@ public class DictionaryDataServiceImpl extends SuperServiceImpl<DictionaryDataMa
     @Autowired
     private ConfigValueUtil configValueUtil;
 
-    @Override
-    public List<DictionaryDataEntity> getList(String dictionaryTypeId, Boolean enable) {
-        QueryWrapper<DictionaryDataEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(DictionaryDataEntity::getDictionaryTypeId, dictionaryTypeId);
-        if (enable) {
-            queryWrapper.lambda().eq(DictionaryDataEntity::getEnabledMark, 1);
+
+    @Autowired
+    private DictTypeService dictTypeService;
+    @Autowired
+    private DictDataService dictDataService;
+
+
+    protected DictTypeDO getDictType(String dictionaryTypeId) {
+        DictTypeDO dictType = null;
+        if(NumberUtil.isNumber(dictionaryTypeId)){
+            dictType = dictTypeService.getDictTypeById(Long.valueOf(dictionaryTypeId));
+        }else{
+            dictType = dictTypeService.getDictType(dictionaryTypeId);
         }
-        queryWrapper.lambda().orderByAsc(DictionaryDataEntity::getSortCode).orderByDesc(DictionaryDataEntity::getCreatorTime).orderByDesc(DictionaryDataEntity::getLastModifyTime);
-        return this.list(queryWrapper);
+        return dictType;
+    }
+
+    public static DictionaryDataEntity convert(DictDataDO dictDataDO){
+        if(dictDataDO==null) return null;
+        DictionaryDataEntity entity = new DictionaryDataEntity();
+        entity.setId(""+dictDataDO.getId());
+        entity.setEnCode(dictDataDO.getValue());
+        entity.setFullName(dictDataDO.getLabel());
+        return entity;
+    }
+
+    public static List<DictionaryDataEntity> convert(List<DictDataDO> listData){
+        if(listData==null) return null;
+        return listData.stream().map(t -> {
+            DictionaryDataEntity entity = new DictionaryDataEntity();
+            entity.setId(""+t.getId());
+            entity.setEnCode(t.getValue());
+            entity.setFullName(t.getLabel());
+            return entity;
+        }).collect(Collectors.toList());
     }
 
     @Override
+    public List<DictionaryDataEntity> getList(String dictionaryTypeId, Boolean enable) {
+        DictTypeDO dictType = getDictType(dictionaryTypeId);
+        List<DictDataDO> list = dictDataService.getDictData(dictType.getType());
+        return convert(list);
+    }
+
+
+    @Override
     public List<DictionaryDataEntity> getList(String dictionaryTypeId) {
-        QueryWrapper<DictionaryDataEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().and(
-                t -> t.eq(DictionaryDataEntity::getDictionaryTypeId, dictionaryTypeId)
-                        .or().eq(DictionaryDataEntity::getEnCode, dictionaryTypeId)
-        );
-        queryWrapper.lambda().orderByAsc(DictionaryDataEntity::getSortCode)
-                .orderByDesc(DictionaryDataEntity::getCreatorTime);
-        return this.list(queryWrapper);
+        DictTypeDO dictType = getDictType(dictionaryTypeId);
+        if(dictType != null){
+            List<DictDataDO> list = dictDataService.getDictData(dictType.getType());
+            if(list!=null){
+                return list.stream().map(t -> {
+                    DictionaryDataEntity entity = new DictionaryDataEntity();
+                    entity.setId(""+t.getId());
+                    entity.setFullName(t.getLabel());
+                    entity.setEnCode(t.getValue());
+                    return entity;
+                }).collect(Collectors.toList());
+            }
+        }
+
+        return null;
     }
 
     @Override
     public List<DictionaryDataEntity> getDicList(String dictionaryTypeId) {
-        QueryWrapper<DictionaryDataEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().and(
-                t -> t.eq(DictionaryDataEntity::getDictionaryTypeId, dictionaryTypeId)
-                        .or().eq(DictionaryDataEntity::getEnCode, dictionaryTypeId)
-        );
-        queryWrapper.lambda().select(DictionaryDataEntity::getId, DictionaryDataEntity::getFullName, DictionaryDataEntity::getEnCode);
-        return this.list(queryWrapper);
+        DictTypeDO dictType = getDictType(dictionaryTypeId);
+        if(dictType!=null){
+            List<DictDataDO> list = dictDataService.getDictData(dictType.getType());
+            return list.stream().map(t -> {
+               return convert(t);
+            }).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
@@ -95,10 +145,11 @@ public class DictionaryDataServiceImpl extends SuperServiceImpl<DictionaryDataMa
         if (id == null) {
             return null;
         }
-        QueryWrapper<DictionaryDataEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(DictionaryDataEntity::getId, id);
-        return this.getOne(queryWrapper);
+        DictDataDO dictDataDO = dictDataService.getDictData(new Long(id));
+        return convert(dictDataDO);
     }
+
+
 
     @Override
     public DictionaryDataEntity getSwapInfo(String value, String dictionaryTypeId) {

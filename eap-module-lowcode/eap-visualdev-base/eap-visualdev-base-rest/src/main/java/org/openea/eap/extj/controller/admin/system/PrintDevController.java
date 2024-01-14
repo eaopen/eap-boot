@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.extj.base.ActionResult;
 import org.openea.eap.extj.base.controller.SuperController;
-import org.openea.eap.extj.base.entity.DictionaryDataEntity;
-import org.openea.eap.extj.base.entity.DictionaryTypeEntity;
 import org.openea.eap.extj.base.entity.OperatorRecordEntity;
 import org.openea.eap.extj.base.entity.PrintDevEntity;
 import org.openea.eap.extj.base.model.PaginationPrint;
@@ -20,8 +18,6 @@ import org.openea.eap.extj.base.model.query.PrintDevDataQuery;
 import org.openea.eap.extj.base.model.query.PrintDevFieldsQuery;
 import org.openea.eap.extj.base.model.vo.PrintDevListVO;
 import org.openea.eap.extj.base.model.vo.PrintDevVO;
-import org.openea.eap.extj.base.service.DictionaryDataService;
-import org.openea.eap.extj.base.service.DictionaryTypeService;
 import org.openea.eap.extj.base.service.IPrintDevService;
 import org.openea.eap.extj.base.vo.DownloadVO;
 import org.openea.eap.extj.base.vo.ListVO;
@@ -32,10 +28,14 @@ import org.openea.eap.extj.constant.MsgCode;
 import org.openea.eap.extj.exception.DataException;
 import org.openea.eap.extj.permission.entity.UserEntity;
 import org.openea.eap.extj.permission.service.UserService;
-import org.openea.eap.extj.util.*;
+import org.openea.eap.extj.util.FileUtil;
+import org.openea.eap.extj.util.JsonUtil;
+import org.openea.eap.extj.util.RandomUtil;
+import org.openea.eap.extj.util.XSSEscape;
 import org.openea.eap.extj.util.enums.ModuleTypeEnum;
 import org.openea.eap.extj.util.file.FileExport;
 import org.openea.eap.extj.util.treeutil.SumTree;
+import org.openea.eap.module.system.service.dict.DictDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 /**
  * 打印模板 -控制器
  *
- * 
+ *
  */
 @Tag(name = "打印模板", description = "print")
 @RestController
@@ -61,12 +61,19 @@ public class PrintDevController extends SuperController<IPrintDevService, PrintD
     private FileExport fileExport;
     @Autowired
     private ConfigValueUtil configValueUtil;
-    @Autowired
-    private DictionaryDataService dictionaryDataService;
-    @Autowired
-    private DictionaryTypeService dictionaryTypeService;
+
     @Autowired
     private UserService userService;
+
+
+    @Autowired
+    private DictDataService dictDataService;
+
+//    @Autowired
+//    private DictionaryDataService dictionaryDataService;
+//    @Autowired
+//    private DictionaryTypeService dictionaryTypeService;
+
 
     /**
      * 查询打印列表
@@ -289,17 +296,12 @@ public class PrintDevController extends SuperController<IPrintDevService, PrintD
         lastUserId.removeAll(Collections.singleton(null));
         List<UserEntity> userEntities = userService.getUserName(userId);
         List<UserEntity> lastUserIdEntities = userService.getUserName(lastUserId);
-        DictionaryTypeEntity typeEntity = dictionaryTypeService.getInfoByEnCode("printDev");
-        List<DictionaryDataEntity> typeList = dictionaryDataService.getList(typeEntity.getId());
+        Map<String, String> mapDictPrintDev = dictDataService.getMapDictData("printDev");
         List<PrintDevListVO> listVOS = new ArrayList<>();
         for (PrintDevEntity entity : list) {
             PrintDevListVO vo = JsonUtil.getJsonToBean(entity, PrintDevListVO.class);
-            DictionaryDataEntity dataEntity = typeList.stream().filter(t -> t.getEnCode().equals(entity.getCategory())).findFirst().orElse(null);
-            if (dataEntity != null) {
-                vo.setCategory(dataEntity.getFullName());
-            } else {
-                vo.setCategory("");
-            }
+            // setCategory dict=printDev
+            vo.setCategory(getCategory(entity.getCategory(),mapDictPrintDev));
             //创建者
             UserEntity creatorUser = userEntities.stream().filter(t -> t.getId().equals(entity.getCreatorUserId())).findFirst().orElse(null);
             vo.setCreatorUser(creatorUser != null ? creatorUser.getRealName() + "/" + creatorUser.getAccount() : entity.getCreatorUserId());
@@ -310,6 +312,14 @@ public class PrintDevController extends SuperController<IPrintDevService, PrintD
         }
         PaginationVO paginationVO = JsonUtil.getJsonToBean(paginationPrint, PaginationVO.class);
         return ActionResult.page(listVOS , paginationVO);
+    }
+
+    protected String getCategory(String category, Map<String, String> mapDictPrintDev){
+        // dict=printDev
+        if(mapDictPrintDev!=null && mapDictPrintDev.containsKey(category)){
+            return mapDictPrintDev.get(category);
+        }
+        return category;
     }
 
     /**

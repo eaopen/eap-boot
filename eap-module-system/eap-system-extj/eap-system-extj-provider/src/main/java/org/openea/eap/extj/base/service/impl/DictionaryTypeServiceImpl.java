@@ -17,6 +17,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 迁移到 eap字典表
+ */
 @Service
 public class DictionaryTypeServiceImpl extends SuperServiceImpl<DictionaryTypeMapper, DictionaryTypeEntity> implements DictionaryTypeService {
 
@@ -35,16 +38,15 @@ public class DictionaryTypeServiceImpl extends SuperServiceImpl<DictionaryTypeMa
 
     @Override
     public DictionaryTypeEntity getInfoByEnCode(String enCode) {
-        QueryWrapper<DictionaryTypeEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(DictionaryTypeEntity::getEnCode, enCode);
-        return this.getOne(queryWrapper);
+        DictionaryTypeEntity entity = new DictionaryTypeEntity();
+        entity.setEnCode(enCode);
+        entity.setId(enCode);
+        return entity;
     }
 
     @Override
     public DictionaryTypeEntity getInfo(String id) {
-        QueryWrapper<DictionaryTypeEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(DictionaryTypeEntity::getId, id);
-        return this.getOne(queryWrapper);
+        return getInfoByEnCode(id);
     }
 
     @Override

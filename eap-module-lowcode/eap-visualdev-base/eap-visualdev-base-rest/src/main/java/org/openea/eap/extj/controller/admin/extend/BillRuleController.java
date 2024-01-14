@@ -13,7 +13,6 @@ import org.openea.eap.extj.base.model.billrule.BillRuleInfoVO;
 import org.openea.eap.extj.base.model.billrule.BillRuleListVO;
 import org.openea.eap.extj.base.model.billrule.BillRuleUpForm;
 import org.openea.eap.extj.base.model.dataInterface.PaginationDataInterface;
-import org.openea.eap.extj.base.service.DictionaryDataService;
 import org.openea.eap.extj.base.vo.DownloadVO;
 import org.openea.eap.extj.base.vo.PageListVO;
 import org.openea.eap.extj.base.vo.PaginationVO;
@@ -26,6 +25,7 @@ import org.openea.eap.extj.permission.entity.UserEntity;
 import org.openea.eap.extj.permission.service.UserService;
 import org.openea.eap.extj.util.*;
 import org.openea.eap.extj.util.enums.ModuleTypeEnum;
+import org.openea.eap.module.system.service.dict.DictDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 单据规则
@@ -52,8 +53,9 @@ public class BillRuleController extends SuperController<BillRuleService, BillRul
     private BillRuleService billRuleService;
     @Autowired
     private UserService userService;
+
     @Autowired
-    private DictionaryDataService dictionaryDataService;
+    private DictDataService dictDataService;
     /**
      * 列表
      *
@@ -67,10 +69,11 @@ public class BillRuleController extends SuperController<BillRuleService, BillRul
     public ActionResult<PageListVO<BillRuleListVO>> list(PaginationDataInterface pagination) {
         List<BillRuleEntity> list = billRuleService.getList(pagination);
         List<BillRuleListVO> listVO = new ArrayList<>();
+        Map<String, String> mapDict = null;
         list.forEach(entity->{
             BillRuleListVO vo = JsonUtil.getJsonToBean(entity, BillRuleListVO.class);
             if(StringUtil.isNotEmpty(entity.getCategory())){
-                vo.setCategory(dictionaryDataService.getInfo(entity.getCategory()).getFullName());
+                vo.setCategory(getCategoryName(entity.getCategory(), mapDict));
             }
 
             UserEntity userEntity = userService.getInfo(entity.getCreatorUserId());
@@ -79,8 +82,16 @@ public class BillRuleController extends SuperController<BillRuleService, BillRul
             }
             listVO.add(vo);
         });
+
         PaginationVO paginationVO = JsonUtil.getJsonToBean(pagination, PaginationVO.class);
         return ActionResult.page(listVO, paginationVO);
+    }
+
+    private String getCategoryName(String category, Map<String, String> mapDict){
+        if(mapDict!=null && mapDict.containsKey(category)){
+            return mapDict.get(category);
+        }
+        return category;
     }
 
     /**
@@ -94,10 +105,11 @@ public class BillRuleController extends SuperController<BillRuleService, BillRul
     public ActionResult selectList(PaginationDataInterface pagination) {
         List<BillRuleEntity> list = billRuleService.getListByCategory(pagination.getCategoryId(),pagination);
         List<BillRuleListVO> listVO = new ArrayList<>();
+        Map<String, String> mapDict = null;
         list.forEach(entity->{
             BillRuleListVO vo = JsonUtil.getJsonToBean(entity, BillRuleListVO.class);
             if(StringUtil.isNotEmpty(entity.getCategory())){
-                vo.setCategory(dictionaryDataService.getInfo(entity.getCategory()).getFullName());
+                vo.setCategory(getCategoryName(entity.getCategory(), mapDict));
             }
 
             UserEntity userEntity = userService.getInfo(entity.getCreatorUserId());

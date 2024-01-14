@@ -1,6 +1,8 @@
 package org.openea.eap.module.system.service.dict;
 
 import cn.hutool.core.collection.CollUtil;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
@@ -11,15 +13,9 @@ import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataSaveRe
 import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictTypeDO;
 import org.openea.eap.module.system.dal.mysql.dict.DictDataMapper;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
@@ -51,6 +47,17 @@ public class DictDataServiceImpl implements DictDataService {
         List<DictDataDO> list = dictDataMapper.selectListByStatusAndDictType(status, dictType);
         list.sort(COMPARATOR_TYPE_AND_SORT);
         return list;
+    }
+
+    @Override
+    public Map<String, String> getMapDictData(String dictType) {
+        List<DictDataDO> list = dictDataMapper.selectByDictType(dictType);
+        list.sort(COMPARATOR_TYPE_AND_SORT);
+        Map<String, String> map = new HashMap<>();
+        list.forEach(dictDataDO -> {
+            map.put(dictDataDO.getValue(), dictDataDO.getLabel());
+        });
+        return map;
     }
 
     @Override

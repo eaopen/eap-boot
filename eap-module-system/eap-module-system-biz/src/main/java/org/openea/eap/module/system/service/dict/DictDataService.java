@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 字典数据 Service 接口
@@ -125,4 +126,12 @@ public interface DictDataService {
      * @return 字典数据
      */
     List<DictDataDO> getDictData(String dictType);
+
+
+    /**
+     * 获取字典表map数据
+     * @param dictType
+     * @return
+     */
+    Map<String, String> getMapDictData(String dictType);
 }
