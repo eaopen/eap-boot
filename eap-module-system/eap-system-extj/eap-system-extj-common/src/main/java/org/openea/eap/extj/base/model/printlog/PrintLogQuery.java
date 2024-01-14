@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.openea.eap.extj.base.Pagination;
 
-
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class PrintLogQuery  extends Pagination {
