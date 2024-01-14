@@ -1,5 +1,6 @@
 package org.openea.eap.extj.base.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -350,9 +351,17 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     if (result.getData() instanceof List) {
                         dataList = (List<Map<String, Object>>) result.getData();
                         List<String> ids = (List<String>) page.getIds();
+                        if (CollectionUtil.isNotEmpty(ids) && ids.size()>0) {
+                           Object id1 = ids.get(0);
+                           if(! (id1 instanceof String)){
+                               for(int i=0; i<ids.size(); i++){
+                                   ids.set(i, String.valueOf(ids.get(i)));
+                               }
+                           }
+                        }
                         List<Map<String, Object>> finalDataList = dataList;
                         ids.forEach(t->{
-                            list.add(finalDataList.stream().filter(data -> t.equals(String.valueOf(data.get(page.getPropsValue())))).findFirst().orElse(new HashMap<>()));
+                            list.add(finalDataList.stream().filter(data -> String.valueOf(t).equals(String.valueOf(data.get(page.getPropsValue())))).findFirst().orElse(new HashMap<>()));
                         });
                     }
                 }
