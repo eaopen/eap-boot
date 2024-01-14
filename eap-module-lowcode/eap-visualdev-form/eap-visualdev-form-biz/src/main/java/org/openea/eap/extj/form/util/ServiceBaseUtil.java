@@ -3,27 +3,25 @@ package org.openea.eap.extj.form.util;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import org.openea.eap.extj.base.Page;
 import org.openea.eap.extj.base.Pagination;
-import org.openea.eap.extj.base.entity.DictionaryDataEntity;
 import org.openea.eap.extj.base.service.*;
 import org.openea.eap.extj.base.util.SentMessageUtil;
 import org.openea.eap.extj.database.model.dbfield.DbFieldModel;
 import org.openea.eap.extj.database.model.dbfield.base.DbFieldModelBase;
 import org.openea.eap.extj.database.model.dbtable.DbTableFieldModel;
 import org.openea.eap.extj.database.model.entity.DbLinkEntity;
-import org.openea.eap.extj.form.entity.FlowFormEntity;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.extend.service.BillRuleService;
+import org.openea.eap.extj.form.entity.FlowFormEntity;
 import org.openea.eap.extj.form.service.FlowFormRelationService;
 import org.openea.eap.extj.form.service.FlowFormService;
 import org.openea.eap.extj.form.service.FormDataService;
 import org.openea.eap.extj.message.model.message.SentMessageForm;
 import org.openea.eap.extj.message.service.SendMessageConfigService;
 import org.openea.eap.extj.permission.entity.*;
+import org.openea.eap.extj.permission.model.user.vo.UserByRoleVO;
 import org.openea.eap.extj.permission.service.*;
 import org.openea.eap.extj.util.JsonUtil;
 import org.openea.eap.extj.util.StringUtil;
-import org.openea.eap.extj.util.enums.DictionaryDataEnum;
-import org.openea.eap.extj.permission.model.user.vo.UserByRoleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 
+ *
  */
 @Component
 @DS("")
@@ -101,18 +99,6 @@ public class ServiceBaseUtil {
      */
     public List<DbFieldModel> getFieldList(String linkId, String table) throws Exception {
         return dbTableService.getFieldList(linkId, table);
-    }
-
-
-    //--------------------------------数据字典------------------------------
-    public List<DictionaryDataEntity> getDiList() {
-        List<DictionaryDataEntity> dictionList = dictionaryDataService.getList(dictionaryTypeService.getInfoByEnCode(DictionaryDataEnum.FLOWWOEK_ENGINE.getDictionaryTypeId()).getId());
-        return dictionList;
-    }
-
-    public List<DictionaryDataEntity> getDictionName(List<String> id) {
-        List<DictionaryDataEntity> dictionList = dictionaryDataService.getDictionName(id);
-        return dictionList;
     }
 
     //--------------------------------用户关系表------------------------------

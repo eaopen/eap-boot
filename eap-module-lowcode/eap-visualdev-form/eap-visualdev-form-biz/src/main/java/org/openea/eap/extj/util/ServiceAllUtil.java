@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 
+ *
  */
 @Component
 @DS("")
@@ -84,10 +84,6 @@ public class ServiceAllUtil {
         return dictionList;
     }
 
-    public List<DictionaryDataEntity> getDictionName(List<String> id) {
-        List<DictionaryDataEntity> dictionList = dictionaryDataService.getDictionName(id);
-        return dictionList;
-    }
 
     //--------------------------------用户关系表------------------------------
     public List<UserRelationEntity> getListByUserIdAll(List<String> id) {

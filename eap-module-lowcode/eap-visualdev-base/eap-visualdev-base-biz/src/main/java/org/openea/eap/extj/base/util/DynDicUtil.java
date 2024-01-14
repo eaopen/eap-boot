@@ -3,14 +3,13 @@ package org.openea.eap.extj.base.util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.openea.eap.extj.base.ActionResult;
-import org.openea.eap.extj.base.entity.DictionaryDataEntity;
+import org.openea.eap.extj.base.service.DataInterfaceService;
 import org.openea.eap.extj.base.service.DictionaryDataService;
 import org.openea.eap.extj.util.CacheKeyUtil;
 import org.openea.eap.extj.util.JsonUtil;
 import org.openea.eap.extj.util.RedisUtil;
 import org.openea.eap.extj.util.StringUtil;
 import org.openea.eap.extj.util.context.SpringContext;
-import org.openea.eap.extj.base.service.DataInterfaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,41 +45,7 @@ public class DynDicUtil {
      * @return
      */
     public String getDicName(String feild,String dictionaryTypeId) {
-        if (redisUtil.exists(cacheKeyUtil.getDictionary() + feild)) {
-            return redisUtil.getString(cacheKeyUtil.getDictionary() + feild).toString();
-        }
-        if (StringUtil.isNotEmpty(feild)) {
-            //去除中括号以及双引号
-            feild = feild.replaceAll(regEx, "");
-            //判断多选框
-            String[] feilds = feild.split(",");
-            if (feilds.length > 1) {
-                StringBuilder feildsValue = new StringBuilder();
-                DictionaryDataEntity dictionaryDataEntity;
-                for (String feil : feilds) {
-                    dictionaryDataEntity = dictionaryDataService.getSwapInfo(feil,dictionaryTypeId);
-                    if (dictionaryDataEntity != null) {
-                        feildsValue.append(dictionaryDataEntity.getFullName() + ",");
-                    }
-                }
-                String finalValue;
-                if (StringUtil.isEmpty(feildsValue) || feildsValue.equals("")) {
-                    finalValue = feildsValue.toString();
-                } else {
-                    finalValue = feildsValue.substring(0, feildsValue.length() - 1);
-                }
-                redisUtil = SpringContext.getBean(RedisUtil.class);
-                redisUtil.insert(cacheKeyUtil.getDictionary() + feild, finalValue, 20);
-                return finalValue;
-            }
-            DictionaryDataEntity dictionaryDataentity = dictionaryDataService.getSwapInfo(feild,dictionaryTypeId);
-            if (dictionaryDataentity != null) {
-                redisUtil = SpringContext.getBean(RedisUtil.class);
-                redisUtil.insert(cacheKeyUtil.getDictionary() + feild, dictionaryDataentity.getFullName(), 20);
-                return dictionaryDataentity.getFullName();
-            }
-            return feild;
-        }
+        // todo eap will refactor
         return feild;
     }
 
