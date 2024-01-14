@@ -2,6 +2,7 @@ package org.openea.eap.module.system.controller.admin.dict;
 
 import cn.hutool.core.map.MapUtil;
 import io.swagger.v3.oas.annotations.Parameters;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -158,7 +159,13 @@ public class DictTypeController {
     })
     @GetMapping("/{dictionaryTypeId}/Data/Selector")
     public CommonResult<Map> selectorOneTreeView(@PathVariable("dictionaryTypeId") String dictionaryTypeId) {
-        DictTypeDO dictType = dictTypeService.getDictType(dictionaryTypeId);
+        DictTypeDO dictType = null;
+        if(NumberUtils.isDigits(dictionaryTypeId)){
+            dictType = dictTypeService.getDictType(new Long(dictionaryTypeId));
+        }
+        if(dictType==null){
+            dictType = dictTypeService.getDictType(dictionaryTypeId);
+        }
         List<Map<String,Object>> listV1=new ArrayList<>();
         if(dictType!=null){
             List<DictDataDO> collect = dictDataService.getDictData(dictType.getType());
