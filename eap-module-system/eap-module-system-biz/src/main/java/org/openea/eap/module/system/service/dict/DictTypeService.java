@@ -50,7 +50,7 @@ public interface DictTypeService {
      * @param id 字典类型编号
      * @return 字典类型
      */
-    DictTypeDO getDictType(Long id);
+    DictTypeDO getDictTypeById(Long id);
 
     /**
      * 获得字典类型详情

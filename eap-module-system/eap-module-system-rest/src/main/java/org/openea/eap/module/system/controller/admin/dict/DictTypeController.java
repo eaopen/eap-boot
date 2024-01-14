@@ -86,7 +86,7 @@ public class DictTypeController {
     @GetMapping(value = "/get")
     @PreAuthorize("@ss.hasPermission('system:dict:query')")
     public CommonResult<DictTypeRespVO> getDictType(@RequestParam("id") Long id) {
-        DictTypeDO dictType = dictTypeService.getDictType(id);
+        DictTypeDO dictType = dictTypeService.getDictTypeById(id);
         return success(BeanUtils.toBean(dictType, DictTypeRespVO.class));
     }
 
@@ -161,7 +161,7 @@ public class DictTypeController {
     public CommonResult<Map> selectorOneTreeView(@PathVariable("dictionaryTypeId") String dictionaryTypeId) {
         DictTypeDO dictType = null;
         if(NumberUtils.isDigits(dictionaryTypeId)){
-            dictType = dictTypeService.getDictType(new Long(dictionaryTypeId));
+            dictType = dictTypeService.getDictTypeById(new Long(dictionaryTypeId));
         }
         if(dictType==null){
             dictType = dictTypeService.getDictType(dictionaryTypeId);
