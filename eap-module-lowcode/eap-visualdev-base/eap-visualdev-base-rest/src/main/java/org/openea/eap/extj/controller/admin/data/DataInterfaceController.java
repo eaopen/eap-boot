@@ -718,11 +718,13 @@ public class DataInterfaceController extends SuperController<DataInterfaceServic
                     // fix filed that value is null
                     Map<String,Object> map=JsonUtil.entityToMap(data, true);
                     List<Map<String,Object>> list=(List)map.get("list");
-                    List<String> listKey=new ArrayList();
-                    for(String key:list.get(0).keySet()){
-                        listKey.add(key);
+                    if(list!=null && list.size()>0){
+                        List<String> listKey=new ArrayList();
+                        for(String key:list.get(0).keySet()){
+                            listKey.add(key);
+                        }
+                        actionResult.setData(listKey);
                     }
-                    actionResult.setData(listKey);
                 }
             }catch (Exception e){
                 return ActionResult.fail("接口不符合规范！");
