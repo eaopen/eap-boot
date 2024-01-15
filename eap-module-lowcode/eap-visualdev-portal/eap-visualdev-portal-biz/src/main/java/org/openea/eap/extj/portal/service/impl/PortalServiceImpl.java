@@ -258,6 +258,7 @@ public class PortalServiceImpl extends SuperServiceImpl<PortalMapper, PortalEnti
         List<String> lastUserId = data.stream().map(t -> t.getLastModifyUserId()).collect(Collectors.toList());
         List<UserEntity> userEntities = userService.getUserName(userId);
         List<UserEntity> lastUserIdEntities = userService.getUserName(lastUserId);
+        // dict = portal category
         List<DictionaryDataEntity> dictionList = dictionaryDataService.getList(dictionaryTypeService.getInfoByEnCode(DictionaryDataEnum.VISUALDEV_PORTAL.getDictionaryTypeId()).getId());
         List<VisualFunctionModel> modelAll = new LinkedList<>();
         // 发布判断
@@ -269,26 +270,27 @@ public class PortalServiceImpl extends SuperServiceImpl<PortalMapper, PortalEnti
                     && PortalConst.WEB.equalsIgnoreCase(vo.getPlatform())) ? 1 : 0);
             model.setAppIsRelease(isReleaseList.stream().anyMatch(vo-> vo.getPortalId().equalsIgnoreCase(entity.getId())
                     && PortalConst.APP.equalsIgnoreCase(vo.getPlatform())) ? 1 : 0);
+            // category
             DictionaryDataEntity dataEntity = dictionList.stream().filter(t -> t.getId().equals(entity.getCategory())).findFirst().orElse(null);
             if (dataEntity != null) {
                 model.setCategory(dataEntity.getFullName());
-                UserEntity creatorUser = userEntities.stream().filter(t -> t.getId().equals(model.getCreatorUserId())).findFirst().orElse(null);
-                if (creatorUser != null) {
-                    model.setCreatorUser(creatorUser.getRealName() + "/" + creatorUser.getAccount());
-                } else {
-                    model.setCreatorUser("");
-                }
-                UserEntity lastmodifyuser = lastUserIdEntities.stream().filter(t -> t.getId().equals(model.getLastModifyUserId())).findFirst().orElse(null);
-                if (lastmodifyuser != null) {
-                    model.setLastModifyUser(lastmodifyuser.getRealName() + "/" + lastmodifyuser.getAccount());
-                } else {
-                    model.setLastModifyUser("");
-                }
-                if (Objects.isNull(model.getSortCode())) {
-                    model.setSortCode(0L);
-                }
-                modelAll.add(model);
             }
+            UserEntity creatorUser = userEntities.stream().filter(t -> t.getId().equals(model.getCreatorUserId())).findFirst().orElse(null);
+            if (creatorUser != null) {
+                model.setCreatorUser(creatorUser.getRealName() + "/" + creatorUser.getAccount());
+            } else {
+                model.setCreatorUser("");
+            }
+            UserEntity lastmodifyuser = lastUserIdEntities.stream().filter(t -> t.getId().equals(model.getLastModifyUserId())).findFirst().orElse(null);
+            if (lastmodifyuser != null) {
+                model.setLastModifyUser(lastmodifyuser.getRealName() + "/" + lastmodifyuser.getAccount());
+            } else {
+                model.setLastModifyUser("");
+            }
+            if (Objects.isNull(model.getSortCode())) {
+                model.setSortCode(0L);
+            }
+            modelAll.add(model);
         }
         return modelAll.stream().sorted(Comparator.comparing(VisualFunctionModel::getSortCode)).collect(Collectors.toList());
     }
