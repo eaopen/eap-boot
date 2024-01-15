@@ -103,7 +103,13 @@ public class DictionaryDataServiceImpl extends SuperServiceImpl<DictionaryDataMa
         if (id == null) {
             return null;
         }
-        DictDataDO dictDataDO = dictDataService.getDictData(new Long(id));
-        return convert(dictDataDO);
+        DictDataDO dictDataDO = null;
+        try{
+            dictDataDO = dictDataService.getDictData(new Long(id));
+            return convert(dictDataDO);
+        }catch (Exception e){
+            log.warn(e.getMessage());
+        }
+        return null;
     }
 }

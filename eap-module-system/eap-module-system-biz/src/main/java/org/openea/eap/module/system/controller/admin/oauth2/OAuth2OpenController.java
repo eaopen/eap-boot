@@ -41,6 +41,7 @@ import static org.openea.eap.framework.common.exception.enums.GlobalErrorCodeCon
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception0;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
+import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUser;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
 /**
@@ -269,7 +270,7 @@ public class OAuth2OpenController {
     private String getImplicitGrantRedirect(Long userId, OAuth2ClientDO client,
                                             List<String> scopes, String redirectUri, String state) {
         // 1. 创建 access token 访问令牌
-        OAuth2AccessTokenDO accessTokenDO = oauth2GrantService.grantImplicit(userId, getUserType(), client.getClientId(), scopes);
+        OAuth2AccessTokenDO accessTokenDO = oauth2GrantService.grantImplicit(userId, getLoginUser().getUserKey(), getUserType(), client.getClientId(), scopes);
         Assert.notNull(accessTokenDO, "访问令牌不能为空"); // 防御性检查
         // 2. 拼接重定向的 URL
         // noinspection unchecked

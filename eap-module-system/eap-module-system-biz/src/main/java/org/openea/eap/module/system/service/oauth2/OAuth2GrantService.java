@@ -28,7 +28,7 @@ public interface OAuth2GrantService {
      * @param scopes 授权范围
      * @return 访问令牌
      */
-    OAuth2AccessTokenDO grantImplicit(Long userId, Integer userType,
+    OAuth2AccessTokenDO grantImplicit(Long userId, String userKey,Integer userType,
                                       String clientId, List<String> scopes);
 
     /**

@@ -26,7 +26,7 @@ public interface OAuth2TokenService {
      * @param scopes 授权范围
      * @return 访问令牌的信息
      */
-    OAuth2AccessTokenDO createAccessToken(Long userId, Integer userType, String clientId, List<String> scopes);
+    OAuth2AccessTokenDO createAccessToken(Long userId, String userKey, Integer userType, String clientId, List<String> scopes);
 
     /**
      * 刷新访问令牌
