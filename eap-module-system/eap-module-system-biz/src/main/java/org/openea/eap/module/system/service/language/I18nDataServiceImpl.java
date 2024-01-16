@@ -93,6 +93,29 @@ public class I18nDataServiceImpl implements I18nDataService {
         return jsJson;
     }
 
+    @Override
+    public JSONObject getLocaleMessageJson(String lang){
+        if(ObjectUtil.isEmpty(lang)){
+            lang = "zh-CN";
+        }else if(lang.indexOf("zh")>-1){
+            lang = "zh-CN";
+        }else if(lang.indexOf("en")>-1){
+            lang = "en-US";
+        }else if(lang.indexOf("ja")>-1){
+            lang = "ja-JP";
+        }
+        Map<String, Map<String, String>> mapI18nData = getI18nDataMap("", "");
+        if(mapI18nData.containsKey(lang)){
+            return i18n2JsJson(mapI18nData.get(lang));
+        }
+        lang = "zh-CN";
+        if(mapI18nData.containsKey(lang)){
+            return i18n2JsJson(mapI18nData.get(lang));
+        }
+        lang = mapI18nData.keySet().iterator().next();
+        return i18n2JsJson(mapI18nData.get(lang));
+    }
+
 
     @Override
     public Integer translateMenu(Collection<MenuDO> menuList) {

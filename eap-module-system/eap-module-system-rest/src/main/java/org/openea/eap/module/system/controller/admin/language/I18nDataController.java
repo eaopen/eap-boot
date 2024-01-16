@@ -7,10 +7,12 @@ import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.service.language.I18nDataService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 
@@ -27,5 +29,13 @@ public class I18nDataController {
     @Operation(summary = "获得前端i18n json数据",description = "数据json格式 {language:{key:label}}")
     public CommonResult<JSONObject> getJsJson(){
         return success(i18nDataService.getJsJson());
+    }
+    @GetMapping(value = "getLocalMessage/{locale}")
+    @Operation(summary = "获得指定语言的json数据",description = "数据json格式 {}")
+    public CommonResult<JSONObject> getLocalMessage(@PathVariable("locale") String locale, String modules, String lastLoadTime){
+        JSONObject message = new JSONObject();
+        message.putAll(i18nDataService.getLocaleMessageJson(locale));
+        message.put("lastLoadTime", new Date());
+        return success(message);
     }
 }

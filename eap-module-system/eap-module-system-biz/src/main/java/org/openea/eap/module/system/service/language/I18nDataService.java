@@ -39,6 +39,8 @@ public interface I18nDataService {
      */
     JSONObject getJsJson();
 
+    JSONObject getLocaleMessageJson(String lang);
+
     /**
      * 增加菜单翻译
      * @param menuList
