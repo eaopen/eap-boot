@@ -1,5 +1,7 @@
 package org.openea.eap.extj.controller.admin.onlinedev;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -198,14 +200,35 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
             // todo 待集成flowable
         }
 
+        JSONObject formJson = JSONUtil.parseObj(vo.getFormData());
+        // check i18n formData.hasI18n=true
+        boolean hasI18n = false;
+        Map<String, Object> mapI18nParam = new HashMap();
+        if(formJson.containsKey("hasI18n") && formJson.getBool("hasI18n")){
+            hasI18n = true;
+        }
+        String i18nPrefix = entity.getEnCode();
+        if(formJson.containsKey("i18nPrefix")){
+            i18nPrefix = formJson.getStr("i18nPrefix", i18nPrefix);
+        }
+        mapI18nParam.put("i18nPrefix", i18nPrefix);
+
         //处理默认值
         Map<String, Integer> havaDefaultCurrentValue = new HashMap<String, Integer>();
         UserInfo userInfo = userProvider.get();
         if (StringUtil.isNotEmpty(vo.getFormData())) {
-            vo.setFormData(formDataService.setDefaultCurrentValue(vo.getFormData(), havaDefaultCurrentValue));
+            if(hasI18n){
+                vo.setFormData(JSONUtil.toJsonStr(formDataService.precheckData(formJson, mapI18nParam, havaDefaultCurrentValue)));
+            }else{
+                vo.setFormData(formDataService.setDefaultCurrentValue(vo.getFormData(), havaDefaultCurrentValue));
+            }
         }
         if (StringUtil.isNotEmpty(vo.getColumnData())) {
-            vo.setColumnData(formDataService.setDefaultCurrentValue(vo.getColumnData(), havaDefaultCurrentValue));
+            if(hasI18n){
+                vo.setColumnData(JSONUtil.toJsonStr(formDataService.precheckData(JSONUtil.parseObj(vo.getColumnData()), mapI18nParam, havaDefaultCurrentValue)));
+            }else{
+                vo.setColumnData(formDataService.setDefaultCurrentValue(vo.getColumnData(), havaDefaultCurrentValue));
+            }
         }
         if (StringUtil.isNotEmpty(vo.getAppColumnData())) {
             vo.setAppColumnData(formDataService.setDefaultCurrentValue(vo.getAppColumnData(), havaDefaultCurrentValue));

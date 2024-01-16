@@ -1,5 +1,6 @@
 package org.openea.eap.extj.form.service;
 
+import cn.hutool.json.JSONObject;
 import org.openea.eap.extj.exception.DataException;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.permission.entity.UserEntity;
@@ -62,4 +63,6 @@ public interface FormDataService{
 	 * @return
 	 */
 	String setDefaultCurrentValue(String configJson, Map<String, Integer> havaDefaultCurrentValue);
+
+	JSONObject precheckData(JSONObject configJson, Map<String, Object> mapI18nParam, Map<String, Integer> havaDefaultCurrentValue);
 }
