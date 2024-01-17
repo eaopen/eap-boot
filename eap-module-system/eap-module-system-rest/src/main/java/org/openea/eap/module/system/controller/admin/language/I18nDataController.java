@@ -3,7 +3,9 @@ package org.openea.eap.module.system.controller.admin.language;
 import cn.hutool.json.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.SneakyThrows;
 import org.openea.eap.framework.common.pojo.CommonResult;
+import org.openea.eap.framework.i18n.core.I18nUtil;
 import org.openea.eap.module.system.service.language.I18nDataService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,5 +39,13 @@ public class I18nDataController {
         message.putAll(i18nDataService.getLocaleMessageJson(locale));
         message.put("lastLoadTime", new Date());
         return success(message);
+    }
+
+    @GetMapping(value = "reloadI18nUtil")
+    @Operation(summary = "刷新API数据",description = "")
+    @SneakyThrows
+    public CommonResult reloadI18nUtil(){
+        I18nUtil.reloadI18nApiData();
+        return success("ok");
     }
 }

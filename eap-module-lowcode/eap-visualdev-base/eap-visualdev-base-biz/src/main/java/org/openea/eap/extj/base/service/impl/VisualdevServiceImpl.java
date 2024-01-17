@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -395,6 +396,7 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         }
 
         Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
+        AtomicInteger needReloadI18n = new AtomicInteger(0);
         if (lostI18nRes != null && !lostI18nRes.isEmpty()) {
             String module = "modelDev";
             lostI18nRes.keySet().stream().forEach(i18nKey -> {
@@ -407,8 +409,12 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                 if(!i18nJsonDataService.checkI18nExist(module, i18nKey)){
                     String desc = entity.getFullName()+"-"+label;
                     i18nJsonDataService.createI18nData(module, i18nKey, desc, label);
+                    needReloadI18n.set(1);
                 }
             });
+        }
+        if(1==needReloadI18n.get()){
+            I18nUtil.reloadI18nApiData();
         }
     }
 
