@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.SneakyThrows;
+import org.openea.eap.extj.base.UserInfo;
 import org.openea.eap.extj.base.entity.VisualdevEntity;
 import org.openea.eap.extj.base.entity.VisualdevReleaseEntity;
 import org.openea.eap.extj.base.mapper.VisualdevMapper;
@@ -40,7 +41,10 @@ import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -495,6 +499,8 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
             if(StringUtil.isNotEmpty(fieldName)) {
                 currentKeyPrefix += "." + fieldName;
             }
+            String extnKey = (String)configMap.get("extnKey");
+            // normal
             // configMap: label/tipLabel/placeholder
             String[] keys = new String[]{"label", "tipLabel", "placeholder"};
             for (String key : keys) {
@@ -521,6 +527,26 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
 
             List<Map<String, Object>> childrenList = (List<Map<String, Object>>) configMap.get("children");
             if (childrenList != null && !childrenList.isEmpty()) {
+                if("tab".equals(extnKey)){
+                    // tab componentName
+                    String componentName = (String) configMap.get("componentName");
+                    // tabItem title
+                    for(int k=0; k<childrenList.size(); k++){
+                        JSONObject tabItem = JSONUtil.parseObj(childrenList.get(k));
+                        if(tabItem.containsKey("title")){
+                            String title = (String) tabItem.get("title");
+                            String i18nKey = currentKeyPrefix + "." + componentName + "." +k;
+                            String i18nLabel = I18nUtil.getMessage(i18nKey);
+                            if (ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)) {
+                                Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
+                                if(!lostI18nRes.containsKey(i18nKey)){
+                                    lostI18nRes.put(i18nKey, title);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 mapI18nParam.put("parentKeyPrefix", currentKeyPrefix);
                 checkI18nResource(childrenList, parseFlag, mapI18nParam);
                 mapI18nParam.remove("parentKeyPrefix");
@@ -528,5 +554,138 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
             }
         }
     }
+
+    /**
+     * 处理字段国际化
+     * @param configJson
+     * @return
+     */
+    @Override
+    public JSONObject loadI18nData(JSONObject configJson, Map<String, Object> mapI18nParam) {
+        if(ObjectUtil.isEmpty(configJson)) {
+            return configJson;
+        }
+        Map<String, Object> configJsonMap = JsonUtil.entityToMap(configJson);
+        if(configJsonMap == null && configJsonMap.isEmpty()) {
+            return configJson;
+        }
+
+        int isChange = 0;
+
+        UserInfo userInfo = null;
+        //处理字段
+        Object fieldsObj = configJsonMap.get("fields");
+        List<Map<String, Object>> fieldsList = null;
+        if(fieldsObj != null) {
+            fieldsList = (List<Map<String, Object>>)fieldsObj;
+            if(fieldsList != null && !fieldsList.isEmpty()) {
+                loadItemI18nData( fieldsList, "add",mapI18nParam);
+                configJsonMap.put("fields", fieldsList);
+                isChange = 1;
+            }
+        }
+        //处理查询条件
+        Object searchObj = configJsonMap.get("searchList");
+        List<Map<String, Object>> searchList = null;
+        if(searchObj != null) {
+            searchList = (List<Map<String, Object>>)searchObj;
+            if(searchList != null && !searchList.isEmpty()) {
+                loadItemI18nData( searchList, "search", mapI18nParam);
+                configJsonMap.put("searchList", searchList);
+                isChange = 1;
+            }
+        }
+
+        //处理列
+        Object columnListObj = configJsonMap.get("columnList");
+        List<Map<String, Object>> columnList = null;
+        if(columnListObj != null) {
+            columnList = (List<Map<String, Object>>)columnListObj;
+            if(columnList != null && !columnList.isEmpty()) {
+                loadItemI18nData( columnList, "add",mapI18nParam);
+                configJsonMap.put("columnList", columnList);
+                isChange = 1;
+            }
+        }
+
+        if(isChange == 1) {
+            return JSONUtil.parseObj(configJsonMap);
+        } else {
+            return configJson;
+        }
+    }
+
+    void loadItemI18nData( List<Map<String, Object>> itemList,  String parseFlag,Map<String, Object>  mapI18nParam){
+        for(int i = 0, len = itemList.size(); i < len; i++) {
+            Map<String, Object> itemMap = itemList.get(i);
+            if(itemMap == null || itemMap.isEmpty()) {
+                continue;
+            }
+            Map<String, Object> configMap = (Map<String, Object>)itemMap.get("__config__");
+            if(configMap == null || configMap.isEmpty()) {
+                continue;
+            }
+            String i18nPrefix = (String)mapI18nParam.get("i18nPrefix");
+            // itemMap: __vModel__, label(search)
+            String fieldName = (String)itemMap.get("__vModel__");
+            String parentKeyPrefix = (String)mapI18nParam.get("parentKeyPrefix");
+            if(parentKeyPrefix==null){
+                parentKeyPrefix = i18nPrefix;
+            }
+            String currentKeyPrefix = parentKeyPrefix;
+            if(StringUtil.isNotEmpty(fieldName)) {
+                currentKeyPrefix += "." + fieldName;
+            }
+            String extnKey = (String)configMap.get("extnKey");
+            // configMap: label/tipLabel/placeholder
+            String[]  keys = new String[]{"label", "tipLabel", "placeholder"};
+            for(String key : keys){
+                String i18nKey = currentKeyPrefix+"."+key;
+                String i18nLabel = I18nUtil.getMessage(i18nKey);
+                if(ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)){
+                    // [modelxxx].[field].[key] => [field].[key] => table.[field].[key]
+                    String[] parts = i18nKey.split("\\.");
+                    if(parts.length > 1){
+                        i18nKey = "table."+parts[parts.length-2];
+                    }
+                    i18nLabel = I18nUtil.getMessage(i18nKey);
+                }
+                if(ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey)){
+                    if(itemMap.containsKey(key)){
+                        itemMap.put(key, i18nLabel);
+                    }
+                    if(configMap.containsKey(key)){
+                        configMap.put(key, i18nLabel);
+                    }
+                }
+            }
+            List<Map<String,Object>> childrenList = (List<Map<String,Object>>)configMap.get("children");
+            if(childrenList != null && !childrenList.isEmpty()) {
+
+                if("tab".equals(extnKey)){
+                    // tab componentName
+                    String componentName = (String) configMap.get("componentName");
+                    // tabItem title
+                    for(int k=0; k<childrenList.size(); k++){
+                        JSONObject tabItem = JSONUtil.parseObj(childrenList.get(k));
+                        if(tabItem.containsKey("title")){
+                            String title = (String) tabItem.get("title");
+                            String i18nKey = currentKeyPrefix + "." + componentName + "." +k;
+                            String i18nLabel = I18nUtil.getMessage(i18nKey);
+                            if (ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey) && !i18nLabel.equals(title)) {
+                                tabItem.put("title", i18nLabel);
+                                childrenList.set(k, tabItem);
+                            }
+                        }
+                    }
+                }
+                mapI18nParam.put("parentKeyPrefix", currentKeyPrefix);
+                loadItemI18nData(childrenList, parseFlag, mapI18nParam);
+                mapI18nParam.remove("parentKeyPrefix");
+                configMap = (Map<String, Object>)itemMap.get("__config__");
+            }
+        }
+    }
+
 }
 

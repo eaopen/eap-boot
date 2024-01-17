@@ -212,26 +212,27 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
             i18nPrefix = formJson.getStr("i18nPrefix", i18nPrefix);
         }
         mapI18nParam.put("i18nPrefix", i18nPrefix);
+        if(hasI18n){
+            formJson = visualdevService.loadI18nData(formJson, mapI18nParam);
+            vo.setFormData(JSONUtil.toJsonStr(formJson));
+            if (StringUtil.isNotEmpty(vo.getColumnData())) {
+                vo.setColumnData(JSONUtil.toJsonStr(visualdevService.loadI18nData(JSONUtil.parseObj(vo.getColumnData()), mapI18nParam)));
+            }
+        }
 
         //处理默认值
         Map<String, Integer> havaDefaultCurrentValue = new HashMap<String, Integer>();
         UserInfo userInfo = userProvider.get();
-        if (StringUtil.isNotEmpty(vo.getFormData())) {
-            if(hasI18n){
-                vo.setFormData(JSONUtil.toJsonStr(formDataService.precheckData(formJson, mapI18nParam, havaDefaultCurrentValue)));
-            }else{
+        if(havaDefaultCurrentValue.size()>0){
+            if (StringUtil.isNotEmpty(vo.getFormData())) {
                 vo.setFormData(formDataService.setDefaultCurrentValue(vo.getFormData(), havaDefaultCurrentValue));
             }
-        }
-        if (StringUtil.isNotEmpty(vo.getColumnData())) {
-            if(hasI18n){
-                vo.setColumnData(JSONUtil.toJsonStr(formDataService.precheckData(JSONUtil.parseObj(vo.getColumnData()), mapI18nParam, havaDefaultCurrentValue)));
-            }else{
+            if (StringUtil.isNotEmpty(vo.getColumnData())) {
                 vo.setColumnData(formDataService.setDefaultCurrentValue(vo.getColumnData(), havaDefaultCurrentValue));
             }
-        }
-        if (StringUtil.isNotEmpty(vo.getAppColumnData())) {
-            vo.setAppColumnData(formDataService.setDefaultCurrentValue(vo.getAppColumnData(), havaDefaultCurrentValue));
+            if (StringUtil.isNotEmpty(vo.getAppColumnData())) {
+                vo.setAppColumnData(formDataService.setDefaultCurrentValue(vo.getAppColumnData(), havaDefaultCurrentValue));
+            }
         }
         return ActionResult.success(vo);
     }

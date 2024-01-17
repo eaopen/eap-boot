@@ -1,7 +1,7 @@
 package org.openea.eap.extj.base.service;
 
 
-import org.openea.eap.extj.base.service.SuperService;
+import cn.hutool.json.JSONObject;
 import org.openea.eap.extj.base.entity.VisualdevEntity;
 import org.openea.eap.extj.base.model.PaginationVisualdev;
 
@@ -64,4 +64,7 @@ public interface VisualdevService extends SuperService<VisualdevEntity> {
     Map<String,String> getTableNameToKey(String modelId);
 
     Boolean getPrimaryDbField(String linkId, String  table) throws Exception;
+
+
+    JSONObject loadI18nData(JSONObject configJson, Map<String, Object> mapI18nParam);
 }
