@@ -1,5 +1,6 @@
 package org.openea.eap.extj.base.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -32,6 +33,7 @@ import org.openea.eap.extj.model.visualJson.TableModel;
 import org.openea.eap.extj.model.visualJson.analysis.FormAllModel;
 import org.openea.eap.extj.model.visualJson.analysis.RecursionForm;
 import org.openea.eap.extj.model.visualJson.config.ConfigModel;
+import org.openea.eap.extj.onlinedev.model.DataInfoVO;
 import org.openea.eap.extj.util.EapUserProvider;
 import org.openea.eap.extj.util.JsonUtil;
 import org.openea.eap.extj.util.RandomUtil;
@@ -555,17 +557,41 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         }
     }
 
+    @Override
+    public void loadI18nData(String code, DataInfoVO vo){
+        // check i18n formData.hasI18n=true
+        boolean hasI18n = false;
+        Map<String, Object> mapI18nParam = new HashMap();
+        if (StringUtil.isEmpty(vo.getFormData())) {
+            return;
+        }
+        Map<String, Object> formJsonMap = JsonUtil.stringToMap(vo.getFormData().trim());
+        if(formJsonMap.containsKey("hasI18n") && MapUtil.getBool(formJsonMap, "hasI18n")){
+            hasI18n = true;
+        }
+        String i18nPrefix = code;
+        if(formJsonMap.containsKey("i18nPrefix")){
+            i18nPrefix = MapUtil.getStr(formJsonMap,"i18nPrefix", i18nPrefix);
+        }
+        mapI18nParam.put("i18nPrefix", i18nPrefix);
+        if(hasI18n){
+            vo.setFormData(loadI18nData(vo.getFormData(), mapI18nParam));
+            if (StringUtil.isNotEmpty(vo.getColumnData())) {
+                vo.setColumnData(loadI18nData(vo.getColumnData(), mapI18nParam));
+            }
+        }
+    }
+
     /**
      * 处理字段国际化
      * @param configJson
      * @return
      */
-    @Override
-    public JSONObject loadI18nData(JSONObject configJson, Map<String, Object> mapI18nParam) {
+    protected String loadI18nData(String configJson, Map<String, Object> mapI18nParam) {
         if(ObjectUtil.isEmpty(configJson)) {
             return configJson;
         }
-        Map<String, Object> configJsonMap = JsonUtil.entityToMap(configJson);
+        Map<String, Object> configJsonMap = JsonUtil.stringToMap(configJson.trim());
         if(configJsonMap == null && configJsonMap.isEmpty()) {
             return configJson;
         }
@@ -607,9 +633,8 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                 isChange = 1;
             }
         }
-
         if(isChange == 1) {
-            return JSONUtil.parseObj(configJsonMap);
+            return JsonUtil.getObjectToString(configJsonMap);
         } else {
             return configJson;
         }
