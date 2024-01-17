@@ -73,4 +73,7 @@ public interface I18nJsonDataService {
      */
     List<I18nJsonDataDO> getI18nJsonDataList(I18nJsonDataExportReqVO exportReqVO);
 
+    void createI18nData(String module, String i18nKey, String i18nDesc, String originValue);
+
+    boolean checkI18nExist(String module, String i18nKey);
 }

@@ -1,5 +1,8 @@
 package org.openea.eap.extj.base.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,6 +20,9 @@ import org.openea.eap.extj.database.model.dbfield.DbFieldModel;
 import org.openea.eap.extj.database.model.dbtable.DbTableFieldModel;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.form.model.form.VisualTableModel;
+import org.openea.eap.extj.form.service.FlowFormService;
+import org.openea.eap.extj.form.util.ConcurrencyUtils;
+import org.openea.eap.extj.form.util.VisualDevTableCre;
 import org.openea.eap.extj.model.visual.ExtnKeyConsts;
 import org.openea.eap.extj.model.visualJson.FieLdsModel;
 import org.openea.eap.extj.model.visualJson.FormCloumnUtil;
@@ -25,17 +31,16 @@ import org.openea.eap.extj.model.visualJson.TableModel;
 import org.openea.eap.extj.model.visualJson.analysis.FormAllModel;
 import org.openea.eap.extj.model.visualJson.analysis.RecursionForm;
 import org.openea.eap.extj.model.visualJson.config.ConfigModel;
-import org.openea.eap.extj.form.service.FlowFormService;
-import org.openea.eap.extj.util.*;
-import org.openea.eap.extj.form.util.ConcurrencyUtils;
-import org.openea.eap.extj.form.util.VisualDevTableCre;
+import org.openea.eap.extj.util.EapUserProvider;
+import org.openea.eap.extj.util.JsonUtil;
+import org.openea.eap.extj.util.RandomUtil;
+import org.openea.eap.extj.util.StringUtil;
+import org.openea.eap.framework.i18n.core.I18nUtil;
+import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +66,9 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
     @Autowired
     private VisualdevReleaseService visualdevReleaseService;
 
+
+    @Autowired
+    private I18nJsonDataService i18nJsonDataService;
     @Override
     public List<VisualdevEntity> getList(PaginationVisualdev paginationVisualdev) {
         // 定义变量判断是否需要使用修改时间倒序
@@ -107,44 +115,44 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
     public VisualdevEntity getReleaseInfo(String id) {
         VisualdevReleaseEntity visualdevReleaseEntity = visualdevReleaseService.getById(id);
         VisualdevEntity visualdevEntity = null;
-        if(visualdevReleaseEntity != null){
+        if (visualdevReleaseEntity != null) {
             visualdevEntity = JsonUtil.getJsonToBean(visualdevReleaseEntity, VisualdevEntity.class);
         }
-        if(visualdevEntity == null){
+        if (visualdevEntity == null) {
             visualdevEntity = getById(id);
         }
         return visualdevEntity;
     }
 
     @Override
-    public Map<String,String> getTableMap(String formData){
-        Map<String,String> tableMap  = new HashMap<>();
-        if(StringUtil.isEmpty(formData)){
+    public Map<String, String> getTableMap(String formData) {
+        Map<String, String> tableMap = new HashMap<>();
+        if (StringUtil.isEmpty(formData)) {
             return tableMap;
         }
         FormDataModel formDataModel = JsonUtil.getJsonToBean(formData, FormDataModel.class);
         String fields = formDataModel.getFields();
         List<FieLdsModel> list = JsonUtil.getJsonToList(fields, FieLdsModel.class);
-        list.forEach(item->{
-            this.solveTableName(item,tableMap);
+        list.forEach(item -> {
+            this.solveTableName(item, tableMap);
         });
-        return  tableMap;
+        return tableMap;
     }
 
-    private void solveTableName(FieLdsModel item, Map tableMap){
+    private void solveTableName(FieLdsModel item, Map tableMap) {
         ConfigModel config = item.getConfig();
-        if(config!=null){
+        if (config != null) {
             List<FieLdsModel> children = config.getChildren();
-            if("table".equals(config.getExtnKey())){
-                if(children!=null && children.size()>0 ){
+            if ("table".equals(config.getExtnKey())) {
+                if (children != null && children.size() > 0) {
                     FieLdsModel fieLdsModel = children.get(0);
                     String parentVModel = fieLdsModel.getConfig().getParentVModel();
                     String relationTable = fieLdsModel.getConfig().getRelationTable();
-                    tableMap.put(parentVModel,relationTable);
+                    tableMap.put(parentVModel, relationTable);
                 }
             }
-            if(children!=null){
-                children.forEach( item2 ->{
+            if (children != null) {
+                children.forEach(item2 -> {
                     this.solveTableName(item2, tableMap);
                 });
             }
@@ -164,7 +172,7 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
             //数据过滤信息
             Map<String, String> tableMap = this.getTableMap(entity.getFormData());
             // 保存app,pc过滤配置
-            filterService.saveRuleList(entity.getId(),entity,1,1,tableMap);
+            filterService.saveRuleList(entity.getId(), entity, 1, 1, tableMap);
 
             //是否开启安全锁
             Boolean concurrencyLock = formDataModel.getConcurrencyLock();
@@ -179,10 +187,10 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                 List<TableModel> visualTables = JsonUtil.getJsonToList(entity.getVisualTables(), TableModel.class);
                 TableModel mainTable = visualTables.stream().filter(f -> f.getTypeId().equals("1")).findFirst().orElse(null);
                 //判断自增是否匹配
-                concurrencyUtils.checkAutoIncrement(primaryKeyPolicy,entity.getDbLinkId(),visualTables);
+                concurrencyUtils.checkAutoIncrement(primaryKeyPolicy, entity.getDbLinkId(), visualTables);
                 //在主表创建锁字段
                 try {
-                    if (logicalDelete && mainTable!=null) {
+                    if (logicalDelete && mainTable != null) {
                         concurrencyUtils.creDeleteMark(mainTable.getTable(), entity.getDbLinkId());
                     }
                     if (concurrencyLock) {
@@ -222,7 +230,7 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
             if (visualTables.size() > 0) {
                 if (formDataModel != null) {
                     try {
-                        TableModel mainTable = visualTables.stream().filter(f -> f.getTypeId().equals("1" )).findFirst().orElse(null);
+                        TableModel mainTable = visualTables.stream().filter(f -> f.getTypeId().equals("1")).findFirst().orElse(null);
                         if (logicalDelete && mainTable != null) {
                             //在主表创建逻辑删除
                             concurrencyVisualUtils.creDeleteMark(mainTable.getTable(), entity.getDbLinkId());
@@ -240,9 +248,10 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                     }
                 }
                 //判断自增是否匹配
-                concurrencyUtils.checkAutoIncrement(primaryKeyPolicy,entity.getDbLinkId(),visualTables);
+                concurrencyUtils.checkAutoIncrement(primaryKeyPolicy, entity.getDbLinkId(), visualTables);
             }
         }
+        checkVisualdevI18n(entity);
         return b;
     }
 
@@ -250,10 +259,10 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
     public void delete(VisualdevEntity entity) throws WorkFlowException {
         if (entity != null) {
 
-            try{
+            try {
                 //删除表单
                 flowFormService.removeById(entity.getId());
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.warn(e.getMessage());
             }
             List<String> ids = new ArrayList<>();
@@ -301,7 +310,7 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         String tableName = "mt" + RandomUtil.uuId();
 
         String dbLinkId = entity.getDbLinkId();
-        VisualTableModel model = new VisualTableModel(formJsonArray, formAllModel, tableName, dbLinkId, entity.getFullName(), concurrencyLock, primaryKeyPolicy,logicalDelete);
+        VisualTableModel model = new VisualTableModel(formJsonArray, formAllModel, tableName, dbLinkId, entity.getFullName(), concurrencyLock, primaryKeyPolicy, logicalDelete);
         List<TableModel> tableModelList = visualDevTableCreUtil.tableList(model);
 
         if (formDataModel != null) {
@@ -345,15 +354,173 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         );
         return childKeyMap;
     }
+
     @Override
-    public Boolean getPrimaryDbField(String linkId, String  table) throws Exception{
+    public Boolean getPrimaryDbField(String linkId, String table) throws Exception {
         DbTableFieldModel dbTableModel = dbTableService.getDbTableModel(linkId, table);
         List<DbFieldModel> data = dbTableModel.getDbFieldModelList();
         DbFieldModel dbFieldModel = data.stream().filter(DbFieldModel::getIsPrimaryKey).findFirst().orElse(null);
-        if (dbFieldModel != null){
+        if (dbFieldModel != null) {
             return dbFieldModel.getIsAutoIncrement() != null && dbFieldModel.getIsAutoIncrement();
-        }else {
+        } else {
             return null;
         }
     }
+
+
+    protected void checkVisualdevI18n(VisualdevEntity entity) throws Exception {
+        boolean hasI18n = false;
+        JSONObject formJson = JSONUtil.parseObj(entity.getFormData());
+        if (formJson.containsKey("hasI18n") && formJson.getBool("hasI18n")) {
+            hasI18n = true;
+        }
+        if (!hasI18n) {
+            return;
+        }
+        Map<String, Object> mapI18nParam = new HashMap();
+        String i18nPrefix = formJson.getStr("i18nPrefix");
+        mapI18nParam.put("i18nPrefix", i18nPrefix);
+
+        mapI18nParam.put("modelName", entity.getFullName());
+        mapI18nParam.put("modelCode", entity.getEnCode());
+
+        // 是否检查缺少i18n资源后批量添加？
+        mapI18nParam.put("lostI18nRes", new HashMap<String, String>());
+
+
+
+        checkI18nInConfig(formJson, mapI18nParam);
+        if (StringUtil.isNotEmpty(entity.getColumnData())) {
+            checkI18nInConfig(JSONUtil.parseObj(entity.getColumnData()), mapI18nParam);
+        }
+
+        Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
+        if (lostI18nRes != null && !lostI18nRes.isEmpty()) {
+            String module = "modelDev";
+            lostI18nRes.keySet().stream().forEach(i18nKey -> {
+                String label = lostI18nRes.get(i18nKey);
+                // 过滤掉通用或不必要的翻译
+                if(isIgnoreI18nKey(i18nKey, label)){
+                    return;
+                }
+                // 检查是否有添加中的数据(I18nUtil默认获取的是缓存数据)
+                if(!i18nJsonDataService.checkI18nExist(module, i18nKey)){
+                    String desc = entity.getFullName()+"-"+label;
+                    i18nJsonDataService.createI18nData(module, i18nKey, desc, label);
+                }
+            });
+        }
+    }
+
+    private boolean isIgnoreI18nKey(String i18nKey, String label) {
+        // xx.placeholder -> 请输入/请选择/数字文本
+
+        if(i18nKey.endsWith(".placeholder")){
+            if("请输入".equals(label) || "请选择".equals(label) || "数字文本".equals(label)){
+                return true;
+            }
+        }
+        // sort.label=排序
+        // remark.label=备注
+        if(i18nKey.endsWith(".sort.label") && "排序".equals(label)){
+            return true;
+        }
+        if(i18nKey.endsWith(".remark.label") && "备注".equals(label)){
+            return true;
+        }
+        return false;
+    }
+
+    private void checkI18nInConfig(JSONObject configJson, Map<String, Object> mapI18nParam) throws Exception {
+        if(ObjectUtil.isEmpty(configJson)) {
+            return ;
+        }
+        Map<String, Object> configJsonMap = JsonUtil.entityToMap(configJson);
+        if(configJsonMap == null && configJsonMap.isEmpty()) {
+            return;
+        }
+
+        //处理字段
+        Object fieldsObj = configJsonMap.get("fields");
+        List<Map<String, Object>> fieldsList = null;
+        if(fieldsObj != null) {
+            fieldsList = (List<Map<String, Object>>)fieldsObj;
+            if(fieldsList != null && !fieldsList.isEmpty()) {
+                checkI18nResource( fieldsList, "add", mapI18nParam);
+            }
+        }
+        //处理查询条件
+        Object searchObj = configJsonMap.get("searchList");
+        List<Map<String, Object>> searchList = null;
+        if(searchObj != null) {
+            searchList = (List<Map<String, Object>>)searchObj;
+            if(searchList != null && !searchList.isEmpty()) {
+                checkI18nResource( searchList, "search",mapI18nParam);
+            }
+        }
+        //处理列
+        Object columnListObj = configJsonMap.get("columnList");
+        List<Map<String, Object>> columnList = null;
+        if(columnListObj != null) {
+            columnList = (List<Map<String, Object>>)columnListObj;
+            if(columnList != null && !columnList.isEmpty()) {
+                checkI18nResource( columnList, "add",mapI18nParam);
+            }
+        }
+    }
+    void checkI18nResource( List<Map<String, Object>> itemList,  String parseFlag, Map<String, Object>  mapI18nParam){
+        for(int i = 0, len = itemList.size(); i < len; i++) {
+            Map<String, Object> itemMap = itemList.get(i);
+            if (itemMap == null || itemMap.isEmpty()) {
+                continue;
+            }
+            Map<String, Object> configMap = (Map<String, Object>) itemMap.get("__config__");
+            if (configMap == null || configMap.isEmpty()) {
+                continue;
+            }
+            String i18nPrefix = (String) mapI18nParam.get("i18nPrefix");
+            // itemMap: __vModel__, label(search)
+            String fieldName = (String) itemMap.get("__vModel__");
+            String parentKeyPrefix = (String) mapI18nParam.get("parentKeyPrefix");
+            if (parentKeyPrefix == null) {
+                parentKeyPrefix = i18nPrefix;
+            }
+            String currentKeyPrefix = parentKeyPrefix;
+            if(StringUtil.isNotEmpty(fieldName)) {
+                currentKeyPrefix += "." + fieldName;
+            }
+            // configMap: label/tipLabel/placeholder
+            String[] keys = new String[]{"label", "tipLabel", "placeholder"};
+            for (String key : keys) {
+                String originValue = null;
+                if (itemMap.containsKey(key)) {
+                    originValue = (String) itemMap.get(key);
+                }
+                if (ObjectUtil.isEmpty(originValue) && configMap.containsKey(key)) {
+                    originValue = (String) configMap.get(key);
+                }
+                if(ObjectUtil.isEmpty(originValue)){
+                    continue;
+                }
+                // 检查i18n数据，若无数据则补充
+                String i18nKey = currentKeyPrefix + "." + key;
+                String i18nLabel = I18nUtil.getMessage(i18nKey);
+                if (ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)) {
+                    Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
+                    if(!lostI18nRes.containsKey(i18nKey)){
+                        lostI18nRes.put(i18nKey, originValue);
+                    }
+                }
+            }
+
+            List<Map<String, Object>> childrenList = (List<Map<String, Object>>) configMap.get("children");
+            if (childrenList != null && !childrenList.isEmpty()) {
+                mapI18nParam.put("parentKeyPrefix", currentKeyPrefix);
+                checkI18nResource(childrenList, parseFlag, mapI18nParam);
+                mapI18nParam.remove("parentKeyPrefix");
+                configMap = (Map<String, Object>) itemMap.get("__config__");
+            }
+        }
+    }
 }
+

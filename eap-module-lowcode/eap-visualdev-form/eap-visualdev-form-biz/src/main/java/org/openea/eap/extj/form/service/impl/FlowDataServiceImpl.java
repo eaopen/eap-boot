@@ -293,16 +293,30 @@ public class FlowDataServiceImpl implements FormDataService {
 			if(parentKeyPrefix==null){
 				parentKeyPrefix = i18nPrefix;
 			}
-			String currentKeyPrefix = parentKeyPrefix  + "." + fieldName;
+			String currentKeyPrefix = parentKeyPrefix;
+			if(StringUtil.isNotEmpty(fieldName)) {
+				currentKeyPrefix += "." + fieldName;
+			}
 			// configMap: label/tipLabel/placeholder
-			String i18nKey = currentKeyPrefix+".label";
-			String i18nLabel = I18nUtil.getMessage(i18nKey);
-			if(ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey)){
-				if(itemMap.containsKey("label")){
-					itemMap.put("label", i18nLabel);
+			String[]  keys = new String[]{"label", "tipLabel", "placeholder"};
+			for(String key : keys){
+				String i18nKey = currentKeyPrefix+"."+key;
+				String i18nLabel = I18nUtil.getMessage(i18nKey);
+				if(ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)){
+					// [modelxxx].[field].[key] => [field].[key] => table.[field].[key]
+					String[] parts = i18nKey.split("\\.");
+					if(parts.length > 1){
+						i18nKey = "table."+parts[parts.length-2];
+					}
+					i18nLabel = I18nUtil.getMessage(i18nKey);
 				}
-				if(configMap.containsKey("label")){
-					configMap.put("label", i18nLabel);
+				if(ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey)){
+					if(itemMap.containsKey(key)){
+						itemMap.put(key, i18nLabel);
+					}
+					if(configMap.containsKey(key)){
+						configMap.put(key, i18nLabel);
+					}
 				}
 			}
 
