@@ -1,3 +1,6 @@
+-- 增加国际化字段 hasI18n(F_HasI18n)
+
+
 -- merge jeecg/jnpf data
 
 update base_visualdev t

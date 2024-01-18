@@ -98,7 +98,7 @@ public class I18nJsonDataServiceImpl implements I18nJsonDataService {
      */
     @Async
     public void createI18nData(String module, List<Map<String, String>> itemList) {
-        if(CollectionUtil.isNotEmpty(itemList)) return;
+        if(CollectionUtil.isEmpty(itemList)) return;
         for(Map<String, String> map : itemList){
             String key = MapUtil.getStr(map, "key");
             String desc = MapUtil.getStr(map, "desc");

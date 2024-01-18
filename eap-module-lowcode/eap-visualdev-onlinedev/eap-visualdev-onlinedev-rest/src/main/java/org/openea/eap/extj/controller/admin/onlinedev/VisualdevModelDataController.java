@@ -198,7 +198,7 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
             // todo 待集成flowable
         }
 
-        visualdevService.loadI18nData(entity.getEnCode(), vo);
+        visualdevService.loadI18nData(vo);
 
         //处理默认值
         Map<String, Integer> havaDefaultCurrentValue = new HashMap<String, Integer>();

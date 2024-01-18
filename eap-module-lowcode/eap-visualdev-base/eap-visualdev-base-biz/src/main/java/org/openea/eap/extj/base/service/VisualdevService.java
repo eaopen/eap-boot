@@ -66,6 +66,6 @@ public interface VisualdevService extends SuperService<VisualdevEntity> {
     Boolean getPrimaryDbField(String linkId, String  table) throws Exception;
 
 
-    void loadI18nData(String code, DataInfoVO vo);
+    void loadI18nData(DataInfoVO vo);
 
 }

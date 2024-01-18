@@ -20,6 +20,8 @@ public class VisualFunctionModel {
 	private Integer state;
 	@Schema(description = "类型(1-应用开发,2-移动开发,3-流程表单,4-Web表单,5-App表单)" )
 	private Integer type;
+	@Schema(description ="启用国际化")
+	private Integer hasI18n;
 	@Schema(description = "关联的表" )
 	private String tables;
 	@Schema(description = "创建时间" )

@@ -38,6 +38,8 @@ public class VisualDevInfoVO {
     private String dbLinkId;
     @Schema(description = "页面类型（1、纯表单，2、表单加列表，3、表单列表工作流、4、数据视图）" )
     private String webType;
+    @Schema(description ="启用国际化")
+    private Integer hasI18n;
     @Schema(description = "排序" )
     private Long sortCode;
     @Schema(description = "启用流程" )

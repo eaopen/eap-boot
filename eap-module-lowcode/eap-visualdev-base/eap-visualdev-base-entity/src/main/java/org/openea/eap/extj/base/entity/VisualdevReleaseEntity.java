@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.openea.eap.extj.base.entity.SuperBaseEntity;
 
 import java.util.Date;
 
@@ -86,6 +85,9 @@ public class VisualdevReleaseEntity extends SuperBaseEntity.SuperTBaseEntity<Str
      */
     @TableField("F_CATEGORY")
     private String category;
+
+    @TableField("F_HASI18N")
+    private Integer hasI18n;
 
     /**
      * 表单配置JSON

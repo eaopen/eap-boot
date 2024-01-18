@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class DataInfoVO {
+    private String enCode;
+    private Integer hasI18n;
     private String formData;
     private String columnData;
     private String appColumnData;

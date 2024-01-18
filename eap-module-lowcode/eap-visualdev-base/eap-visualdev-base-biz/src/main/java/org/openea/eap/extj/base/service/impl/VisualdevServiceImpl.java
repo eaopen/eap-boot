@@ -373,32 +373,21 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
     }
 
 
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////    @Override/////////////
 
     @Override
-    public void loadI18nData(String code, DataInfoVO vo){
-        // check i18n formData.hasI18n=true
-        boolean hasI18n = false;
-
-        if (StringUtil.isEmpty(vo.getFormData())) {
-            return;
-        }
-        Map<String, Object> formJsonMap = JsonUtil.stringToMap(vo.getFormData().trim());
-        if(formJsonMap.containsKey("hasI18n") && MapUtil.getBool(formJsonMap, "hasI18n")){
-            hasI18n = true;
-        }
+    public void loadI18nData(DataInfoVO vo){
+        if(vo==null || vo.getHasI18n()==null) return;
+        boolean hasI18n = (1==vo.getHasI18n());
         if(!hasI18n){
             return;
         }
+
         Map<String, Object> mapI18nParam = new HashMap();
         mapI18nParam.put("checkLost", false);
         mapI18nParam.put("needChange", true);
-
-        String i18nPrefix = code;
-        if(formJsonMap.containsKey("i18nPrefix")){
-            i18nPrefix = MapUtil.getStr(formJsonMap,"i18nPrefix", i18nPrefix);
-        }
-        mapI18nParam.put("i18nPrefix", i18nPrefix);
+        mapI18nParam.put("modelCode", vo.getEnCode());
+        mapI18nParam.put("i18nPrefix", vo.getEnCode());
 
         if (StringUtil.isNotEmpty(vo.getFormData())) {
             vo.setFormData(checkI18nConfigJson(vo.getFormData(), mapI18nParam));
@@ -408,29 +397,24 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         }
     }
 
-
     protected void checkVisualdevI18n(VisualdevEntity entity) throws Exception {
-        boolean hasI18n = false;
-        JSONObject formJson = JSONUtil.parseObj(entity.getFormData());
-        if (formJson.containsKey("hasI18n") && formJson.getBool("hasI18n")) {
-            hasI18n = true;
-        }
+        if(entity==null || entity.getHasI18n()==null) return;
+        boolean hasI18n = (1==entity.getHasI18n());
         if (!hasI18n) {
             return;
         }
-        Map<String, Object> mapI18nParam = new HashMap();
-        String i18nPrefix = formJson.getStr("i18nPrefix");
-        mapI18nParam.put("i18nPrefix", i18nPrefix);
 
+        Map<String, Object> mapI18nParam = new HashMap();
         mapI18nParam.put("modelName", entity.getFullName());
         mapI18nParam.put("modelCode", entity.getEnCode());
+        mapI18nParam.put("i18nPrefix", entity.getEnCode());
 
-        // 是否检查缺少i18n资源后批量添加？
         mapI18nParam.put("checkLost", true);
         mapI18nParam.put("needChange", true);
         mapI18nParam.put("lostI18nRes", new HashMap<String, String>());
-
-        checkI18nConfigJson(entity.getFormData(), mapI18nParam);
+        if (StringUtil.isNotEmpty(entity.getFormData())) {
+            checkI18nConfigJson(entity.getFormData(), mapI18nParam);
+        }
         if (StringUtil.isNotEmpty(entity.getColumnData())) {
             checkI18nConfigJson(entity.getColumnData(), mapI18nParam);
         }
