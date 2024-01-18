@@ -449,6 +449,7 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
     public void addI18nData(Map<String, String> i18nDataRes, String module, String moduleDesc) throws Exception {
         AtomicInteger needReloadI18n = new AtomicInteger(0);
         if (CollectionUtil.isNotEmpty(i18nDataRes)) {
+            List<Map<String, String>> itemList = new ArrayList<>();
             i18nDataRes.keySet().stream().forEach(i18nKey -> {
                 String label = i18nDataRes.get(i18nKey);
                 // 过滤掉通用或不必要的翻译
@@ -464,10 +465,19 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                     if(i18nKey.startsWith("onlineDev.")){
                         desc = "onlineDev-"+label;
                     }
-                    i18nJsonDataService.createI18nData(module, i18nKey, desc, label);
+                    Map<String, String> item = new HashMap<>();
+                    item.put("key", i18nKey);
+                    item.put("desc", desc);
+                    item.put("label", label);
+                    itemList.add(item);
+                    //i18nJsonDataService.createI18nData(module, i18nKey, desc, label);
                     needReloadI18n.set(1);
                 }
             });
+            if(itemList.size()>0){
+                i18nJsonDataService.createI18nData(module, itemList);
+                needReloadI18n.set(1);
+            }
         }
         if(1==needReloadI18n.get()){
             I18nUtil.reloadI18nApiData();

@@ -1,5 +1,7 @@
 package org.openea.eap.module.system.service.language;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.json.JSONObject;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.controller.admin.language.vo.I18nJsonDataCreateReqVO;
@@ -10,12 +12,14 @@ import org.openea.eap.module.system.convert.language.I18nJsonDataConvert;
 import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 import org.openea.eap.module.system.dal.mysql.language.I18nJsonDataMapper;
 import org.openea.eap.module.system.service.language.translate.TranslateUtil;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,6 +90,22 @@ public class I18nJsonDataServiceImpl implements I18nJsonDataService {
         return i18nJsonDataMapper.selectList(exportReqVO);
     }
 
+    /**
+     * 批量添加国际化条目
+     *
+     * @param module 模块
+     * @param itemList map(key, desc, label)
+     */
+    @Async
+    public void createI18nData(String module, List<Map<String, String>> itemList) {
+        if(CollectionUtil.isNotEmpty(itemList)) return;
+        for(Map<String, String> map : itemList){
+            String key = MapUtil.getStr(map, "key");
+            String desc = MapUtil.getStr(map, "desc");
+            String label = MapUtil.getStr(map, "label");
+            createI18nData(module, key, desc, label);
+        }
+    }
     @Override
     public void createI18nData(String module, String i18nKey, String i18nDesc, String originValue) {
         I18nJsonDataDO.I18nJsonDataDOBuilder i18nJsonDataDO = I18nJsonDataDO.builder();

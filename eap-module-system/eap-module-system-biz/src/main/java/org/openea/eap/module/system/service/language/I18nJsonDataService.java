@@ -10,6 +10,7 @@ import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 翻译 Service 接口
@@ -72,6 +73,15 @@ public interface I18nJsonDataService {
      * @return 翻译列表
      */
     List<I18nJsonDataDO> getI18nJsonDataList(I18nJsonDataExportReqVO exportReqVO);
+
+
+    /**
+     * 批量添加国际化条目
+     *
+     * @param module 模块
+     * @param itemList map(key, desc, label)
+     */
+    void createI18nData(String module, List<Map<String, String>> itemList);
 
     void createI18nData(String module, String i18nKey, String i18nDesc, String originValue);
 
