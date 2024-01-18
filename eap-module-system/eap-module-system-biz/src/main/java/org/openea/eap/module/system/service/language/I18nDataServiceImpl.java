@@ -256,9 +256,9 @@ public class I18nDataServiceImpl implements I18nDataService {
     public I18nJsonDataDO autoTransItem(I18nJsonDataDO i18nJsonData) {
 
         JSONObject json = JSONUtil.parseObj(i18nJsonData.getJson());
-        String label = json.getStr("zh-CN");
+        String label = json.getStr("en-US");
         if(ObjectUtil.isEmpty(label)){
-            label = json.getStr("en-US");
+            label = json.getStr("zh-CN");
         }if(ObjectUtil.isEmpty(label)){
             label = json.getStr("ja-JP");
         }
