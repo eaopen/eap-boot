@@ -1,6 +1,7 @@
 package org.openea.eap.module.system.service.language;
 
 import cn.hutool.json.JSONObject;
+import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 
 import java.util.Collection;
@@ -68,4 +69,5 @@ public interface I18nDataService {
      */
     JSONObject autoTransMenu(String type, String key, String name, int len);
 
+    I18nJsonDataDO autoTransItem(I18nJsonDataDO i18nJsonData);
 }

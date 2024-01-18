@@ -252,6 +252,32 @@ public class I18nDataServiceImpl implements I18nDataService {
         return json;
     }
 
+    @Override
+    public I18nJsonDataDO autoTransItem(I18nJsonDataDO i18nJsonData) {
+
+        JSONObject json = JSONUtil.parseObj(i18nJsonData.getJson());
+        String label = json.getStr("zh-CN");
+        if(ObjectUtil.isEmpty(label)){
+            label = json.getStr("en-US");
+        }if(ObjectUtil.isEmpty(label)){
+            label = json.getStr("ja-JP");
+        }
+        if(ObjectUtil.isEmpty(label)){
+            json.put("warning","no data");
+            i18nJsonData.setJson(json.toStringPretty());
+            return i18nJsonData;
+        }
+        String finalLabel = label;
+        langList.forEach(lang -> {
+            String i18nLabel = TranslateUtil.translateText(finalLabel, "auto", lang);
+            if(ObjectUtil.isNotEmpty(i18nLabel)){
+                json.put(lang, i18nLabel);
+            }
+        });
+        i18nJsonData.setJson(json.toStringPretty());
+        return i18nJsonData;
+    }
+
 
     private JSONObject i18n2JsJson(Map<String, String> mI18nData){
         JSONObject jsJson = new JSONObject();

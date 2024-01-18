@@ -6,12 +6,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.SneakyThrows;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.i18n.core.I18nUtil;
+import org.openea.eap.module.system.controller.admin.language.vo.I18nJsonDataRespVO;
+import org.openea.eap.module.system.controller.admin.language.vo.I18nJsonDataUpdateReqVO;
+import org.openea.eap.module.system.convert.language.I18nJsonDataConvert;
+import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 import org.openea.eap.module.system.service.language.I18nDataService;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -47,5 +48,13 @@ public class I18nDataController {
     public CommonResult reloadI18nUtil(){
         I18nUtil.reloadI18nApiData();
         return success("ok");
+    }
+
+    @PostMapping("/autoTransItem")
+    @Operation(summary = "自动翻译")
+    public CommonResult<I18nJsonDataRespVO> autoTransItem(@RequestBody I18nJsonDataUpdateReqVO updateReqVO) {
+        I18nJsonDataDO i18nJsonData = I18nJsonDataConvert.INSTANCE.convert(updateReqVO);
+        i18nDataService.autoTransItem(i18nJsonData);
+        return success(I18nJsonDataConvert.INSTANCE.convert(i18nJsonData));
     }
 }
