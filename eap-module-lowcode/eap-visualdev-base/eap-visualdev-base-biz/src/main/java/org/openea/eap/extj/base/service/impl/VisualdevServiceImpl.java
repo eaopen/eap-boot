@@ -1,5 +1,6 @@
 package org.openea.eap.extj.base.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
@@ -9,7 +10,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.SneakyThrows;
-import org.openea.eap.extj.base.UserInfo;
 import org.openea.eap.extj.base.entity.VisualdevEntity;
 import org.openea.eap.extj.base.entity.VisualdevReleaseEntity;
 import org.openea.eap.extj.base.mapper.VisualdevMapper;
@@ -41,12 +41,10 @@ import org.openea.eap.extj.util.StringUtil;
 import org.openea.eap.framework.i18n.core.I18nUtil;
 import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -375,6 +373,42 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
     }
 
 
+///////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void loadI18nData(String code, DataInfoVO vo){
+        // check i18n formData.hasI18n=true
+        boolean hasI18n = false;
+
+        if (StringUtil.isEmpty(vo.getFormData())) {
+            return;
+        }
+        Map<String, Object> formJsonMap = JsonUtil.stringToMap(vo.getFormData().trim());
+        if(formJsonMap.containsKey("hasI18n") && MapUtil.getBool(formJsonMap, "hasI18n")){
+            hasI18n = true;
+        }
+        if(!hasI18n){
+            return;
+        }
+        Map<String, Object> mapI18nParam = new HashMap();
+        mapI18nParam.put("checkLost", false);
+        mapI18nParam.put("needChange", true);
+
+        String i18nPrefix = code;
+        if(formJsonMap.containsKey("i18nPrefix")){
+            i18nPrefix = MapUtil.getStr(formJsonMap,"i18nPrefix", i18nPrefix);
+        }
+        mapI18nParam.put("i18nPrefix", i18nPrefix);
+
+        if (StringUtil.isNotEmpty(vo.getFormData())) {
+            vo.setFormData(checkI18nConfigJson(vo.getFormData(), mapI18nParam));
+        }
+        if (StringUtil.isNotEmpty(vo.getColumnData())) {
+            vo.setColumnData(checkI18nConfigJson(vo.getColumnData(), mapI18nParam));
+        }
+    }
+
+
     protected void checkVisualdevI18n(VisualdevEntity entity) throws Exception {
         boolean hasI18n = false;
         JSONObject formJson = JSONUtil.parseObj(entity.getFormData());
@@ -392,28 +426,44 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         mapI18nParam.put("modelCode", entity.getEnCode());
 
         // 是否检查缺少i18n资源后批量添加？
+        mapI18nParam.put("checkLost", true);
+        mapI18nParam.put("needChange", true);
         mapI18nParam.put("lostI18nRes", new HashMap<String, String>());
 
-
-
-        checkI18nInConfig(formJson, mapI18nParam);
+        checkI18nConfigJson(entity.getFormData(), mapI18nParam);
         if (StringUtil.isNotEmpty(entity.getColumnData())) {
-            checkI18nInConfig(JSONUtil.parseObj(entity.getColumnData()), mapI18nParam);
+            checkI18nConfigJson(entity.getColumnData(), mapI18nParam);
         }
 
         Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
-        AtomicInteger needReloadI18n = new AtomicInteger(0);
         if (lostI18nRes != null && !lostI18nRes.isEmpty()) {
-            String module = "modelDev";
-            lostI18nRes.keySet().stream().forEach(i18nKey -> {
-                String label = lostI18nRes.get(i18nKey);
+            try{
+                addI18nData(lostI18nRes, "modelDev", entity.getFullName());
+            }catch(Exception e){
+                log.error("addI18nData " + e.getMessage(), e);
+            }
+        }
+    }
+
+    @Async
+    public void addI18nData(Map<String, String> i18nDataRes, String module, String moduleDesc) throws Exception {
+        AtomicInteger needReloadI18n = new AtomicInteger(0);
+        if (CollectionUtil.isNotEmpty(i18nDataRes)) {
+            i18nDataRes.keySet().stream().forEach(i18nKey -> {
+                String label = i18nDataRes.get(i18nKey);
                 // 过滤掉通用或不必要的翻译
-                if(isIgnoreI18nKey(i18nKey, label)){
-                    return;
+                // xx.placeholder -> 请输入/请选择/数字文本
+                if(i18nKey.endsWith(".placeholder")){
+                    if("请输入".equals(label) || "请选择".equals(label) || "数字文本".equals(label)){
+                        return;
+                    }
                 }
                 // 检查是否有添加中的数据(I18nUtil默认获取的是缓存数据)
                 if(!i18nJsonDataService.checkI18nExist(module, i18nKey)){
-                    String desc = entity.getFullName()+"-"+label;
+                    String desc = moduleDesc+"-"+label;
+                    if(i18nKey.startsWith("onlineDev.")){
+                        desc = "onlineDev-"+label;
+                    }
                     i18nJsonDataService.createI18nData(module, i18nKey, desc, label);
                     needReloadI18n.set(1);
                 }
@@ -422,35 +472,18 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         if(1==needReloadI18n.get()){
             I18nUtil.reloadI18nApiData();
         }
-    }
+    };
 
-    private boolean isIgnoreI18nKey(String i18nKey, String label) {
-        // xx.placeholder -> 请输入/请选择/数字文本
-
-        if(i18nKey.endsWith(".placeholder")){
-            if("请输入".equals(label) || "请选择".equals(label) || "数字文本".equals(label)){
-                return true;
-            }
-        }
-        // sort.label=排序
-        // remark.label=备注
-        if(i18nKey.endsWith(".sort.label") && "排序".equals(label)){
-            return true;
-        }
-        if(i18nKey.endsWith(".remark.label") && "备注".equals(label)){
-            return true;
-        }
-        return false;
-    }
-
-    private void checkI18nInConfig(JSONObject configJson, Map<String, Object> mapI18nParam) throws Exception {
+    private String checkI18nConfigJson(String configJson, Map<String, Object> mapI18nParam){
         if(ObjectUtil.isEmpty(configJson)) {
-            return ;
+            return configJson;
         }
-        Map<String, Object> configJsonMap = JsonUtil.entityToMap(configJson);
+        Map<String, Object> configJsonMap = JsonUtil.stringToMap(configJson.trim());
         if(configJsonMap == null && configJsonMap.isEmpty()) {
-            return;
+            return configJson;
         }
+
+        int isChange = 0;
 
         //处理字段
         Object fieldsObj = configJsonMap.get("fields");
@@ -458,7 +491,12 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         if(fieldsObj != null) {
             fieldsList = (List<Map<String, Object>>)fieldsObj;
             if(fieldsList != null && !fieldsList.isEmpty()) {
-                checkI18nResource( fieldsList, "add", mapI18nParam);
+                //mapI18nParam.put("mapI18nParam", "add");
+                int count = checkI18nResource( fieldsList, mapI18nParam);
+                if(count>0) {
+                    configJsonMap.put("fields", fieldsList);
+                    isChange = 1;
+                }
             }
         }
         //处理查询条件
@@ -467,7 +505,12 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         if(searchObj != null) {
             searchList = (List<Map<String, Object>>)searchObj;
             if(searchList != null && !searchList.isEmpty()) {
-                checkI18nResource( searchList, "search",mapI18nParam);
+                //mapI18nParam.put("mapI18nParam", "search");
+                int count = checkI18nResource( searchList, mapI18nParam);
+                if(count>0) {
+                    configJsonMap.put("searchList", searchList);
+                    isChange = 1;
+                }
             }
         }
         //处理列
@@ -476,11 +519,65 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
         if(columnListObj != null) {
             columnList = (List<Map<String, Object>>)columnListObj;
             if(columnList != null && !columnList.isEmpty()) {
-                checkI18nResource( columnList, "add",mapI18nParam);
+                //mapI18nParam.put("mapI18nParam", "add");
+                int count = checkI18nResource( columnList, mapI18nParam);
+                if(count>0) {
+                    configJsonMap.put("columnList", columnList);
+                    isChange = 1;
+                }
             }
         }
+
+        //处理button columnBtnsList, btnsList
+        List<Map<String, Object>> buttonList =  null;
+        Object btnsListObj = configJsonMap.get("btnsList");
+        if(btnsListObj != null) {
+            buttonList = (List<Map<String, Object>>)btnsListObj;
+            if(buttonList != null && !buttonList.isEmpty()) {
+                int count = checkI18nButton( buttonList, mapI18nParam);
+                if(count>0) {
+                    configJsonMap.put("btnsList", buttonList);
+                    isChange = 1;
+                }
+            }
+        }
+        Object colBtnsListObj = configJsonMap.get("columnBtnsList");
+        if(colBtnsListObj != null) {
+            buttonList = (List<Map<String, Object>>)colBtnsListObj;
+            if(buttonList != null && !buttonList.isEmpty()) {
+                int count = checkI18nButton( buttonList, mapI18nParam);
+                if(count>0){
+                    configJsonMap.put("columnBtnsList", buttonList);
+                    isChange = 1;
+                }
+            }
+        }
+
+        boolean i18nNeedChange = MapUtil.getBool(mapI18nParam, "needChange", true);
+        if(i18nNeedChange && isChange == 1) {
+            return JsonUtil.getObjectToString(configJsonMap);
+        } else {
+            return configJson;
+        }
     }
-    void checkI18nResource( List<Map<String, Object>> itemList,  String parseFlag, Map<String, Object>  mapI18nParam){
+
+    public static Set<String> normalBtnSet = new HashSet<>();
+    public static Set<String> normalFieldSet = new HashSet<>();
+    public static Set<String> normalPlaceholderSet = new HashSet<>();
+    static {
+        normalBtnSet.addAll(Arrays.asList(new String[]{"add", "edit", "remove", "batchRemove", "delete", "save", "cancel", "submit", "detail"}));
+        normalBtnSet.addAll(Arrays.asList(new String[]{"search", "query", "reset", "import", "export", "download","upload", "print", "batchPrint"}));
+        normalPlaceholderSet.addAll(Arrays.asList(new String[]{"请输入","请选择","数字文本"}));
+        normalFieldSet.addAll(Arrays.asList(new String[]{"id", "sort", "createBy", "createTime", "updateBy", "updateTime"}));
+        //normalFieldSet.addAll(Arrays.asList(new String[]{"code", "name" }));
+    }
+
+    int checkI18nResource( List<Map<String, Object>> itemList, Map<String, Object>  mapI18nParam){
+        int count = 0;
+        boolean i18nNeedChange = MapUtil.getBool(mapI18nParam, "needChange", true);
+        boolean i18nCheckLost = MapUtil.getBool(mapI18nParam, "checkLost", true);
+        Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
+
         for(int i = 0, len = itemList.size(); i < len; i++) {
             Map<String, Object> itemMap = itemList.get(i);
             if (itemMap == null || itemMap.isEmpty()) {
@@ -502,7 +599,7 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                 currentKeyPrefix += "." + fieldName;
             }
             String extnKey = (String)configMap.get("extnKey");
-            // normal
+
             // configMap: label/tipLabel/placeholder
             String[] keys = new String[]{"label", "tipLabel", "placeholder"};
             for (String key : keys) {
@@ -513,22 +610,100 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                 if (ObjectUtil.isEmpty(originValue) && configMap.containsKey(key)) {
                     originValue = (String) configMap.get(key);
                 }
+
+                // 仅检查则跳过无数据的字段
                 if(ObjectUtil.isEmpty(originValue)){
                     continue;
                 }
-                // 检查i18n数据，若无数据则补充
-                String i18nKey = currentKeyPrefix + "." + key;
+                // 跳过不需要更改返回结果的常用字段
+                if(normalFieldSet.contains(fieldName) && !i18nNeedChange) {
+                    continue;
+                }
+
+                // 检查常用placeholder
+                if("placeholder".equals(key) && normalPlaceholderSet.contains(originValue)){
+                    if(!i18nNeedChange){
+                        continue;
+                    }
+                    String i18nKey = "onlineDev.inputPh";
+                    // input / select / 数字文本
+                    if(originValue.indexOf("数字文本")>-1){
+                        i18nKey = "onlineDev.numberPh";
+                    }else if(originValue.indexOf("选择")>-1){
+                        i18nKey = "onlineDev.selectPh";
+                    }else if(originValue.indexOf("输入")>-1){
+                        i18nKey = "onlineDev.inputPh";
+                    }
+                    String i18nLabel = I18nUtil.getMessage(i18nKey);
+                    if(ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey) && !i18nLabel.equals(originValue)){
+                        if(itemMap.containsKey(key)){
+                            itemMap.put(key, i18nLabel);
+                            count++;
+                        }
+                        if(configMap.containsKey(key)){
+                            configMap.put(key, i18nLabel);
+                            count++;
+                        }
+                    }
+                    continue;
+                }
+
+                // xx=label, XXTip=tipLabel, XXPh=placeholder
+                String i18nKey = currentKeyPrefix;
+                if( "tipLabel".equals(key)){
+                    i18nKey = currentKeyPrefix+"Tip";
+                }else if( "placeholder".equals(key)){
+                    i18nKey = currentKeyPrefix+"Ph";
+                }else {
+                    i18nKey = currentKeyPrefix+"Label";
+                }
                 String i18nLabel = I18nUtil.getMessage(i18nKey);
-                if (ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)) {
-                    Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
-                    if(!lostI18nRes.containsKey(i18nKey)){
-                        lostI18nRes.put(i18nKey, originValue);
+                if(ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)){
+                    // [modelxxx].[field]+[key] => onlineDev.[field]+[key] 或 onlineDev.常用字段
+                    i18nKey = "onlineDev."+fieldName;
+                    if( "tipLabel".equals(key)){
+                        i18nKey = "onlineDev."+fieldName+"Tip";
+                    }else if( "placeholder".equals(key)){
+                        i18nKey = "onlineDev."+fieldName+"Ph";
+                    }
+//                    String[] parts = i18nKey.split("\\.");
+//                    if(parts.length > 1){
+//                        i18nKey = "onlineDev."+parts[parts.length-2];
+//                    }
+                    i18nLabel = I18nUtil.getMessage(i18nKey);
+                }
+                if(i18nNeedChange){
+                    if(ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey) && !i18nLabel.equals(originValue)){
+                        if(itemMap.containsKey(key)){
+                            itemMap.put(key, i18nLabel);
+                            count++;
+                        }
+                        if(configMap.containsKey(key)){
+                            configMap.put(key, i18nLabel);
+                            count++;
+                        }
+                    }
+                }
+                if(i18nCheckLost) {
+                    if (ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)) {
+                        if(!normalFieldSet.contains(fieldName)){
+                            if( "tipLabel".equals(key)){
+                                i18nKey = currentKeyPrefix+"Tip";
+                            }else if( "placeholder".equals(key)){
+                                i18nKey = currentKeyPrefix+"Ph";
+                            }else {
+                                i18nKey = currentKeyPrefix+"Label";
+                            }
+                        }
+                        if(!lostI18nRes.containsKey(i18nKey)){
+                            lostI18nRes.put(i18nKey, originValue);
+                        }
                     }
                 }
             }
-
             List<Map<String, Object>> childrenList = (List<Map<String, Object>>) configMap.get("children");
             if (childrenList != null && !childrenList.isEmpty()) {
+                // 针对 tab/tabItem 特别处理
                 if("tab".equals(extnKey)){
                     // tab componentName
                     String componentName = (String) configMap.get("componentName");
@@ -539,177 +714,74 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                             String title = (String) tabItem.get("title");
                             String i18nKey = currentKeyPrefix + "." + componentName + "." +k;
                             String i18nLabel = I18nUtil.getMessage(i18nKey);
-                            if (ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)) {
-                                Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
-                                if(!lostI18nRes.containsKey(i18nKey)){
-                                    lostI18nRes.put(i18nKey, title);
+                            if(i18nNeedChange){
+                                if (ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey) && !i18nLabel.equals(title)) {
+                                    tabItem.put("title", i18nLabel);
+                                    childrenList.set(k, tabItem);
+                                    count++;
+                                }
+                            }
+                            if(i18nCheckLost) {
+                                if (ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)) {
+                                    if(!lostI18nRes.containsKey(i18nKey)){
+                                        lostI18nRes.put(i18nKey, title);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
                 mapI18nParam.put("parentKeyPrefix", currentKeyPrefix);
-                checkI18nResource(childrenList, parseFlag, mapI18nParam);
+                count += checkI18nResource(childrenList, mapI18nParam);
                 mapI18nParam.remove("parentKeyPrefix");
-                configMap = (Map<String, Object>) itemMap.get("__config__");
             }
         }
+        return count;
     }
 
-    @Override
-    public void loadI18nData(String code, DataInfoVO vo){
-        // check i18n formData.hasI18n=true
-        boolean hasI18n = false;
-        Map<String, Object> mapI18nParam = new HashMap();
-        if (StringUtil.isEmpty(vo.getFormData())) {
-            return;
-        }
-        Map<String, Object> formJsonMap = JsonUtil.stringToMap(vo.getFormData().trim());
-        if(formJsonMap.containsKey("hasI18n") && MapUtil.getBool(formJsonMap, "hasI18n")){
-            hasI18n = true;
-        }
-        String i18nPrefix = code;
-        if(formJsonMap.containsKey("i18nPrefix")){
-            i18nPrefix = MapUtil.getStr(formJsonMap,"i18nPrefix", i18nPrefix);
-        }
-        mapI18nParam.put("i18nPrefix", i18nPrefix);
-        if(hasI18n){
-            vo.setFormData(loadI18nData(vo.getFormData(), mapI18nParam));
-            if (StringUtil.isNotEmpty(vo.getColumnData())) {
-                vo.setColumnData(loadI18nData(vo.getColumnData(), mapI18nParam));
-            }
-        }
-    }
-
-    /**
-     * 处理字段国际化
-     * @param configJson
-     * @return
-     */
-    protected String loadI18nData(String configJson, Map<String, Object> mapI18nParam) {
-        if(ObjectUtil.isEmpty(configJson)) {
-            return configJson;
-        }
-        Map<String, Object> configJsonMap = JsonUtil.stringToMap(configJson.trim());
-        if(configJsonMap == null && configJsonMap.isEmpty()) {
-            return configJson;
-        }
-
-        int isChange = 0;
-
-        UserInfo userInfo = null;
-        //处理字段
-        Object fieldsObj = configJsonMap.get("fields");
-        List<Map<String, Object>> fieldsList = null;
-        if(fieldsObj != null) {
-            fieldsList = (List<Map<String, Object>>)fieldsObj;
-            if(fieldsList != null && !fieldsList.isEmpty()) {
-                loadItemI18nData( fieldsList, "add",mapI18nParam);
-                configJsonMap.put("fields", fieldsList);
-                isChange = 1;
-            }
-        }
-        //处理查询条件
-        Object searchObj = configJsonMap.get("searchList");
-        List<Map<String, Object>> searchList = null;
-        if(searchObj != null) {
-            searchList = (List<Map<String, Object>>)searchObj;
-            if(searchList != null && !searchList.isEmpty()) {
-                loadItemI18nData( searchList, "search", mapI18nParam);
-                configJsonMap.put("searchList", searchList);
-                isChange = 1;
-            }
-        }
-
-        //处理列
-        Object columnListObj = configJsonMap.get("columnList");
-        List<Map<String, Object>> columnList = null;
-        if(columnListObj != null) {
-            columnList = (List<Map<String, Object>>)columnListObj;
-            if(columnList != null && !columnList.isEmpty()) {
-                loadItemI18nData( columnList, "add",mapI18nParam);
-                configJsonMap.put("columnList", columnList);
-                isChange = 1;
-            }
-        }
-        if(isChange == 1) {
-            return JsonUtil.getObjectToString(configJsonMap);
-        } else {
-            return configJson;
-        }
-    }
-
-    void loadItemI18nData( List<Map<String, Object>> itemList,  String parseFlag,Map<String, Object>  mapI18nParam){
+    int checkI18nButton( List<Map<String, Object>> itemList,  Map<String, Object>  mapI18nParam){
+        int count = 0;
+        boolean i18nNeedChange = MapUtil.getBool(mapI18nParam, "needChange", true);
+        boolean i18nCheckLost = MapUtil.getBool(mapI18nParam, "checkLost", true);
+        Map<String, String> lostI18nRes = (Map<String, String>)mapI18nParam.get("lostI18nRes");
+//        "btnsList": [{
+//            "icon": "el-icon-plus",
+//            "label": "新增",
+//            "value": "add"
+//        }]
+        // add/edit/remove
         for(int i = 0, len = itemList.size(); i < len; i++) {
             Map<String, Object> itemMap = itemList.get(i);
-            if(itemMap == null || itemMap.isEmpty()) {
+            if (itemMap == null || itemMap.isEmpty()) {
                 continue;
             }
-            Map<String, Object> configMap = (Map<String, Object>)itemMap.get("__config__");
-            if(configMap == null || configMap.isEmpty()) {
-                continue;
+            String btnName = MapUtil.getStr(itemMap, "value");
+            String i18nKey = "onlineDev."+btnName+"Btn";
+            if(!normalBtnSet.contains(btnName)){
+                String i18nPrefix = (String) mapI18nParam.get("i18nPrefix");
+                i18nKey = i18nPrefix+"."+btnName+"Btn";
             }
-            String i18nPrefix = (String)mapI18nParam.get("i18nPrefix");
-            // itemMap: __vModel__, label(search)
-            String fieldName = (String)itemMap.get("__vModel__");
-            String parentKeyPrefix = (String)mapI18nParam.get("parentKeyPrefix");
-            if(parentKeyPrefix==null){
-                parentKeyPrefix = i18nPrefix;
-            }
-            String currentKeyPrefix = parentKeyPrefix;
-            if(StringUtil.isNotEmpty(fieldName)) {
-                currentKeyPrefix += "." + fieldName;
-            }
-            String extnKey = (String)configMap.get("extnKey");
-            // configMap: label/tipLabel/placeholder
-            String[]  keys = new String[]{"label", "tipLabel", "placeholder"};
-            for(String key : keys){
-                String i18nKey = currentKeyPrefix+"."+key;
-                String i18nLabel = I18nUtil.getMessage(i18nKey);
-                if(ObjectUtil.isEmpty(i18nLabel) || i18nLabel.equals(i18nKey)){
-                    // [modelxxx].[field].[key] => [field].[key] => table.[field].[key]
-                    String[] parts = i18nKey.split("\\.");
-                    if(parts.length > 1){
-                        i18nKey = "table."+parts[parts.length-2];
-                    }
-                    i18nLabel = I18nUtil.getMessage(i18nKey);
-                }
-                if(ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey)){
-                    if(itemMap.containsKey(key)){
-                        itemMap.put(key, i18nLabel);
-                    }
-                    if(configMap.containsKey(key)){
-                        configMap.put(key, i18nLabel);
-                    }
+            String label = MapUtil.getStr(itemMap, "label");
+            String i18nLabel = I18nUtil.getMessage(i18nKey);
+            if(i18nNeedChange){
+                if(StringUtil.isNotEmpty(i18nLabel)
+                        && !i18nLabel.equals(i18nKey)
+                        && !label.equals(i18nLabel)) {
+                    itemMap.put("label", i18nLabel);
+                    count++;
                 }
             }
-            List<Map<String,Object>> childrenList = (List<Map<String,Object>>)configMap.get("children");
-            if(childrenList != null && !childrenList.isEmpty()) {
-
-                if("tab".equals(extnKey)){
-                    // tab componentName
-                    String componentName = (String) configMap.get("componentName");
-                    // tabItem title
-                    for(int k=0; k<childrenList.size(); k++){
-                        JSONObject tabItem = JSONUtil.parseObj(childrenList.get(k));
-                        if(tabItem.containsKey("title")){
-                            String title = (String) tabItem.get("title");
-                            String i18nKey = currentKeyPrefix + "." + componentName + "." +k;
-                            String i18nLabel = I18nUtil.getMessage(i18nKey);
-                            if (ObjectUtil.isNotEmpty(i18nLabel) && !i18nLabel.equals(i18nKey) && !i18nLabel.equals(title)) {
-                                tabItem.put("title", i18nLabel);
-                                childrenList.set(k, tabItem);
-                            }
-                        }
+            // && !normalBtnSet.contains(btnName)
+            if(i18nCheckLost){
+                if(StringUtil.isEmpty(i18nLabel)
+                        || i18nLabel.equals(i18nKey)) {
+                    if(!lostI18nRes.containsKey(i18nKey)){
+                        lostI18nRes.put(i18nKey, label);
                     }
                 }
-                mapI18nParam.put("parentKeyPrefix", currentKeyPrefix);
-                loadItemI18nData(childrenList, parseFlag, mapI18nParam);
-                mapI18nParam.remove("parentKeyPrefix");
-                configMap = (Map<String, Object>)itemMap.get("__config__");
             }
         }
+        return count;
     }
 
 }

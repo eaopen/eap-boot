@@ -50,22 +50,26 @@ public class I18nDataServiceImpl implements I18nDataService {
         // map<language, map<key, label>>
         Map<String, Map<String, String >> mLang = new HashMap<>();
         i18nJsonDataMapper.selectList(new QueryWrapper<I18nJsonDataDO>()).forEach(jsonData -> {
-            String i18nKey = jsonData.getAlias();
-            if(StrUtil.isEmpty(i18nKey)){
-                if(StrUtil.isNotEmpty(jsonData.getModule())){
-                    i18nKey = jsonData.getModule() + "." + jsonData.getName();
-                }else{
-                    i18nKey = jsonData.getName();
+            try{
+                String i18nKey = jsonData.getAlias();
+                if(StrUtil.isEmpty(i18nKey)){
+                    if(StrUtil.isNotEmpty(jsonData.getModule())){
+                        i18nKey = jsonData.getModule() + "." + jsonData.getName();
+                    }else{
+                        i18nKey = jsonData.getName();
+                    }
                 }
+                JSONObject json = JSONUtil.parseObj(jsonData.getJson());
+                String finalI18nKey = i18nKey;
+                json.keySet().forEach(lang ->{
+                    if(!mLang.containsKey(lang)){
+                        mLang.put(lang, new HashMap<>());
+                    }
+                    mLang.get(lang).put(finalI18nKey, json.getStr(lang));
+                });
+            }catch(Exception e){
+                log.warn("getI18nDataMap error:" + jsonData);
             }
-            JSONObject json = JSONUtil.parseObj(jsonData.getJson());
-            String finalI18nKey = i18nKey;
-            json.keySet().forEach(lang ->{
-                if(!mLang.containsKey(lang)){
-                    mLang.put(lang, new HashMap<>());
-                }
-                mLang.get(lang).put(finalI18nKey, json.getStr(lang));
-            });
         });
         return mLang;
     }
