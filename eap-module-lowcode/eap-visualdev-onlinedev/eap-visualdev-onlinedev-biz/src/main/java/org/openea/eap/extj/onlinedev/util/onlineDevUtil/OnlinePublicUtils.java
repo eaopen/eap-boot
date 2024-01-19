@@ -420,9 +420,10 @@ public class OnlinePublicUtils {
 	 */
 	public static boolean mapCompar(Map<String, Object> conditionMap, Map<String, Object> hashMap2, Map<String, Boolean> conditionConfig) {
 		boolean isChange = false;
+		// fix 数字和字符串比较需要先转成字符串
 		for (String key : conditionMap.keySet()) {
 			String m1value = conditionMap.get(key) == null ? "" : conditionMap.get(key).toString();
-			String m2value = hashMap2.get(key) == null ? "" : (String) hashMap2.get(key);
+			String m2value = hashMap2.get(key) == null ? "" : String.valueOf(hashMap2.get(key));
 			boolean flag = conditionConfig != null && conditionConfig.get(key) != null ? conditionConfig.get(key) : false;
 			if (flag && m1value.equals(m2value)) {
 				isChange = true;

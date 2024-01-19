@@ -1722,6 +1722,7 @@ public class OnlineSwapDataUtils {
                 if (StringUtil.isNotEmpty(paginationModel.getQueryJson()) && CollectionUtils.isNotEmpty(dataRes)) {
                     List<VisualColumnSearchVO> searchVOList = JsonUtil.getJsonToList(columnDataModel.getSearchList(), VisualColumnSearchVO.class);
                     Map<String, Boolean> conditionConfig = new HashMap<>();
+                    // searchType 1=eq 2=like 3=scope
                     for (VisualColumnSearchVO item : searchVOList) {
                         if ("1".equals(item.getSearchType())) {
                             conditionConfig.put(item.getVModel(), true);
