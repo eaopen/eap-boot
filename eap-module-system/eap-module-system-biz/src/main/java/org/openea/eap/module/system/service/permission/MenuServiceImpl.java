@@ -16,6 +16,7 @@ import org.openea.eap.module.system.dal.mysql.permission.MenuMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
 import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 import org.openea.eap.module.system.service.language.I18nDataService;
+import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.openea.eap.module.system.service.tenant.TenantService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -53,6 +54,10 @@ public class MenuServiceImpl implements MenuService {
     @Lazy // 延迟，避免循环依赖报错
     private I18nDataService i18nDataService;
 
+    @Resource
+    @Lazy // 延迟，避免循环依赖报错
+    private I18nJsonDataService i18nJsonDataService;
+
     @Override
     @CacheEvict(value = RedisKeyConstants.PERMISSION_MENU_ID_LIST, key = "#createReqVO.permission",
             condition = "#createReqVO.permission != null")
@@ -66,6 +71,8 @@ public class MenuServiceImpl implements MenuService {
         MenuDO menu = BeanUtils.toBean(createReqVO, MenuDO.class);
         initMenuProperty(menu);
         menuMapper.insert(menu);
+        // check i18n
+        checkMenuI18n(menu);
         // 返回
         return menu.getId();
     }
@@ -87,6 +94,8 @@ public class MenuServiceImpl implements MenuService {
         MenuDO updateObj = BeanUtils.toBean(updateReqVO, MenuDO.class);
         initMenuProperty(updateObj);
         menuMapper.updateById(updateObj);
+        // check i18n
+        checkMenuI18n(updateObj);
     }
 
     @Override
@@ -166,6 +175,23 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         return menus;
+    }
+
+    protected void checkMenuI18n(MenuDO menuDO){
+        if(!I18nUtil.enableI18n()){
+            return;
+        }
+        String i18nKey = getI18nKey(menuDO);
+        // 检查翻译是否已存在
+        if(i18nJsonDataService.checkI18nExist("menu", i18nKey)){
+            return;
+        }
+        try{
+            i18nJsonDataService.createI18nData("menu", i18nKey, "menu-"+menuDO.getName(), menuDO.getName());
+        }catch (Exception e){
+            log.warn("create menu i18n(key="+i18nKey+") fail: " +e.getMessage());
+        }
+
     }
 
     @Override

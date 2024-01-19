@@ -1,6 +1,7 @@
 package org.openea.eap.module.system.controller.admin.language;
 
 import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson.JSON;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.SneakyThrows;
@@ -55,6 +56,23 @@ public class I18nDataController {
     public CommonResult<I18nJsonDataRespVO> autoTransItem(@RequestBody I18nJsonDataUpdateReqVO updateReqVO) {
         I18nJsonDataDO i18nJsonData = I18nJsonDataConvert.INSTANCE.convert(updateReqVO);
         i18nDataService.autoTransItem(i18nJsonData);
+        return success(I18nJsonDataConvert.INSTANCE.convert(i18nJsonData));
+    }
+
+    @GetMapping("/checkI18nItem")
+    @Operation(summary = "检查国际化数据", description = "检查及更新菜单国际化数据")
+    public CommonResult<I18nJsonDataRespVO> checkI18nItem(@RequestParam(value = "key")String key, @RequestParam(value = "label") String label) {
+        I18nJsonDataDO i18nJsonData = new I18nJsonDataDO();
+        i18nJsonData.setAlias(key);
+        JSONObject json = i18nDataService.getI18nJsonByKey(key);
+        if(json == null){
+            json = new JSONObject();
+            json.set("zh-CN",label);
+            i18nJsonData.setJson(JSON.toJSONString(json));
+            i18nDataService.autoTransItem(i18nJsonData);
+        }else{
+            i18nJsonData.setJson(JSON.toJSONString(json));
+        }
         return success(I18nJsonDataConvert.INSTANCE.convert(i18nJsonData));
     }
 }

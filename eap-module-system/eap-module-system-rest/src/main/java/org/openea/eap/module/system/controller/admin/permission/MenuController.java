@@ -1,14 +1,15 @@
 package org.openea.eap.module.system.controller.admin.permission;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.permission.vo.menu.*;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
+import org.openea.eap.module.system.service.language.I18nDataService;
 import org.openea.eap.module.system.service.permission.MenuService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,9 @@ public class MenuController {
 
     @Resource
     private MenuService menuService;
+
+    @Resource
+    private I18nDataService i18nDataService;
 
     @PostMapping("/create")
     @Operation(summary = "创建菜单")

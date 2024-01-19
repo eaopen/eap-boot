@@ -274,7 +274,7 @@ public class I18nDataServiceImpl implements I18nDataService {
                 json.put(lang, i18nLabel);
             }
         });
-        i18nJsonData.setJson(json.toStringPretty());
+        i18nJsonData.setJson(JSONUtil.toJsonStr(json));
         return i18nJsonData;
     }
 
