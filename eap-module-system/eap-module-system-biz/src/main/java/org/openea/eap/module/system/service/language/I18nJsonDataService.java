@@ -81,9 +81,9 @@ public interface I18nJsonDataService {
      * @param module 模块
      * @param itemList map(key, desc, label)
      */
-    void createI18nData(String module, List<Map<String, String>> itemList);
+    void createI18nItemList(String module, List<Map<String, String>> itemList);
 
-    void createI18nData(String module, String i18nKey, String i18nDesc, String originValue);
+    void createI18nItem(String module, String i18nKey, String i18nDesc, String originValue);
 
     boolean checkI18nExist(String module, String i18nKey);
 }

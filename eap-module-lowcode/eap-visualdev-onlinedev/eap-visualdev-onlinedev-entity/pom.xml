@@ -26,6 +26,13 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-flow-entity</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
 
     </dependencies>
 

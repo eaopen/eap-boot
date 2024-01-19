@@ -187,7 +187,7 @@ public class MenuServiceImpl implements MenuService {
             return;
         }
         try{
-            i18nJsonDataService.createI18nData("menu", i18nKey, "menu-"+menuDO.getName(), menuDO.getName());
+            i18nJsonDataService.createI18nItem("menu", i18nKey, "menu-"+menuDO.getName(), menuDO.getName());
         }catch (Exception e){
             log.warn("create menu i18n(key="+i18nKey+") fail: " +e.getMessage());
         }

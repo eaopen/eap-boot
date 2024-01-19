@@ -459,7 +459,7 @@ public class VisualdevServiceImpl extends SuperServiceImpl<VisualdevMapper, Visu
                 }
             });
             if(itemList.size()>0){
-                i18nJsonDataService.createI18nData(module, itemList);
+                i18nJsonDataService.createI18nItemList(module, itemList);
                 needReloadI18n.set(1);
             }
         }

@@ -38,23 +38,34 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- 在线可视化设计 portal -->
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-visualdev-portal-rest</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+        <!-- 在线开发 online-dev -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-onlinedev-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 在线表单 online-form -->
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-visualdev-form-rest</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+        <!-- 流程设计 simpleflow -->
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-visualdev-onlinedev-rest</artifactId>
+            <artifactId>eap-visualdev-flow-rest</artifactId>
             <version>${project.version}</version>
         </dependency>
+
 
     </dependencies>
 

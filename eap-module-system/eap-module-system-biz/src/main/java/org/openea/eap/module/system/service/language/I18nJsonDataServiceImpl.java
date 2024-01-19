@@ -97,17 +97,17 @@ public class I18nJsonDataServiceImpl implements I18nJsonDataService {
      * @param itemList map(key, desc, label)
      */
     @Async
-    public void createI18nData(String module, List<Map<String, String>> itemList) {
+    public void createI18nItemList(String module, List<Map<String, String>> itemList) {
         if(CollectionUtil.isEmpty(itemList)) return;
         for(Map<String, String> map : itemList){
             String key = MapUtil.getStr(map, "key");
             String desc = MapUtil.getStr(map, "desc");
             String label = MapUtil.getStr(map, "label");
-            createI18nData(module, key, desc, label);
+            createI18nItem(module, key, desc, label);
         }
     }
     @Override
-    public void createI18nData(String module, String i18nKey, String i18nDesc, String originValue) {
+    public void createI18nItem(String module, String i18nKey, String i18nDesc, String originValue) {
         I18nJsonDataDO.I18nJsonDataDOBuilder i18nJsonDataDO = I18nJsonDataDO.builder();
         i18nJsonDataDO.module(module);
         i18nJsonDataDO.alias(i18nKey);

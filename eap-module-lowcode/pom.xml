@@ -35,6 +35,7 @@
         <!-- 整合 lowcode 服务 -->
         <module>eap-module-lowcode-biz</module>
         <module>eap-module-lowcode-rest</module>
+        <module>eap-visualdev-flow</module>
     </modules>
 
 </project>
