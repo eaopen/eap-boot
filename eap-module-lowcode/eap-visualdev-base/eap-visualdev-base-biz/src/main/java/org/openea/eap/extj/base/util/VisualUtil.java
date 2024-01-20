@@ -25,9 +25,6 @@ import org.openea.eap.extj.util.StringUtil;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
-
- */
 public class VisualUtil {
 	/**
 	 * @param entity

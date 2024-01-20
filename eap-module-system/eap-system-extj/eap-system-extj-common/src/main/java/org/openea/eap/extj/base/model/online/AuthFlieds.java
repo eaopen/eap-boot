@@ -2,10 +2,7 @@ package org.openea.eap.extj.base.model.online;
 
 import lombok.Builder;
 import lombok.Data;
-/**
- *
- *
- */
+
 @Data
 @Builder
 public class AuthFlieds {
