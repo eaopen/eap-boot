@@ -94,7 +94,7 @@ public class VisualdevEntity extends SuperBaseEntity.SuperTBaseEntity<String> {
      * 是否启用流程
      */
     @TableField("F_ENABLEFLOW")
-    private Integer enableFlow = 0;
+    private Integer enableFlow;
 
     /**
      * 关联工作流连接id
