@@ -1705,7 +1705,19 @@ public class OnlineSwapDataUtils {
         List<Map<String, Object>> realList = new ArrayList<>();
         try {
             DataInterfacePage model = JsonUtil.getJsonToBean(paginationModel, DataInterfacePage.class);
-            model.setParamList(JsonUtil.getJsonToList(visualdevEntity.getInterfaceParam(), DataInterfaceModel.class));
+            // 如查询条件参数与接口参数名相同，则将查询参数赋值给接口参数
+            JSONObject queryParams = JsonUtil.getJsonToBean(paginationModel.getQueryJson(), JSONObject.class);
+            List<DataInterfaceModel> paramList = JsonUtil.getJsonToList(visualdevEntity.getInterfaceParam(), DataInterfaceModel.class);
+            if (queryParams != null && !queryParams.isEmpty()) {
+                for (int i = 0; i < paramList.size(); i++) {
+                    DataInterfaceModel dataInterfaceModel = paramList.get(i);
+                    String field = dataInterfaceModel.getField();
+                    if (queryParams.containsKey(field)) {
+                        dataInterfaceModel.setDefaultValue(queryParams.getString(field));
+                    }
+                }
+            }
+            model.setParamList(paramList);
             //分组和不分页时设置10w条数据  paginationModel.getDataType()导出全部数据
             if(!columnDataModel.getHasPage() || Objects.equals(columnDataModel.getType(),3) || "1".equals(paginationModel.getDataType())){
                 model.setPageSize(100000);
