@@ -1,7 +1,9 @@
 package org.openea.eap.module.infra.controller.admin.file;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +17,7 @@ import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePageReqVO;
 import org.openea.eap.module.infra.controller.admin.file.vo.file.FileRespVO;
 import org.openea.eap.module.infra.controller.admin.file.vo.file.FileUploadReqVO;
 import org.openea.eap.module.infra.dal.dataobject.file.FileDO;
+import org.openea.eap.module.infra.dal.mysql.file.FileMapper;
 import org.openea.eap.module.infra.service.file.FileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +41,8 @@ public class FileController {
 
     @Resource
     private FileService fileService;
+    @Resource
+    private FileMapper fileMapper;
 
     @PostMapping("/upload")
     @Operation(summary = "上传文件")
@@ -79,6 +84,23 @@ public class FileController {
             return;
         }
         ServletUtils.writeAttachment(response, path, content);
+    }
+
+    @GetMapping("/download/{fileId}")
+    @PermitAll
+    @Operation(summary = "下载文件")
+    @Parameter(name = "fileId", description = "文件id", required = true)
+    public void download(HttpServletRequest request,
+                         HttpServletResponse response,
+                         @PathVariable("fileId") Long fileId) throws Exception {
+        FileDO fileDo = fileMapper.selectById(fileId);
+        // 读取内容
+        byte[] content = HttpUtil.downloadBytes(fileDo.getUrl());
+        if (content == null) {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            return;
+        }
+        ServletUtils.writeAttachment(response, fileDo.getName(), content);
     }
 
     @GetMapping("/page")
