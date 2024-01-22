@@ -1,5 +1,6 @@
 package org.openea.eap.module.system.controller.admin.language;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
 import com.alibaba.fastjson.JSON;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,12 +13,16 @@ import org.openea.eap.module.system.controller.admin.language.vo.I18nJsonDataUpd
 import org.openea.eap.module.system.convert.language.I18nJsonDataConvert;
 import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 import org.openea.eap.module.system.service.language.I18nDataService;
+import org.openea.eap.module.system.service.language.translate.TranslateUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.openea.eap.framework.common.pojo.CommonResult.error;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 
 @Tag(name = "管理后台 - i18n国际化数据")
@@ -57,6 +62,23 @@ public class I18nDataController {
         I18nJsonDataDO i18nJsonData = I18nJsonDataConvert.INSTANCE.convert(updateReqVO);
         i18nDataService.autoTransItem(i18nJsonData);
         return success(I18nJsonDataConvert.INSTANCE.convert(i18nJsonData));
+    }
+
+    @RequestMapping(value={"/autoTrans"}, method={RequestMethod.GET, RequestMethod.POST})
+    @Operation(summary = "自动翻译单词或句子")
+    public CommonResult autoTrans(@RequestBody JSONObject bodyJson) {
+        String originText = bodyJson.getStr("originText");
+        String targetLang= bodyJson.getStr("targetLang");
+        if(ObjectUtil.isEmpty(originText) || ObjectUtil.isEmpty(targetLang)){
+            return error(599,"缺少必要参数");
+        }
+        JSONObject result = new JSONObject();
+        Map<String, String> params = new HashMap<>();
+        String translateText = TranslateUtil.translateText(originText, targetLang, params);
+        if(ObjectUtil.isNotEmpty(translateText)){
+            result.put(targetLang, translateText);
+        };
+        return success(result);
     }
 
     @GetMapping("/checkI18nItem")
