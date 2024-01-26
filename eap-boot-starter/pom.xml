@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.eaopen</groupId>
+        <artifactId>eap-boot-pom</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>eap-boot-starter</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+    <dependencies>
+
+        <!-- eap dependence import -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-dependencies</artifactId>
+            <version>${revision}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+
+        <!-- boot dependence system/infra/lowcode -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-system-rest</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-infra-rest</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+
+        <!-- 集成平台内IM消息 -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-extj-message-rest</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-lowcode-rest</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-boot-starter-biz-error-code</artifactId>
+        </dependency>
+
+        <!-- 工作流。默认注释，保证编译速度 -->
+        <!--        <dependency>-->
+        <!--            <groupId>io.github.eaopen</groupId>-->
+        <!--            <artifactId>eap-module-bpm-biz</artifactId>-->
+        <!--            <version>${revision}</version>-->
+        <!--        </dependency>-->
+
+        <!-- spring boot 配置所需依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-boot-starter-banner</artifactId>
+        </dependency>
+
+        <!-- 服务保障相关 -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-boot-starter-protection</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>
