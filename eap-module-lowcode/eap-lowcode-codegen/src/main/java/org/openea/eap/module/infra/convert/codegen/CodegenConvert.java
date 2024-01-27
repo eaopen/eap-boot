@@ -1,13 +1,5 @@
 package org.openea.eap.module.infra.convert.codegen;
 
-import org.openea.eap.framework.common.util.collection.CollectionUtils;
-import org.openea.eap.framework.common.util.object.BeanUtils;
-import org.openea.eap.module.infra.controller.admin.codegen.vo.CodegenDetailRespVO;
-import org.openea.eap.module.infra.controller.admin.codegen.vo.CodegenPreviewRespVO;
-import org.openea.eap.module.infra.controller.admin.codegen.vo.column.CodegenColumnRespVO;
-import org.openea.eap.module.infra.controller.admin.codegen.vo.table.CodegenTableRespVO;
-import org.openea.eap.module.infra.dal.dataobject.codegen.CodegenColumnDO;
-import org.openea.eap.module.infra.dal.dataobject.codegen.CodegenTableDO;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import org.apache.ibatis.type.JdbcType;
@@ -16,6 +8,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+import org.openea.eap.framework.common.util.collection.CollectionUtils;
+import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.module.infra.controller.admin.codegen.vo.CodegenDetailRespVO;
+import org.openea.eap.module.infra.controller.admin.codegen.vo.CodegenPreviewRespVO;
+import org.openea.eap.module.infra.controller.admin.codegen.vo.column.CodegenColumnRespVO;
+import org.openea.eap.module.infra.controller.admin.codegen.vo.table.CodegenTableRespVO;
+import org.openea.eap.module.infra.dal.dataobject.codegen.CodegenColumnDO;
+import org.openea.eap.module.infra.dal.dataobject.codegen.CodegenTableDO;
 
 import java.util.List;
 import java.util.Map;

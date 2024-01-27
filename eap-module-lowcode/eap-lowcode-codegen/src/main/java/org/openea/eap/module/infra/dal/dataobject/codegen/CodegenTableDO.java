@@ -1,10 +1,5 @@
 package org.openea.eap.module.infra.dal.dataobject.codegen;
 
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
-import org.openea.eap.module.infra.enums.codegen.CodegenFrontTypeEnum;
-import org.openea.eap.module.infra.enums.codegen.CodegenSceneEnum;
-import org.openea.eap.module.infra.enums.codegen.CodegenTemplateTypeEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -12,6 +7,11 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
+import org.openea.eap.module.infra.enums.codegen.CodegenFrontTypeEnum;
+import org.openea.eap.module.infra.enums.codegen.CodegenSceneEnum;
+import org.openea.eap.module.infra.enums.codegen.CodegenTemplateTypeEnum;
 
 /**
  * 代码生成 table 表定义
