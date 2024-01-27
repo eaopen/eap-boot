@@ -1,6 +1,5 @@
 package org.openea.eap.module.infra.dal.dataobject.codegen;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
 import org.openea.eap.module.infra.enums.codegen.CodegenFrontTypeEnum;
@@ -29,7 +28,7 @@ public class CodegenTableDO extends BaseDO {
     /**
      * ID 编号
      */
-    @TableId(type= IdType.AUTO)
+    @TableId
     private Long id;
 
     /**
