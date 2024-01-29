@@ -48,9 +48,17 @@ public interface FileService {
     byte[] getFileContent(Long configId, String path) throws Exception;
 
     /**
+     * 根据你文件id获取文件
+     *
+     * @param id 文件id
+     * @return 文件内容
+     */
+    FileDO getById(Long id);
+
+    /**
      * 根据你文件ids获取文件
      *
-     * @param ids 配置编号
+     * @param ids 文件ids
      * @return 文件内容
      */
     List<FileDO> getByIds(String ids);

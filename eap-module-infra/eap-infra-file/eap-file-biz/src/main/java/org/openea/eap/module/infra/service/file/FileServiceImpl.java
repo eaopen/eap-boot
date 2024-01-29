@@ -103,6 +103,17 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
+     * 根据你文件id获取文件
+     *
+     * @param id 文件id
+     * @return 文件内容
+     */
+    @Override
+    public FileDO getById(Long id) {
+        return fileMapper.selectById(id);
+    }
+
+    /**
      * 根据你文件ids获取文件
      *
      * @param ids 配置编号
