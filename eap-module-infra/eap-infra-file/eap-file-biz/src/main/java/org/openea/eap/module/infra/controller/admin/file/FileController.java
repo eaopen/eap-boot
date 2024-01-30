@@ -114,7 +114,6 @@ public class FileController {
     @GetMapping("/getByIds")
     @Operation(summary = "根据ids获得多个文件信息")
     @Parameter(name = "id", description = "编号", required = true)
-    @PreAuthorize("@ss.hasPermission('infra:file:query')")
     public CommonResult<List<FileRespVO>> getByIds(@RequestParam("ids") String ids) {
         List<FileDO> list = fileService.getByIds(ids);
         return CommonResult.success(BeanUtils.toBean(list, FileRespVO.class));
