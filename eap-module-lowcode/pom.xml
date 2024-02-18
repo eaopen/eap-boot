@@ -48,7 +48,9 @@
             <id>lowcode-obpm</id>
             <modules>
                 <!-- 集成OpenBpm -->
-                <module>eap-integration-obpm</module>
+                <module>eap-obpm-proxy</module>
+                <!-- 扩展OpenBpm -->
+                <module>eap-obpm-extend</module>
             </modules>
         </profile>
         <profile>

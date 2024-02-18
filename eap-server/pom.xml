@@ -36,7 +36,7 @@
         <!-- EapObpmConfiguration重载服务 authService,userService,permissionService -->
 <!--        <dependency>-->
 <!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-integration-obpm</artifactId>-->
+<!--            <artifactId>eap-obpm-proxy</artifactId>-->
 <!--            <version>${project.version}</version>-->
 <!--        </dependency>-->
 
