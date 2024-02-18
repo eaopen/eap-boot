@@ -14,4 +14,115 @@
     <description>
         扩展 OpenBPM
     </description>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <obpm.version>3.6.0-SNAPSHOT</obpm.version>
+        <cn.hutool.version>5.3.8</cn.hutool.version>
+        <poi.version>4.1.2</poi.version>
+        <jsql.version>4.5</jsql.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.szopen.openbpm</groupId>
+                <artifactId>bpm-form-api</artifactId>
+                <version>${obpm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.szopen.openbpm</groupId>
+                <artifactId>bpm-bus-api</artifactId>
+                <version>${obpm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.szopen.openbpm</groupId>
+                <artifactId>bpm-sys-api</artifactId>
+                <version>${obpm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.szopen.openbpm</groupId>
+                <artifactId>bpm-sys-core</artifactId>
+                <version>${obpm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.szopen.openbpm</groupId>
+                <artifactId>bpm-bus-core</artifactId>
+                <version>${obpm.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.szopen.openbpm</groupId>
+                <artifactId>bpm-base-rest</artifactId>
+                <version>${obpm.version}</version>
+            </dependency>
+
+
+
+
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsql.version}</version>
+            </dependency>
+
+            <!-- org.apache.poi  -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml-schemas</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-scratchpad</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-excelant</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+
+
+            <!-- import hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-bom</artifactId>
+                <version>${cn.hutool.version}</version>
+                <type>pom</type>
+                <!-- 注意这里是import -->
+                <scope>import</scope>
+            </dependency>
+
+            <!-- hutool 工具集 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${cn.hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-poi</artifactId>
+                <version>${cn.hutool.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
