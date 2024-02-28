@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class ImUserListVo {
+public class ExtUserListVo {
 
     @Schema(description = "用户编号")
     private Long id;
@@ -14,6 +14,9 @@ public class ImUserListVo {
 
     @Schema(description = "名称")
     private String realName;
+
+    @Schema(description = "全名")
+    private String fullName;
 
     @Schema(description = "用户头像")
     private String headIcon;

@@ -551,6 +551,8 @@ public class FlowTemplateServiceImpl extends SuperServiceImpl<FlowTemplateMapper
         if (formType) {
             FlowFormEntity form = serviceUtil.getForm(properties.getFormId());
             if (form != null && StringUtil.isNotEmpty(form.getFlowId()) && !form.getFlowId().equals(templeId)) {
+                // todo 可能存在失败的服务未回滚导致提示“表单已被引用” 但实际表单未使用
+                // 手动删除引用 flow_engineform set F_FlowId = null where 选择表单
                 throw new WorkFlowException("表单已被引用，请重新选择！");
             }
             //清空 原先绑定的功能表单流程id

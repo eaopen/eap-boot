@@ -53,15 +53,16 @@ public class UserSaveReqVO {
 
     // ========== 仅【创建】时，需要传递的字段 ==========
 
-    @Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
+    @Schema(description = "密码", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "123456")
     @Length(min = 4, max = 16, message = "密码长度为 4-16 位")
     private String password;
 
     @AssertTrue(message = "密码不能为空")
     @JsonIgnore
     public boolean isPasswordValid() {
-        return id != null // 修改时，不需要传递
-                || (ObjectUtil.isAllNotEmpty(password)); // 新增时，必须都传递 password
+        // 修改时，不需要传递
+        // 新增时，必须都传递 password
+        return id != null || (ObjectUtil.isAllNotEmpty(password));
     }
 
 }
