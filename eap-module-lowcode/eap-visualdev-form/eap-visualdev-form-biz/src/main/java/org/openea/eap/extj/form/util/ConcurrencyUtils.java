@@ -55,7 +55,7 @@ public class ConcurrencyUtils {
 	 */
 	public void createFlowEngine(String table, String linkId) throws Exception {
 		// todo 暂不支持流程表单，待集成flowable
-		//addFeild(table, linkId,TableFeildsEnum.FLOWID);
+		addFeild(table, linkId,TableFeildsEnum.FLOWID);
 	}
 
 	/**

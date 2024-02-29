@@ -23,9 +23,12 @@ import org.openea.eap.extj.base.vo.PaginationVO;
 import org.openea.eap.extj.config.ConfigValueUtil;
 import org.openea.eap.extj.constant.MsgCode;
 import org.openea.eap.extj.database.model.entity.DbLinkEntity;
+import org.openea.eap.extj.engine.model.flowtemplate.FlowTemplateInfoVO;
+import org.openea.eap.extj.engine.service.FlowTemplateService;
 import org.openea.eap.extj.exception.DataException;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.extend.util.ExcelUtil;
+import org.openea.eap.extj.form.entity.FlowFormEntity;
 import org.openea.eap.extj.form.model.flow.DataModel;
 import org.openea.eap.extj.form.service.FlowFormService;
 import org.openea.eap.extj.form.service.FormDataService;
@@ -99,6 +102,8 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
     private OnlineDevDbUtil onlineDevDbUtil;
     @Autowired
     private OnlineSwapDataUtils onlineSwapDataUtils;
+    @Autowired
+    private FlowTemplateService flowTemplateService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -194,8 +199,16 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
         }
         DataInfoVO vo = JsonUtil.getJsonToBean(entity, DataInfoVO.class);
         if (entity.getEnableFlow() == 1) {
-            //FlowFormEntity byId = flowFormService.getById(entity.getId());
             // todo 待集成flowable
+            FlowFormEntity byId = flowFormService.getById(entity.getId());
+            FlowTemplateInfoVO templateInfo = flowTemplateService.info(byId.getFlowId());
+            if (templateInfo == null) {
+                return ActionResult.fail(MsgCode.VS403.get());
+            }
+            if (OnlineDevData.STATE_DISABLE == templateInfo.getEnabledMark()) {
+                return ActionResult.fail(MsgCode.VS406.get());
+            }
+            vo.setFlowId(templateInfo.getId());
         }
 
         visualdevService.loadI18nData(vo);

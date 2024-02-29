@@ -2,6 +2,7 @@ package org.openea.eap.extj.engine.util;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.extj.base.UserInfo;
 import org.openea.eap.extj.constant.MsgCode;
 import org.openea.eap.extj.engine.entity.*;
@@ -23,26 +24,13 @@ import org.openea.eap.extj.engine.model.flowtask.method.TaskHandleIdStatus;
 import org.openea.eap.extj.engine.model.flowtask.method.TaskOperatoUser;
 import org.openea.eap.extj.engine.model.flowtask.method.TaskOperator;
 import org.openea.eap.extj.engine.service.*;
-import org.openea.eap.extj.engine.service.*;
 import org.openea.eap.extj.exception.WorkFlowException;
+import org.openea.eap.extj.job.WorkTimeoutJobUtil;
 import org.openea.eap.extj.permission.entity.OrganizeEntity;
 import org.openea.eap.extj.permission.entity.UserEntity;
 import org.openea.eap.extj.permission.entity.UserRelationEntity;
 import org.openea.eap.extj.util.*;
 import org.openea.eap.extj.util.wxutil.HttpUtil;
-import org.openea.eap.extj.engine.entity.*;
-import org.openea.eap.extj.engine.enums.*;
-import org.openea.eap.extj.engine.model.flowengine.*;
-import org.openea.eap.extj.engine.model.flowtask.*;
-import org.openea.eap.extj.engine.service.*;
-import org.openea.eap.extj.job.WorkTimeoutJobUtil;
-import org.openea.eap.extj.util.*;
-import lombok.extern.slf4j.Slf4j;
-import org.openea.eap.extj.engine.entity.*;
-import org.openea.eap.extj.engine.enums.*;
-import org.openea.eap.extj.engine.model.flowengine.*;
-import org.openea.eap.extj.engine.model.flowtask.*;
-import org.openea.eap.extj.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +38,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 
+ *
  */
 @Component
 @Slf4j
@@ -1646,8 +1634,9 @@ public class FlowTaskUtil {
             list.addAll(properties.getApproverOrg());
             list.addAll(properties.getApproverGroup());
             List<UserRelationEntity> listByObjectIdAll = serviceUtil.getListByObjectIdAll(list);
-            List<String> userPosition = listByObjectIdAll.stream().map(UserRelationEntity::getUserId).collect(Collectors.toList());
-            userIdAll.addAll(userPosition);
+            // 去掉岗位
+//            List<String> userPosition = listByObjectIdAll.stream().map(UserRelationEntity::getUserId).collect(Collectors.toList());
+//            userIdAll.addAll(userPosition);
         }
         //附加规则
         if (extraRule) {

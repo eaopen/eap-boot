@@ -137,8 +137,15 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
     }
 
     @Override
-    public List<UserEntity> getUserName(List<String> collect) {
-        return Collections.emptyList();
+    public List<UserEntity> getUserName(List<String> ids) {
+        List<UserEntity> userLList = new ArrayList<>();
+        for(String id: ids){
+            UserEntity user = getInfo(id);
+            if(user!=null){
+                userLList.add(user);
+            }
+        }
+        return userLList;
     }
 
     /**

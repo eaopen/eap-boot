@@ -190,7 +190,8 @@ public class ServiceAllUtil {
         for (SentMessageForm messageForm : messageListAll) {
             if (messageForm.getToUserIds().size() > 0) {
                 if (messageForm.isSysMessage()) {
-                    sentMessageUtil.sendMessage(messageForm);
+                    // todo send message
+                    // sentMessageUtil.sendMessage(messageForm);
                 }
             }
         }

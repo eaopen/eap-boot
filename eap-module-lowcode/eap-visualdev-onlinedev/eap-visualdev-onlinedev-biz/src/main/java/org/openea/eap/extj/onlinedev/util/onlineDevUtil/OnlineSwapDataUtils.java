@@ -30,19 +30,24 @@ import org.openea.eap.extj.base.vo.PageListVO;
 import org.openea.eap.extj.base.vo.PaginationVO;
 import org.openea.eap.extj.database.model.entity.DbLinkEntity;
 import org.openea.eap.extj.database.util.DynamicDataSourceUtil;
+import org.openea.eap.extj.engine.model.flowtemplate.FlowTemplateInfoVO;
+import org.openea.eap.extj.engine.model.flowtemplatejson.FlowJsonModel;
+import org.openea.eap.extj.engine.service.FlowTemplateService;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.extend.entity.ProvinceEntity;
 import org.openea.eap.extj.extend.service.BillRuleService;
 import org.openea.eap.extj.extend.service.ProvinceService;
+import org.openea.eap.extj.form.mapper.FlowFormDataMapper;
+import org.openea.eap.extj.form.model.flow.DataModel;
+import org.openea.eap.extj.form.util.FlowFormConstant;
+import org.openea.eap.extj.form.util.FlowFormDataUtil;
+import org.openea.eap.extj.form.util.FormPublicUtils;
+import org.openea.eap.extj.form.util.TableFeildsEnum;
 import org.openea.eap.extj.model.visual.ExtnKeyConsts;
-import org.openea.eap.extj.model.visualJson.ColumnDataModel;
-import org.openea.eap.extj.model.visualJson.FieLdsModel;
-import org.openea.eap.extj.model.visualJson.OnlineDevData;
-import org.openea.eap.extj.model.visualJson.UploaderTemplateModel;
+import org.openea.eap.extj.model.visualJson.*;
 import org.openea.eap.extj.model.visualJson.analysis.FormModel;
 import org.openea.eap.extj.model.visualJson.config.ConfigModel;
 import org.openea.eap.extj.model.visualJson.config.RegListModel;
-import org.openea.eap.extj.model.visualJson.TemplateJsonModel;
 import org.openea.eap.extj.onlinedev.model.OnlineDevEnum.CacheKeyEnum;
 import org.openea.eap.extj.onlinedev.model.OnlineDevEnum.MultipleControlEnum;
 import org.openea.eap.extj.onlinedev.model.OnlineDevEnum.OnlineDataTypeEnum;
@@ -63,12 +68,6 @@ import org.openea.eap.extj.util.*;
 import org.openea.eap.extj.util.data.DataSourceContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.openea.eap.extj.form.mapper.FlowFormDataMapper;
-import org.openea.eap.extj.form.model.flow.DataModel;
-import org.openea.eap.extj.form.util.FlowFormConstant;
-import org.openea.eap.extj.form.util.FlowFormDataUtil;
-import org.openea.eap.extj.form.util.FormPublicUtils;
-import org.openea.eap.extj.form.util.TableFeildsEnum;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -121,6 +120,8 @@ public class OnlineSwapDataUtils {
     private UserRelationService userRelationService;
     @Autowired
     private OrganizeRelationService organizeRelationService;
+    @Autowired
+    private FlowTemplateService flowTemplateService;
 
     public List<Map<String, Object>> getSwapList(List<Map<String, Object>> list, List<FieLdsModel> swapDataVoList, String visualDevId, Boolean inlineEdit, List<FormModel> codeList) {
         if (list.isEmpty()) {
@@ -917,6 +918,12 @@ public class OnlineSwapDataUtils {
         if (visualJsonModel.isFlowEnable()) {
             flowEnable = true;
             // TODO 待集成flowable
+            FlowTemplateInfoVO vo = flowTemplateService.info(visualJsonModel.getId());
+            if (vo == null || StringUtil.isEmpty(vo.getFlowTemplateJson()) || "[]".equals(vo.getFlowTemplateJson())) {
+                throw new WorkFlowException("流程未设计！");
+            }
+            List<FlowJsonModel> collect = JsonUtil.getJsonToList(vo.getFlowTemplateJson(), FlowJsonModel.class);
+            flowTemjsonId = collect.get(0).getId();
         }
 
         String uploaderTemplateJson = visualJsonModel.getColumnData().getUploaderTemplateJson();

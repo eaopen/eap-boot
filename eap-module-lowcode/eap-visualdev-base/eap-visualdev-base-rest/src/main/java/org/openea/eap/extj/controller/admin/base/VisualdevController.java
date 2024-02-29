@@ -23,6 +23,7 @@ import org.openea.eap.extj.base.vo.ListVO;
 import org.openea.eap.extj.base.vo.PageListVO;
 import org.openea.eap.extj.base.vo.PaginationVO;
 import org.openea.eap.extj.constant.MsgCode;
+import org.openea.eap.extj.engine.model.flowtemplate.FlowTemplateInfoVO;
 import org.openea.eap.extj.exception.DataException;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.model.visualJson.*;
@@ -433,6 +434,14 @@ public class VisualdevController extends SuperController<VisualdevService, Visua
             visualFlowFormUtil.saveOrUpdateForm(entity, OnlineDevData.STATE_ENABLE, true);
             //启用流程，修改流程基础信息
             // todo 待集成flowable
+            FlowTemplateInfoVO templateInfo = visualFlowFormUtil.getTemplateInfo(visualdevEntity.getId());
+            //编辑时不改变流程基础信息,若没有流程则创建
+            if (templateInfo == null) {
+                ActionResult result = visualFlowFormUtil.saveOrUpdateFlowTemp(entity, entity.getEnableFlow(), true);
+                if (200 != result.getCode()) {
+                    return ActionResult.fail("同步到流程时，" + result.getMsg());
+                }
+            }
             visualFlowFormUtil.saveOrUpdateForm(entity, OnlineDevData.STATE_ENABLE, false);
         }
         boolean flag = visualdevService.update(id, entity);

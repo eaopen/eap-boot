@@ -88,6 +88,7 @@ public class GlobalExceptionHandler {
         if (ex instanceof AccessDeniedException) {
             return accessDeniedExceptionHandler(request, (AccessDeniedException) ex);
         }
+
         return defaultExceptionHandler(request, ex);
     }
 
@@ -215,6 +216,12 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public CommonResult<?> defaultExceptionHandler(HttpServletRequest req, Throwable ex) {
+        // 处理 extn exception handler
+        if(ex.getClass().getPackage().getName().indexOf("extj")>0){
+            String msg = ex.getMessage();
+            return CommonResult.error(ERROR_EXTN.getCode(), msg);
+        }
+
         // 情况一：处理表不存在的异常
         CommonResult<?> tableNotExistsResult = handleTableNotExists(ex);
         if (tableNotExistsResult != null) {
