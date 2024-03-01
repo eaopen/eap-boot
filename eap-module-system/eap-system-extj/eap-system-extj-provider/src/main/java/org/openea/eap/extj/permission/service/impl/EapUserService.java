@@ -1,5 +1,6 @@
 package org.openea.eap.extj.permission.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,7 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
      */
     @Override
     public UserEntity getUserByAccount(String account) {
-        return null;
+        return covertUser(adminUserService.getUserByUsername(account));
     }
 
     /**
@@ -76,7 +77,7 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
      */
     @Override
     public UserEntity getUserByMobile(String mobile) {
-        return null;
+        return covertUser(adminUserService.getUserByMobile(mobile));
     }
 
     @Override
@@ -92,6 +93,10 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
      */
     @Override
     public boolean isExistByAccount(String account) {
+        AdminUserDO user = adminUserService.getUserByUsername(account);
+        if(user!=null){
+            return true;
+        }
         return false;
     }
 
@@ -194,7 +199,7 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
      */
     @Override
     public List<UserByRoleVO> getListByAuthorize(String organizeId, Page page) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -205,12 +210,15 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
      */
     @Override
     public String getDefaultCurrentValueUserId(UserConditionModel userConditionModel) {
+        log.debug("todo getDefaultCurrentValueUserId:"+ JSONUtil.parseObj(userConditionModel));
         return null;
     }
 
     @Override
     public List<UserEntity> getListByRoleIds(List<String> roleIds) {
-        return null;
+        // todo
+        log.debug("todo getListByRoleIds:"+ JSONUtil.parseObj(roleIds));
+        return Collections.emptyList();
     }
 
     @Override
@@ -552,7 +560,7 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
      */
     @Override
     public List<UserEntity> getListByManagerId(String managerId, String keyword) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**

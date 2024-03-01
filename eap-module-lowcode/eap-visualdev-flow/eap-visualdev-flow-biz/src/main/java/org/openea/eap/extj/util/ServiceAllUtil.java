@@ -3,25 +3,29 @@ package org.openea.eap.extj.util;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import org.openea.eap.extj.base.Pagination;
 import org.openea.eap.extj.base.entity.DictionaryDataEntity;
-import org.openea.eap.extj.base.service.*;
+import org.openea.eap.extj.base.service.DataInterfaceService;
+import org.openea.eap.extj.base.service.DbLinkService;
+import org.openea.eap.extj.base.service.DictionaryDataService;
+import org.openea.eap.extj.base.service.DictionaryTypeService;
 import org.openea.eap.extj.base.util.SentMessageUtil;
 import org.openea.eap.extj.database.model.entity.DbLinkEntity;
-import org.openea.eap.extj.form.entity.FlowFormEntity;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.extend.service.BillRuleService;
+import org.openea.eap.extj.form.entity.FlowFormEntity;
+import org.openea.eap.extj.form.service.FlowFormRelationService;
+import org.openea.eap.extj.form.service.FlowFormService;
+import org.openea.eap.extj.form.service.FormDataService;
 import org.openea.eap.extj.message.model.message.SentMessageForm;
 import org.openea.eap.extj.message.service.SendMessageConfigService;
 import org.openea.eap.extj.permission.entity.*;
 import org.openea.eap.extj.permission.service.*;
-import org.openea.eap.extj.form.service.FlowFormRelationService;
-import org.openea.eap.extj.form.service.FlowFormService;
-import org.openea.eap.extj.form.service.FormDataService;
 import org.openea.eap.extj.util.enums.DictionaryDataEnum;
+import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
+import org.openea.eap.module.system.service.user.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -29,6 +33,11 @@ import java.util.stream.Collectors;
 @Component
 @DS("")
 public class ServiceAllUtil {
+
+    @Autowired
+    AdminUserService eapUserService;
+
+    ////////////
 
     @Autowired
     private DbLinkService dblinkService;
@@ -103,8 +112,12 @@ public class ServiceAllUtil {
     }
 
     public String getAdmin() {
-        UserEntity admin = userService.getUserByAccount("admin");
-        return admin.getId();
+        AdminUserDO admin = eapUserService.getUserByUsername("admin");
+        if(admin!=null) {
+            return "" + admin.getId();
+        }
+        // todo admin=1
+        return "1";
     }
 
     //--------------------------------用户------------------------------
@@ -120,9 +133,10 @@ public class ServiceAllUtil {
 
     public List<UserEntity> getUserName(List<String> id, boolean enableMark) {
         List<UserEntity> list = userService.getUserName(id);
-        if (enableMark) {
-            list = list.stream().filter(t -> t.getEnabledMark() != 0).collect(Collectors.toList());
-        }
+        // todo will check enable
+//        if (enableMark) {
+//            list = list.stream().filter(t -> t.getEnabledMark() != 0).collect(Collectors.toList());
+//        }
         return list;
     }
 

@@ -22,6 +22,8 @@ import org.openea.eap.extj.permission.model.user.vo.UserByRoleVO;
 import org.openea.eap.extj.permission.service.*;
 import org.openea.eap.extj.util.JsonUtil;
 import org.openea.eap.extj.util.StringUtil;
+import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
+import org.openea.eap.module.system.service.user.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +36,11 @@ import java.util.stream.Collectors;
 @Component
 @DS("")
 public class ServiceBaseUtil {
+
+    @Autowired
+    AdminUserService eapUserService;
+
+    ////////////
 
     @Autowired
     private DbLinkService dblinkService;
@@ -113,8 +120,8 @@ public class ServiceBaseUtil {
     }
 
     public String getAdmin() {
-        UserEntity admin = userService.getUserByAccount("admin");
-        return admin.getId();
+        AdminUserDO admin = eapUserService.getUserByUsername("admin");
+        return ""+admin.getId();
     }
 
     //--------------------------------用户------------------------------

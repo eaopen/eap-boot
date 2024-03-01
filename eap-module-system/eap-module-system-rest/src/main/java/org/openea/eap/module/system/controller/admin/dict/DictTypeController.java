@@ -172,9 +172,11 @@ public class DictTypeController {
 //        List<DictDataDO> collect = dictDataService.getDictDataList().stream().filter(t -> dictType.getType().equals(t.getDictType())).collect(Collectors.toList());
             for (DictDataDO dictDataDO : collect) {
                 Map<String,Object> map=new HashMap<>();
+                // fix id same as value
                 map.put("id",dictDataDO.getId());
+                //map.put("id",dictDataDO.getValue());
                 map.put("enCode",dictDataDO.getValue());
-                map.put("parentId",dictionaryTypeId);
+                //map.put("parentId",dictionaryTypeId);
                 map.put("fullName",dictDataDO.getLabel());
                 map.put("hasChildren",false);
                 listV1.add(map);
