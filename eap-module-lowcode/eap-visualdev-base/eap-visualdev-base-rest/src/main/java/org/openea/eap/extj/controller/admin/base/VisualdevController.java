@@ -291,6 +291,10 @@ public class VisualdevController extends SuperController<VisualdevService, Visua
         if (OnlineDevData.STATE_ENABLE == entity1.getEnableFlow() && entity1.getType() < 3) {
             //生成流程
             // todo 待集成flowable
+            ActionResult result = visualFlowFormUtil.saveOrUpdateFlowTemp(entity1, OnlineDevData.STATE_ENABLE, true);
+            if (200 != result.getCode()) {
+                return ActionResult.fail("同步到流程时，" + result.getMsg());
+            }
             //生成表单
             visualFlowFormUtil.saveOrUpdateForm(entity1, OnlineDevData.STATE_ENABLE, true);
         }
@@ -368,6 +372,10 @@ public class VisualdevController extends SuperController<VisualdevService, Visua
         if (OnlineDevData.STATE_ENABLE == entity.getEnableFlow() && entity.getType() < 3) {
             //生成流程
             // todo 待集成flowable
+            ActionResult result = visualFlowFormUtil.saveOrUpdateFlowTemp(entity, OnlineDevData.STATE_ENABLE, true);
+            if (200 != result.getCode()) {
+                return ActionResult.fail("同步到流程时，" + result.getMsg());
+            }
             //生成表单
             visualFlowFormUtil.saveOrUpdateForm(entity, OnlineDevData.STATE_ENABLE, true);
         }
@@ -464,6 +472,10 @@ public class VisualdevController extends SuperController<VisualdevService, Visua
             visualdevReleaseService.removeById(id);
             //启用流程的情况，需要删除流程和表单,删除成功与否不管。
             // todo 待集成flowable
+            if (OnlineDevData.STATE_ENABLE == entity.getEnableFlow()) {
+                visualFlowFormUtil.deleteFlowForm(entity.getId());
+                visualFlowFormUtil.deleteTemplateInfo(entity.getId());
+            }
             return ActionResult.success(MsgCode.SU003.get());
         }
         return ActionResult.fail(MsgCode.FA003.get());
@@ -502,6 +514,10 @@ public class VisualdevController extends SuperController<VisualdevService, Visua
         //启用流程判断流程是否设计完成
         if (Objects.equals(OnlineDevData.STATE_ENABLE, visualdevEntity.getEnableFlow())) {
             // todo 待集成flowable
+            FlowTemplateInfoVO templateInfo = visualFlowFormUtil.getTemplateInfo(id);
+            if (templateInfo == null || StringUtil.isEmpty(templateInfo.getFlowTemplateJson()) || "[]".equals(templateInfo.getFlowTemplateJson())) {
+                return ActionResult.fail("发布失败，流程未设计！" );
+            }
         }
 
         List<TableModel> tableModels = JsonUtil.getJsonToList(visualdevEntity.getVisualTables(), TableModel.class);
@@ -549,6 +565,7 @@ public class VisualdevController extends SuperController<VisualdevService, Visua
         if (OnlineDevData.STATE_ENABLE == visualdevEntity.getEnableFlow()) {
             visualFlowFormUtil.saveOrUpdateForm(clone, OnlineDevData.STATE_ENABLE, false);
             // todo 待集成flowable
+            visualFlowFormUtil.saveOrUpdateFlowTemp(visualdevEntity, 1, false);
         }
         return ActionResult.success("同步成功");
     }

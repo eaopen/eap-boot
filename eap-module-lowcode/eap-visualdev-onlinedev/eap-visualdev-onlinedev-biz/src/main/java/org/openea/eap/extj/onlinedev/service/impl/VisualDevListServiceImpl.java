@@ -25,8 +25,16 @@ import org.openea.eap.extj.base.service.VisualdevShortLinkService;
 import org.openea.eap.extj.database.model.entity.DbLinkEntity;
 import org.openea.eap.extj.database.util.ConnUtil;
 import org.openea.eap.extj.database.util.DynamicDataSourceUtil;
+import org.openea.eap.extj.engine.entity.FlowTaskEntity;
+import org.openea.eap.extj.engine.model.flowtemplate.FlowTemplateInfoVO;
+import org.openea.eap.extj.engine.service.FlowTaskService;
+import org.openea.eap.extj.engine.service.FlowTemplateJsonService;
+import org.openea.eap.extj.engine.service.FlowTemplateService;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.form.mapper.FlowFormDataMapper;
+import org.openea.eap.extj.form.service.FlowFormService;
+import org.openea.eap.extj.form.util.FlowFormDataUtil;
+import org.openea.eap.extj.form.util.TableFeildsEnum;
 import org.openea.eap.extj.model.visual.ExtnKeyConsts;
 import org.openea.eap.extj.model.visualJson.*;
 import org.openea.eap.extj.model.visualJson.analysis.FormAllModel;
@@ -42,10 +50,7 @@ import org.openea.eap.extj.onlinedev.util.OnlineDevDbUtil;
 import org.openea.eap.extj.onlinedev.util.onlineDevUtil.*;
 import org.openea.eap.extj.permission.model.authorize.OnlineDynamicSqlModel;
 import org.openea.eap.extj.permission.service.AuthorizeService;
-import org.openea.eap.extj.form.service.FlowFormService;
 import org.openea.eap.extj.util.*;
-import org.openea.eap.extj.form.util.FlowFormDataUtil;
-import org.openea.eap.extj.form.util.TableFeildsEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +94,15 @@ public class VisualDevListServiceImpl extends SuperServiceImpl<VisualdevModelDat
     private VisualdevShortLinkService visualdevShortLinkService;
     @Autowired
     private FilterService filterService;
+
+    @Autowired
+    private FlowTemplateService flowTemplateService;
+
+    @Autowired
+    private FlowTemplateJsonService flowTemplateJsonService;
+
+    @Autowired
+    private FlowTaskService flowTaskService;
 
     @Override
     public List<Map<String, Object>> getDataList(VisualDevJsonModel visualDevJsonModel, PaginationModel paginationModel) throws WorkFlowException {
@@ -208,6 +222,21 @@ public class VisualDevListServiceImpl extends SuperServiceImpl<VisualdevModelDat
         //添加流程状态
         if (visualDevJsonModel.isFlowEnable()) {
             // todo 待集成flowable
+            FlowTemplateInfoVO templateInfo = flowTemplateService.info(visualDevJsonModel.getId());
+            if (templateInfo == null) {
+                throw new WorkFlowException("该功能未配置流程不可用!" );
+            }
+            List<String> ids = realList.stream().map(i -> i.get("id" ).toString()).collect(Collectors.toList());
+            List<FlowTaskEntity> tasks = flowTaskService.getInfosSubmit(ids.toArray(new String[]{}), FlowTaskEntity::getStatus, FlowTaskEntity::getId, FlowTaskEntity::getProcessId);
+            realList.stream().forEach(m -> {
+                String id = m.get("id" ).toString();
+                m.put("flowState" , "" );
+                tasks.forEach(i -> {
+                    if (i.getId().equals(id) || i.getProcessId().equals(id)) {
+                        m.put("flowState" , i.getStatus());
+                    }
+                });
+            });
         }
         return realList;
     }
@@ -276,6 +305,21 @@ public class VisualDevListServiceImpl extends SuperServiceImpl<VisualdevModelDat
         //添加流程状态
         if (visualDevJsonModel.isFlowEnable()) {
             // todo 待集成flowable
+            FlowTemplateInfoVO templateInfo = flowTemplateService.info(visualDevJsonModel.getId());
+            if (templateInfo == null) {
+                throw new WorkFlowException("该功能未配置流程不可用!" );
+            }
+            List<String> ids = realList.stream().map(i -> i.get("id" ).toString()).collect(Collectors.toList());
+            List<FlowTaskEntity> tasks = flowTaskService.getInfosSubmit(ids.toArray(new String[]{}), FlowTaskEntity::getStatus, FlowTaskEntity::getId, FlowTaskEntity::getProcessId);
+            realList.stream().forEach(m -> {
+                String id = m.get("id" ).toString();
+                m.put("flowState" , "" );
+                tasks.forEach(i -> {
+                    if (i.getId().equals(id) || i.getProcessId().equals(id)) {
+                        m.put("flowState" , i.getStatus());
+                    }
+                });
+            });
         }
         return realList;
     }

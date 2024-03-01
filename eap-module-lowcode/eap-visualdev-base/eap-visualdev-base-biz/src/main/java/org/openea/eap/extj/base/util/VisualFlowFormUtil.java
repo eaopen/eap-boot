@@ -241,4 +241,18 @@ public class VisualFlowFormUtil {
         return vo;
     }
 
+    /**
+     * 删除流程引擎信息
+     *
+     */
+
+    public void deleteTemplateInfo(String id) {
+        String msg = "";
+        try {
+            FlowTemplateEntity entity = flowTemplateService.getInfo(id);
+            flowTemplateService.delete(entity);
+        } catch (Exception e) {
+            msg = e.getMessage();
+        }
+    }
 }

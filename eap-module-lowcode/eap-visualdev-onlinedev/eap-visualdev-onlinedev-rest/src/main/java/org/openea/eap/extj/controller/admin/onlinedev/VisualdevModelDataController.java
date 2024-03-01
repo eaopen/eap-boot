@@ -23,7 +23,9 @@ import org.openea.eap.extj.base.vo.PaginationVO;
 import org.openea.eap.extj.config.ConfigValueUtil;
 import org.openea.eap.extj.constant.MsgCode;
 import org.openea.eap.extj.database.model.entity.DbLinkEntity;
+import org.openea.eap.extj.engine.entity.FlowTaskEntity;
 import org.openea.eap.extj.engine.model.flowtemplate.FlowTemplateInfoVO;
+import org.openea.eap.extj.engine.service.FlowTaskService;
 import org.openea.eap.extj.engine.service.FlowTemplateService;
 import org.openea.eap.extj.exception.DataException;
 import org.openea.eap.extj.exception.WorkFlowException;
@@ -108,6 +110,9 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
     private UserService userService;
     @Autowired
     private FormDataService formDataService;
+
+    @Autowired
+    private FlowTaskService flowTaskService;
 
     @Operation(summary = "获取数据列表" )
 	@Parameters({
@@ -420,6 +425,17 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
 
         if (!StringUtil.isEmpty(visualdevEntity.getVisualTables()) && !OnlineDevData.TABLE_CONST.equals(visualdevEntity.getVisualTables())) {
             // todo 待集成flowable
+            FlowTaskEntity taskEntity = flowTaskService.getInfoSubmit(id, FlowTaskEntity::getId, FlowTaskEntity::getStatus, FlowTaskEntity::getFullName, FlowTaskEntity::getParentId);
+            if (taskEntity != null) {
+                if (!"0".equals(taskEntity.getParentId())) {
+                    return ActionResult.fail(taskEntity.getFullName() + "不能删除" );
+                }
+                if (taskEntity.getStatus().equals(0) || taskEntity.getStatus().equals(4)) {
+                    flowTaskService.delete(taskEntity);
+                }
+            }
+
+
             boolean result = visualdevModelDataService.tableDelete(id, visualJsonModel);
             if (result) {
                 return ActionResult.success(MsgCode.SU003.get());
@@ -460,6 +476,15 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
         if (visualdevEntity.getEnableFlow() == 1) {
             for (String id : idsVoList) {
                 // todo 待集成flowable
+                FlowTaskEntity taskEntity = flowTaskService.getInfoSubmit(id, FlowTaskEntity::getId, FlowTaskEntity::getStatus);
+                if (taskEntity != null) {
+                    if (taskEntity.getStatus().equals(0) || taskEntity.getStatus().equals(4)) {
+                        idsList.add(id);
+                        flowTaskService.delete(taskEntity);
+                    }
+                } else {
+                    idsList.add(id);
+                }
             }
         } else {
             idsList = idsVoList;

@@ -2,11 +2,13 @@ package org.openea.eap.framework.security.core.filter;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.ServiceException;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
 import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.security.core.LoginUser;
+import org.openea.eap.framework.security.core.util.PocAuthUtil;
 import org.openea.eap.framework.security.core.util.SecurityFrameworkUtils;
 import org.openea.eap.framework.web.core.handler.GlobalExceptionHandler;
 import org.openea.eap.framework.web.core.util.WebFrameworkUtils;
@@ -40,8 +42,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @SuppressWarnings("NullableProblems")
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+        boolean enablePoc = securityProperties.isEnablePoc();
         String token = SecurityFrameworkUtils.obtainAuthorization(request,
                 securityProperties.getTokenHeader(), securityProperties.getTokenParameter());
+
         if (StrUtil.isNotEmpty(token)) {
             Integer userType = WebFrameworkUtils.getLoginUserType(request);
             try {
@@ -61,8 +65,61 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 ServletUtils.writeJSON(response, result);
                 return;
             }
-        }
+        }else if(enablePoc){
+            // poc only
+            // 1 prepare
+            boolean pocPass = false;
+            String pocUser = request.getHeader(securityProperties.getPocUserHeader());
+            if(StrUtil.isEmpty(pocUser)){
+                pocUser = securityProperties.getPocAuthUser();
+            }
+            // 2 check
+            // 2.1 poc 1: check poc token
+            String pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
+                    securityProperties.getPocAuthHeader(), securityProperties.getPocAuthHeader());
+            if(StrUtil.isNotEmpty(pocToken)
+                    && pocToken.equals(securityProperties.getPocAuthToken())){
+                pocPass = true;
+                token = securityProperties.getPocAuthToken();
+            }
+            // 2.2 poc 2: check poc sign
+            if(!pocPass){
+                String sign = request.getHeader(securityProperties.getPocSignHeader());
+                if(StrUtil.isEmpty(sign)){
+                    sign = request.getParameter(securityProperties.getPocSignHeader());
+                }
+                if(StrUtil.isNotEmpty(sign)){
+                    String userSign = PocAuthUtil.authSignToday(pocUser, securityProperties.getPocSignPasswd());
+                    if(sign.equals(userSign)){
+                        pocPass = true;
+                        token = sign;
+                    }
+                }
+            }
+            // 3 login
+            if(pocPass){
+                Integer userType = UserTypeEnum.ADMIN.getValue();
+                try{
+                    Long userId = 9L;
 
+                    // 构建登录用户
+                    LoginUser loginUser = new LoginUser();
+                    loginUser.setId(userId);
+                    loginUser.setUserType(userType);
+                    loginUser.setUserKey(pocUser);
+                    loginUser.setTenantId(0L);
+
+                    // 设置当前用户
+                    SecurityFrameworkUtils.setLoginUser(loginUser, request);
+
+                } catch (Throwable ex) {
+                    CommonResult<?> result = globalExceptionHandler.allExceptionHandler(request, ex);
+                    ServletUtils.writeJSON(response, result);
+                    return;
+                }
+            }
+
+        }
         // 继续过滤链
         chain.doFilter(request, response);
     }
