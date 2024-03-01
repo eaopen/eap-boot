@@ -11,6 +11,7 @@ import org.openea.eap.framework.security.core.util.PwdEncoderUtil;
 import org.openea.eap.framework.web.core.handler.GlobalExceptionHandler;
 import org.openea.eap.module.system.api.oauth2.OAuth2TokenApi;
 import org.openea.eap.module.system.api.permission.PermissionApi;
+import org.openea.eap.module.system.api.user.AdminUserApi;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -80,8 +81,8 @@ public class EapSecurityAutoConfiguration {
      */
     @Bean
     public TokenAuthenticationFilter authenticationTokenFilter(GlobalExceptionHandler globalExceptionHandler,
-                                                               OAuth2TokenApi oauth2TokenApi) {
-        return new TokenAuthenticationFilter(securityProperties, globalExceptionHandler, oauth2TokenApi);
+                                                               OAuth2TokenApi oauth2TokenApi, AdminUserApi adminUserApi) {
+        return new TokenAuthenticationFilter(securityProperties, globalExceptionHandler, oauth2TokenApi, adminUserApi);
     }
 
     @Bean("ss") // 使用 Spring Security 的缩写，方便使用

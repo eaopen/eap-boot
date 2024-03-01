@@ -2,6 +2,7 @@ package org.openea.eap.framework.security.core.filter;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.ServiceException;
 import org.openea.eap.framework.common.pojo.CommonResult;
@@ -14,7 +15,8 @@ import org.openea.eap.framework.web.core.handler.GlobalExceptionHandler;
 import org.openea.eap.framework.web.core.util.WebFrameworkUtils;
 import org.openea.eap.module.system.api.oauth2.OAuth2TokenApi;
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCheckRespDTO;
-import lombok.RequiredArgsConstructor;
+import org.openea.eap.module.system.api.user.AdminUserApi;
+import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -37,6 +39,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private final GlobalExceptionHandler globalExceptionHandler;
 
     private final OAuth2TokenApi oauth2TokenApi;
+
+    private final AdminUserApi adminUserApi;
 
     @Override
     @SuppressWarnings("NullableProblems")
@@ -103,8 +107,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             if(pocPass){
                 Integer userType = UserTypeEnum.ADMIN.getValue();
                 try{
-                    // todo will query userId via userKey
-                    Long userId = 9L;
+                    AdminUserRespDTO userResp = adminUserApi.getUserByAccount(pocUser);
+                    Long userId = userResp.getId();
 
                     // 构建登录用户
                     LoginUser loginUser = new LoginUser();
