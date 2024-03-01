@@ -71,7 +71,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             boolean pocPass = false;
             String pocUser = request.getHeader(securityProperties.getPocUserHeader());
             if(StrUtil.isEmpty(pocUser)){
-                pocUser = securityProperties.getPocAuthUser();
+                pocUser = request.getParameter(securityProperties.getPocUserHeader());
+                if(StrUtil.isEmpty(pocUser)){
+                    pocUser = securityProperties.getPocAuthUser();
+                }
             }
             // 2 check
             // 2.1 poc 1: check poc token
@@ -100,6 +103,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             if(pocPass){
                 Integer userType = UserTypeEnum.ADMIN.getValue();
                 try{
+                    // todo will query userId via userKey
                     Long userId = 9L;
 
                     // 构建登录用户
