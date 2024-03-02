@@ -75,6 +75,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             boolean pocPass = false;
             String pocUser = request.getHeader(securityProperties.getPocUserHeader());
             if(StrUtil.isEmpty(pocUser)){
+                pocUser = request.getHeader(StrUtil.upperFirst(securityProperties.getPocUserHeader()));
+            }
+            if(StrUtil.isEmpty(pocUser)){
                 pocUser = request.getParameter(securityProperties.getPocUserHeader());
                 if(StrUtil.isEmpty(pocUser)){
                     pocUser = securityProperties.getPocAuthUser();
@@ -84,6 +87,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             // 2.1 poc 1: check poc token
             String pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
                     securityProperties.getPocAuthHeader(), securityProperties.getPocAuthHeader());
+            if(StrUtil.isEmpty(pocToken)){
+                pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
+                        StrUtil.upperFirst(securityProperties.getPocAuthHeader()), StrUtil.upperFirst(securityProperties.getPocAuthHeader()));
+            }
             if(StrUtil.isNotEmpty(pocToken)
                     && pocToken.equals(securityProperties.getPocAuthToken())){
                 pocPass = true;

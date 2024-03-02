@@ -40,6 +40,7 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
     private PageResult<AdminUserDO> userList;
 
     private UserEntity covertUser(AdminUserDO adminUser){
+        if(adminUser==null) return null;
         UserEntity user = new UserEntity();
         user.setId(""+adminUser.getId());
         user.setAccount(adminUser.getUsername());
@@ -51,11 +52,12 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
 
     @Override
     public UserEntity getInfo(String userId) {
+        if(StrUtil.isEmpty(userId)) return null;
         try{
             AdminUserDO adminUserDO = adminUserService.getUser(new Long(userId));
             return covertUser(adminUserDO);
         }catch (Throwable t){
-            log.warn("getInfo: userId="+userId+", msg="+t.getMessage());
+            log.warn("getInfo: userId="+userId+", msg="+t.getMessage(), t);
             throw t;
         }
         //return null;
