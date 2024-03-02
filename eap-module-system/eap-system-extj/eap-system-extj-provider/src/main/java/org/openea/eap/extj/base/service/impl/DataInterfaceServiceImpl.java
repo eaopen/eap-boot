@@ -72,6 +72,8 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
     private OrganizeAdministratorService organizeAdminIsTratorService;
 
 
+    private static String bodyJsonKey = "bodyJson";
+
     @Override
     public List<DataInterfaceEntity> getList(PaginationDataInterface pagination, String dataType, boolean enabledMark) {
         // 定义变量判断是否需要使用修改时间倒序
@@ -903,9 +905,18 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     if (Objects.nonNull(map)) {
                         for (String field : map.keySet()) {
                             String value = String.valueOf(map.get(field));
+                            if (field.equals(bodyJsonKey)) {
+                                for (DataInterfaceModel model : jsonToListMap) {
+                                    if (Objects.nonNull(model) && model.getField().equals(field)) {
+                                        value = String.valueOf(model.getDefaultValue());
+                                        continue;
+                                    }
+                                }
+                            }
                             jsonObject.put(field, value);
                         }
                     } else {
+                        //todo 默认值全没有或者有改为每个单个判断是否有
                         for (DataInterfaceModel model : jsonToListMap) {
                             if (Objects.nonNull(model)) {
                                 String field = String.valueOf(model.getField());
@@ -996,17 +1007,16 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                 if(isBodyJson){
                     // check JSON: "bodyJson"
                     try{
-                        String bodyJsonKey = "bodyJson";
                         if(jsonObject.containsKey(bodyJsonKey)){
                             String strBodyJson = jsonObject.getString(bodyJsonKey);
+                            jsonObject.remove(bodyJsonKey);
                             // 替换变量 $变量$
                             for(String key: jsonObject.keySet()){
-                                if(bodyJsonKey.equalsIgnoreCase(key)) continue;
                                 if(strBodyJson.indexOf("$"+key+"$")>0){
-                                    strBodyJson = strBodyJson.replace("$"+key+"$", jsonObject.getString(key));
+                                    strBodyJson = strBodyJson.replaceAll("\\$"+key+"\\$", jsonObject.getString(key));
                                 }
                             }
-                            jsonObjects = JSONUtil.toJsonStr(JSONUtil.parse(strBodyJson));
+                            jsonObjects = JSONUtil.toJsonStr(JSONObject.parseObject(strBodyJson));
                         }
                     }catch (Exception e){
                         jsonObjects = null;
