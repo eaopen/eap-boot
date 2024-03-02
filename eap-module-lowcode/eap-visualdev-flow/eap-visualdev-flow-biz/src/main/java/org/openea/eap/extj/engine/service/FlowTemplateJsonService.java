@@ -52,10 +52,10 @@ public interface FlowTemplateJsonService extends SuperService<FlowTemplateJsonEn
     /**
      * 获取主版本
      *
-     * @param id
+     * @param ids
      * @return
      */
-    List<FlowTemplateJsonEntity> getMainList(List<String> id);
+    List<FlowTemplateJsonEntity> getMainList(List<String> ids);
 
     /**
      * 获取主版本
