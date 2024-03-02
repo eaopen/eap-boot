@@ -2,7 +2,6 @@ package org.openea.eap.extj.util;
 
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.session.TokenSign;
-import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.ObjectUtil;
@@ -45,8 +44,6 @@ public class UserProvider {
     protected static CacheKeyUtil cacheKeyUtil;
 
     public static final String USER_INFO_KEY = "userInfo";
-
-    protected static final ThreadLocal<UserInfo> USER_CACHE = new ThreadLocal<>();
 
     public UserProvider(RedisUtil redisUtil, CacheKeyUtil cacheKeyUtil) {
         UserProvider.redisUtil = redisUtil;
@@ -97,33 +94,6 @@ public class UserProvider {
     }
 
 
-
-    // =================== 登录相关操作 ===================
-
-    /**
-     * 登录系统
-     *
-     * @param userInfo 登录用户信息
-     */
-    public static void login(UserInfo userInfo) {
-        setLocalLoginUser(userInfo);
-        StpUtil.login(splicingLoginId(userInfo.getUserId()));
-        userInfo.setToken(StpUtil.getTokenValueNotCut());
-        setLoginUser(userInfo);
-    }
-
-    /**
-     * 登录系统
-     *
-     * @param userInfo   用户信息
-     * @param loginModel 登录参数
-     */
-    public static void login(UserInfo userInfo, SaLoginModel loginModel) {
-        setLocalLoginUser(userInfo);
-        StpUtil.login(splicingLoginId(userInfo.getUserId()), loginModel);
-        userInfo.setToken(StpUtil.getTokenValueNotCut());
-        setLoginUser(userInfo);
-    }
 
 
     // =================== 登录用户ID相关操作 ===================
@@ -211,36 +181,6 @@ public class UserProvider {
 
 
     // =================== UserInfo缓存相关操作 ===================
-
-
-    /**
-     * 设置Redis用户数据
-     */
-    public static void setLoginUser(UserInfo userInfo) {
-        StpUtil.getTokenSession().set(USER_INFO_KEY, userInfo);
-    }
-
-    /**
-     * 设置本地用户数据
-     */
-    public static void setLocalLoginUser(UserInfo userInfo) {
-        USER_CACHE.set(userInfo);
-    }
-
-    /**
-     * 获取本地用户数据
-     */
-    public static UserInfo getLocalLoginUser() {
-        return USER_CACHE.get();
-    }
-
-    /**
-     * 清空本地用户数据
-     */
-    public static void clearLocalUser() {
-        USER_CACHE.remove();
-    }
-
 
 
 
@@ -383,16 +323,7 @@ public class UserProvider {
      * @return
      */
     public static UserInfo getUser() {
-
-
-        UserInfo userInfo = USER_CACHE.get();
-        if (userInfo != null && StrUtil.isNotEmpty(userInfo.getUserName())) {
-            return userInfo;
-        }
-        userInfo = UserProvider.getLoginUserInfo();
-        if (userInfo.getUserId() != null && StrUtil.isNotEmpty(userInfo.getUserName())) {
-            USER_CACHE.set(userInfo);
-        }
+        UserInfo userInfo = UserProvider.getLoginUserInfo();
         return userInfo;
     }
 

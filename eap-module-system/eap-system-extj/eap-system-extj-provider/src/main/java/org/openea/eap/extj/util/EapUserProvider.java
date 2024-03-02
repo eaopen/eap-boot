@@ -39,9 +39,6 @@ public class EapUserProvider extends UserProvider {
             }
 
         }
-        if (userInfo.getUserId() != null) {
-            USER_CACHE.set(userInfo);
-        }
         return userInfo;
     }
 

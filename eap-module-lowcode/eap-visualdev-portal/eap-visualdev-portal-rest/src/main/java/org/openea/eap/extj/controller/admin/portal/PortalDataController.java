@@ -71,8 +71,9 @@ public class PortalDataController extends SuperController<PortalService, PortalE
         }else {
             userInfo.setAppSystemId(id);
         }
-        EapUserProvider.setLocalLoginUser(userInfo);
-        EapUserProvider.setLoginUser(userInfo);
+        // todo
+//        EapUserProvider.setLocalLoginUser(userInfo);
+//        EapUserProvider.setLoginUser(userInfo);
         return ActionResult.success("设置成功" );
     }
 

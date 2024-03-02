@@ -1,5 +1,6 @@
 package org.openea.eap.extj.permission.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -53,9 +54,10 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
             AdminUserDO adminUserDO = adminUserService.getUser(new Long(userId));
             return covertUser(adminUserDO);
         }catch (Throwable t){
-            log.warn(t.getMessage());
+            log.warn("getInfo: userId="+userId+", msg="+t.getMessage());
+            throw t;
         }
-        return null;
+        //return null;
     }
 
     /**
@@ -145,6 +147,7 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
     public List<UserEntity> getUserName(List<String> ids) {
         List<UserEntity> userLList = new ArrayList<>();
         for(String id: ids){
+            if(StrUtil.isEmpty(id)) continue;
             UserEntity user = getInfo(id);
             if(user!=null){
                 userLList.add(user);
