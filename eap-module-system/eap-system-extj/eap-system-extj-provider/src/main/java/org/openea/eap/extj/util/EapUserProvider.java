@@ -22,6 +22,9 @@ public class EapUserProvider extends UserProvider {
     }
 
 
+    public static UserInfo get(String token) {
+        return getUser(token);
+    }
     public static UserInfo getUser(String token) {
         // 参考 TokenAuthenticationFilter
         UserInfo userInfo = new UserInfo();
@@ -42,4 +45,8 @@ public class EapUserProvider extends UserProvider {
         return userInfo;
     }
 
+    public static String getToken() {
+        // TODO 获取当前线程的thread
+        return "";
+    }
 }
