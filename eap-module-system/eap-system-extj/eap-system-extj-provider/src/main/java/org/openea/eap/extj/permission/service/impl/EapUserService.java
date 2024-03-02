@@ -1,5 +1,6 @@
 package org.openea.eap.extj.permission.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -146,6 +147,7 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
     @Override
     public List<UserEntity> getUserName(List<String> ids) {
         List<UserEntity> userLList = new ArrayList<>();
+        ids = CollUtil.distinct(ids);
         for(String id: ids){
             if(StrUtil.isEmpty(id)) continue;
             UserEntity user = getInfo(id);
