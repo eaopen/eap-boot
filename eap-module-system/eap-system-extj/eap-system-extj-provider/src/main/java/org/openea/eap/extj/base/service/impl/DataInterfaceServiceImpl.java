@@ -2,6 +2,7 @@ package org.openea.eap.extj.base.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -901,30 +902,27 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     }
                     requestMethod = "GET";
                 } else {  //post=7
-                    // 判断是否使用默认值
+
                     if (Objects.nonNull(map)) {
                         for (String field : map.keySet()) {
                             String value = String.valueOf(map.get(field));
-                            if (field.equals(bodyJsonKey)) {
-                                for (DataInterfaceModel model : jsonToListMap) {
-                                    if (Objects.nonNull(model) && model.getField().equals(field)) {
-                                        value = String.valueOf(model.getDefaultValue());
-                                        continue;
-                                    }
-                                }
-                            }
                             jsonObject.put(field, value);
                         }
-                    } else {
-                        //todo 默认值全没有或者有改为每个单个判断是否有
-                        for (DataInterfaceModel model : jsonToListMap) {
-                            if (Objects.nonNull(model)) {
-                                String field = String.valueOf(model.getField());
+                    }
+                    // 判断是否使用默认值
+                    for (DataInterfaceModel model : jsonToListMap) {
+                        if (Objects.nonNull(model)) {
+                            String field = String.valueOf(model.getField());
+                            // 如字段不存在或者值未空，则设置为默认值
+                            if(!jsonObject.containsKey(field)
+                                    || StrUtil.isEmpty(jsonObject.getString(field))
+                                    || field.equals(bodyJsonKey)){
                                 String value = String.valueOf(model.getDefaultValue());
                                 jsonObject.put(field, value);
                             }
                         }
                     }
+
                     requestMethod = "POST";
                 }
             }
@@ -1033,6 +1031,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     }
                 }
             }
+            // todo API 调用日志
             //String jsonObjects = jsonObject.size() > 0 ? jsonObject.toJSONString() : null;
             get = HttpUtil.httpRequest(path, requestMethod, jsonObjects, token, jsonObject.size() > 0 ? JsonUtil.getObjectToString(jsonObject) : null);
             return get;
