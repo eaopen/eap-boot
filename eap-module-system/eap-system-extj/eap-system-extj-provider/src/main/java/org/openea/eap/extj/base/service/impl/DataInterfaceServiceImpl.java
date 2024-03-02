@@ -1,6 +1,8 @@
 package org.openea.eap.extj.base.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -992,7 +994,27 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
             String jsonObjects = null;
             if(jsonObject.size() > 0){
                 if(isBodyJson){
-                    jsonObjects = jsonObject.toJSONString();
+                    // check JSON: "bodyJson"
+                    try{
+                        String bodyJsonKey = "bodyJson";
+                        if(jsonObject.containsKey(bodyJsonKey)){
+                            String strBodyJson = jsonObject.getString(bodyJsonKey);
+                            // 替换变量 $变量$
+                            for(String key: jsonObject.keySet()){
+                                if(bodyJsonKey.equalsIgnoreCase(key)) continue;
+                                if(strBodyJson.indexOf("$"+key+"$")>0){
+                                    strBodyJson = strBodyJson.replace("$"+key+"$", jsonObject.getString(key));
+                                }
+                            }
+                            jsonObjects = JSONUtil.toJsonStr(JSONUtil.parse(strBodyJson));
+                        }
+                    }catch (Exception e){
+                        jsonObjects = null;
+                        log.warn("check bodyJson error:" + e.getMessage(), e);
+                    }
+                    if(ObjectUtil.isEmpty(jsonObjects)){
+                        jsonObjects = jsonObject.toJSONString();
+                    }
                 }else{
                     Set<String> keys = jsonObject.keySet();
                     for(String key: keys){
