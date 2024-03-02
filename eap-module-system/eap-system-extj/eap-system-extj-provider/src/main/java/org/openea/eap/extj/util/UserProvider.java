@@ -81,6 +81,7 @@ public class UserProvider {
         String account = loginUser.getUserKey();
         AdminUserService adminUserApi = EapAppUtil.getBean(AdminUserService.class);
         AdminUserDO userDo = null;
+        // TODO 是否有其他字段需要补充
         if(StrUtil.isNotEmpty(account)){
             user.setUserAccount(loginUser.getUserKey());
             user.setUserName(loginUser.getUserKey());
