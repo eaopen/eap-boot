@@ -17,11 +17,4 @@ public class DefaultController {
 //    }
 
 
-//    @RequestMapping(value = {"/admin-api/report/**"})
-//    public CommonResult<Boolean> report404() {
-//        return CommonResult.error(NOT_IMPLEMENTED.getCode(),
-//                "[报表模块 eap-module-report - 已禁用][参考 https://doc.iocoder.cn/report/ 开启]");
-//    }
-
-
 }
