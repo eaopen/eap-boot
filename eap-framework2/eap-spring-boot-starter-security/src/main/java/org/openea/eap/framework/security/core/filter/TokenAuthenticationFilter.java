@@ -46,7 +46,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @SuppressWarnings("NullableProblems")
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        boolean enablePoc = securityProperties.isEnablePoc();
+
         String token = SecurityFrameworkUtils.obtainAuthorization(request,
                 securityProperties.getTokenHeader(), securityProperties.getTokenParameter());
 
@@ -69,74 +69,94 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 ServletUtils.writeJSON(response, result);
                 return;
             }
-        }else if(enablePoc){
-            // poc only
-            // 1 prepare
-            boolean pocPass = false;
-            String pocUser = request.getHeader(securityProperties.getPocUserHeader());
-            if(StrUtil.isEmpty(pocUser)){
-                pocUser = request.getHeader(StrUtil.upperFirst(securityProperties.getPocUserHeader()));
-            }
-            if(StrUtil.isEmpty(pocUser)){
-                pocUser = request.getParameter(securityProperties.getPocUserHeader());
-                if(StrUtil.isEmpty(pocUser)){
-                    pocUser = securityProperties.getPocAuthUser();
-                }
-            }
-            // 2 check
-            // 2.1 poc 1: check poc token
-            String pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
-                    securityProperties.getPocAuthHeader(), securityProperties.getPocAuthHeader());
-            if(StrUtil.isEmpty(pocToken)){
-                pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
-                        StrUtil.upperFirst(securityProperties.getPocAuthHeader()), StrUtil.upperFirst(securityProperties.getPocAuthHeader()));
-            }
-            if(StrUtil.isNotEmpty(pocToken)
-                    && pocToken.equals(securityProperties.getPocAuthToken())){
-                pocPass = true;
-                token = securityProperties.getPocAuthToken();
-            }
-            // 2.2 poc 2: check poc sign
-            if(!pocPass){
-                String sign = request.getHeader(securityProperties.getPocSignHeader());
-                if(StrUtil.isEmpty(sign)){
-                    sign = request.getParameter(securityProperties.getPocSignHeader());
-                }
-                if(StrUtil.isNotEmpty(sign)){
-                    String userSign = PocAuthUtil.authSignToday(pocUser, securityProperties.getPocSignPasswd());
-                    if(sign.equals(userSign)){
-                        pocPass = true;
-                        token = sign;
-                    }
-                }
-            }
-            // 3 login
-            if(pocPass){
-                Integer userType = UserTypeEnum.ADMIN.getValue();
-                try{
-                    AdminUserRespDTO userResp = adminUserApi.getUserByAccount(pocUser);
-                    Long userId = userResp.getId();
-
-                    // 构建登录用户
-                    LoginUser loginUser = new LoginUser();
-                    loginUser.setId(userId);
-                    loginUser.setUserType(userType);
-                    loginUser.setUserKey(pocUser);
-                    loginUser.setTenantId(0L);
-
-                    // 设置当前用户
-                    SecurityFrameworkUtils.setLoginUser(loginUser, request);
-
-                } catch (Throwable ex) {
-                    CommonResult<?> result = globalExceptionHandler.allExceptionHandler(request, ex);
-                    ServletUtils.writeJSON(response, result);
-                    return;
-                }
-            }
-
+        }else{
+            checkPocAuth(request, response);
         }
         // 继续过滤链
         chain.doFilter(request, response);
+    }
+    private void checkPocAuth(HttpServletRequest request, HttpServletResponse response) {
+        // 0 prepare
+        if(SecurityFrameworkUtils.getLoginUser()!=null) return;
+        // poc only
+        boolean enablePoc = securityProperties.isEnablePoc();
+        if(!enablePoc) return;
+        if(request.getRequestURI().indexOf("/auth/login")>0) return;
+
+        // 1 get poc user
+        boolean pocPass = false;
+        String pocUser = request.getHeader(securityProperties.getPocUserHeader());
+        if(StrUtil.isEmpty(pocUser)){
+            pocUser = request.getHeader(StrUtil.upperFirst(securityProperties.getPocUserHeader()));
+        }
+        if(StrUtil.isEmpty(pocUser)){
+            pocUser = request.getParameter(securityProperties.getPocUserHeader());
+            // 增加限制只支持op或poc开头的用户
+            if(StrUtil.isNotEmpty(pocUser)){
+                if(pocUser.startsWith("op") || pocUser.startsWith("poc")){
+                    // nothing
+                }else{
+                    pocUser = securityProperties.getPocAuthUser();
+                }
+            }
+            // 去掉默认用户，容易发生用户混乱
+            if(StrUtil.isEmpty(pocUser)){
+                pocUser = securityProperties.getPocAuthUser();
+            }
+        }
+        // 必须指定poc用户
+        if(StrUtil.isEmpty(pocUser)){
+            return;
+        }
+        // 2 check
+        // 2.1 poc 1: check poc token
+        String pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
+                securityProperties.getPocAuthHeader(), securityProperties.getPocAuthHeader());
+        if(StrUtil.isEmpty(pocToken)){
+            pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
+                    StrUtil.upperFirst(securityProperties.getPocAuthHeader()), StrUtil.upperFirst(securityProperties.getPocAuthHeader()));
+        }
+        if(StrUtil.isNotEmpty(pocToken)
+                && pocToken.equals(securityProperties.getPocAuthToken())){
+            pocPass = true;
+        }
+        // 2.2 poc 2: check poc sign
+        if(!pocPass){
+            String sign = request.getHeader(securityProperties.getPocSignHeader());
+            if(StrUtil.isEmpty(sign)){
+                sign = request.getParameter(securityProperties.getPocSignHeader());
+            }
+            if(StrUtil.isNotEmpty(sign)){
+                String userSign = PocAuthUtil.authSignToday(pocUser, securityProperties.getPocSignPasswd());
+                if(sign.equals(userSign)){
+                    pocPass = true;
+                    pocToken = sign;
+                }
+            }
+        }
+        // 3 login
+        if(pocPass){
+            Integer userType = UserTypeEnum.ADMIN.getValue();
+            try{
+                AdminUserRespDTO userResp = adminUserApi.getUserByAccount(pocUser);
+                Long userId = userResp.getId();
+
+                // 构建登录用户
+                LoginUser loginUser = new LoginUser();
+                loginUser.setId(userId);
+                loginUser.setUserType(userType);
+                loginUser.setUserKey(pocUser);
+                loginUser.setTenantId(0L);
+
+                // 设置当前用户
+                SecurityFrameworkUtils.setLoginUser(loginUser, request);
+
+            } catch (Throwable ex) {
+                CommonResult<?> result = globalExceptionHandler.allExceptionHandler(request, ex);
+                ServletUtils.writeJSON(response, result);
+                return;
+            }
+        }
     }
 
     private LoginUser buildLoginUserByToken(String token, Integer userType) {
