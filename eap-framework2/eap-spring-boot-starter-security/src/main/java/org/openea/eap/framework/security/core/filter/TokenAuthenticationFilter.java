@@ -91,17 +91,24 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
         if(StrUtil.isEmpty(pocUser)){
             pocUser = request.getParameter(securityProperties.getPocUserHeader());
-            // 增加限制只支持op或poc开头的用户
             if(StrUtil.isNotEmpty(pocUser)){
-                if(pocUser.startsWith("op") || pocUser.startsWith("poc")){
-                    // nothing
-                }else{
+                // 增加限制只支持op或poc开头的用户
+                boolean withPrefix = false;
+                String pocUserPrefix = securityProperties.getPocUserPrefix();
+                if(StrUtil.isEmpty(pocUserPrefix)){
+                    pocUserPrefix="poc,op";
+                }
+                String[] prefixes =pocUserPrefix.split(",");
+                for(String prefix:prefixes){
+                    if(pocUser.startsWith(prefix)){
+                        withPrefix = true;
+                        break;
+                    }
+                }
+                if(!withPrefix){
+                    // 不符合前缀要求的，强制改为默认poc用户
                     pocUser = securityProperties.getPocAuthUser();
                 }
-            }
-            // 去掉默认用户，容易发生用户混乱
-            if(StrUtil.isEmpty(pocUser)){
-                pocUser = securityProperties.getPocAuthUser();
             }
         }
         // 必须指定poc用户

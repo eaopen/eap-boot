@@ -58,6 +58,7 @@ public class SecurityProperties {
 
     private String pocUserHeader = "pocUser";
     private String pocAuthUser = "pocuser";  //默认用户
+    private String pocUserPrefix = "poc,op";
 
     private String pocAuthHeader = "pocToken";
     private String pocAuthToken;
