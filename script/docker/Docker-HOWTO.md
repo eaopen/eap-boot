@@ -47,3 +47,6 @@ docker compose --env-file docker.env up -d
 - api server: http://localhost:48080
 - mysql: root/123456, port: 3306
 - redis: port: 6379
+
+## docker下载
+https://download.docker.com/linux/static/stable
