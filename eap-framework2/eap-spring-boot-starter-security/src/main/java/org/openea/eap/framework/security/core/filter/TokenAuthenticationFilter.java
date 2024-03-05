@@ -84,7 +84,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if(request.getRequestURI().indexOf("/auth/login")>0) return;
 
         // 1 get poc user
-        boolean pocPass = false;
         String pocUser = request.getHeader(securityProperties.getPocUserHeader());
         if(StrUtil.isEmpty(pocUser)){
             pocUser = request.getHeader(StrUtil.upperFirst(securityProperties.getPocUserHeader()));
@@ -116,17 +115,23 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         // 2 check
+        boolean pocPass = false;
+        String pocToken = null;
         // 2.1 poc 1: check poc token
-        String pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
-                securityProperties.getPocAuthHeader(), securityProperties.getPocAuthHeader());
-        if(StrUtil.isEmpty(pocToken)){
+        String pocAuthToken = securityProperties.getPocAuthToken();
+        if(StrUtil.isNotEmpty(pocAuthToken)){
             pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
-                    StrUtil.upperFirst(securityProperties.getPocAuthHeader()), StrUtil.upperFirst(securityProperties.getPocAuthHeader()));
+                    securityProperties.getPocAuthHeader(), securityProperties.getPocAuthHeader());
+            if(StrUtil.isEmpty(pocToken)){
+                pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
+                        StrUtil.upperFirst(securityProperties.getPocAuthHeader()), StrUtil.upperFirst(securityProperties.getPocAuthHeader()));
+            }
+            if(StrUtil.isNotEmpty(pocToken)
+                    && pocToken.equals(pocAuthToken)){
+                pocPass = true;
+            }
         }
-        if(StrUtil.isNotEmpty(pocToken)
-                && pocToken.equals(securityProperties.getPocAuthToken())){
-            pocPass = true;
-        }
+
         // 2.2 poc 2: check poc sign
         if(!pocPass){
             String sign = request.getHeader(securityProperties.getPocSignHeader());
