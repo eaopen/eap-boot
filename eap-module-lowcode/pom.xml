@@ -19,14 +19,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
-        <!--   在线设计模块 基础 -->
-        <module>eap-visualdev-base</module>
-
-        <!--  在线设计模块 -->
-        <module>eap-visualdev-form</module>
-        <module>eap-visualdev-onlinedev</module>
-        <module>eap-visualdev-portal</module>
-        <module>eap-visualdev-flow</module>
 
         <!-- 代码生成 -->
         <module>eap-lowcode-codegen</module>
@@ -35,26 +27,18 @@
         <module>eap-module-lowcode-biz</module>
         <module>eap-module-lowcode-rest</module>
 
+        <!--   在线设计模块 基础 -->
+        <module>eap-visualdev-base</module>
+
+        <!--  在线设计模块 -->
+        <!-- 在线设计的简单流程在bpm模块中 -->
+        <module>eap-visualdev-onlinedev</module>
+        <module>eap-visualdev-portal</module>
+
     </modules>
     <profiles>
         <profile>
-            <id>lowcode-bpm</id>
-            <modules>
-                <!-- BPM流程引擎(flowable) -->
-                <module>eap-module-bpm</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>lowcode-obpm</id>
-            <modules>
-                <!-- 集成OpenBpm -->
-                <module>eap-obpm-proxy</module>
-                <!-- 扩展OpenBpm -->
-                <module>eap-obpm-extend</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>lowcode-report</id>
+            <id>report</id>
             <modules>
                 <!-- 报表设计 -->
                 <module>eap-module-report</module>

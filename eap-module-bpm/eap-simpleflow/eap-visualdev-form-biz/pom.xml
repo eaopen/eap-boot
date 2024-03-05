@@ -3,18 +3,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>eap-visualdev-form</artifactId>
+        <artifactId>eap-simpleflow</artifactId>
         <groupId>io.github.eaopen</groupId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eap-visualdev-form-entity</artifactId>
+    <artifactId>eap-visualdev-form-biz</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-system-extj-common</artifactId>
+            <artifactId>eap-visualdev-form-entity</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-system-extj-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

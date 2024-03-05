@@ -34,6 +34,7 @@
         <!-- 各种 module 拓展 -->
         <module>eap-module-system</module>
         <module>eap-module-infra</module>
+        <module>eap-module-bpm</module>
         <module>eap-module-lowcode</module>
 
         <!-- Server 主项目, demo -->

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.eaopen</groupId>
+        <artifactId>eap-module-bpm</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>eap-module-bpm-rest</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- 流程设计 simpleflow -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-flow-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 在线表单 online-form -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-form-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>bpm-flowable</id>
+            <dependencies>
+                <dependency>
+                    <groupId>io.github.eaopen</groupId>
+                    <artifactId>eap-module-bpm-biz</artifactId>
+                    <version>${revision}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+</project>

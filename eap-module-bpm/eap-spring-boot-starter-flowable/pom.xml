@@ -4,36 +4,33 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>io.github.eaopen</groupId>
-        <artifactId>eap-visualdev-flow</artifactId>
+        <artifactId>eap-module-bpm</artifactId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eap-visualdev-flow-entity</artifactId>
+    <artifactId>eap-spring-boot-starter-flowable</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-system-extj-common</artifactId>
-            <version>${project.version}</version>
+            <artifactId>eap-common</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-permission-entity</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--        </dependency>-->
+
+        <!-- Web 相关 -->
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-visualdev-form-entity</artifactId>
-            <version>${project.version}</version>
+            <artifactId>eap-spring-boot-starter-security</artifactId>
         </dependency>
 
-
-
-
+        <!-- flowable 工作流相关 -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-spring-boot-starter-process</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

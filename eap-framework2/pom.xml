@@ -49,13 +49,7 @@
 
 
     <profiles>
-        <profile>
-            <id>lowcode-bpm</id>
-            <modules>
-                <!-- BPM流程引擎(flowable) -->
-                <module>eap-spring-boot-starter-flowable</module>
-            </modules>
-        </profile>
+
     </profiles>
 
 </project>

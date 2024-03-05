@@ -49,6 +49,12 @@
 
         <dependency>
             <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-bpm-rest</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-lowcode-rest</artifactId>
             <version>${revision}</version>
         </dependency>

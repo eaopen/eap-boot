@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.github.eaopen</groupId>
+        <artifactId>eap-boot-pom</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>eap-module-bpm</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>
+        bpm 包下，业务流程管理（Business Process Management），工作流相关的功能。
+        例如说：流程定义、表单配置、审核中心（我的申请、我的待办、我的已办）等等
+
+        方案一：
+        工作流基于 Flowable 6 实现，分成流程定义、流程表单、流程实例、流程任务等功能模块。
+
+        方案二：
+        集成OpenBpm(基于Activiti5的工作流以及相关模型及表单功能)
+
+        方案三：
+        简易工作流simpleFlow(配置在线设计visualdev模块）
+    </description>
+
+    <modules>
+
+        <!-- 简易流程simplefow(visualdev) -->
+        <module>eap-simpleflow</module>
+
+        <module>eap-module-bpm-rest</module>
+    </modules>
+
+
+    <profiles>
+        <profile>
+            <id>bpm-flowable</id>
+            <modules>
+                <!-- BPM流程引擎(flowable) -->
+                <module>eap-spring-boot-starter-flowable</module>
+                <module>eap-module-bpm-api</module>
+                <module>eap-module-bpm-biz</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>obpm</id>
+            <modules>
+                <!-- 集成OpenBpm -->
+                <module>eap-obpm-proxy</module>
+                <!-- 扩展OpenBpm -->
+                <module>eap-obpm-extend</module>
+            </modules>
+        </profile>
+    </profiles>
+
+</project>

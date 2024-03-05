@@ -5,18 +5,24 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.eaopen</groupId>
-        <artifactId>eap-module-lowcode</artifactId>
+        <artifactId>eap-module-bpm</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>eap-visualdev-flow</artifactId>
+    <artifactId>eap-simpleflow</artifactId>
     <packaging>pom</packaging>
     <description>低代码可视化设计-简单流程</description>
 
     <modules>
+        <!-- 简易流程 -->
         <module>eap-visualdev-flow-entity</module>
         <module>eap-visualdev-flow-biz</module>
         <module>eap-visualdev-flow-rest</module>
+
+        <!-- 流程表单 -->
+        <module>eap-visualdev-form-entity</module>
+        <module>eap-visualdev-form-biz</module>
+        <module>eap-visualdev-form-rest</module>
     </modules>
 
 </project>

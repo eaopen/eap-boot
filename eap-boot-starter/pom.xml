@@ -41,12 +41,9 @@
             <artifactId>eap-module-infra-rest</artifactId>
             <version>${revision}</version>
         </dependency>
-
-
-        <!-- 集成平台内IM消息 -->
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-extj-message-rest</artifactId>
+            <artifactId>eap-module-bpm-rest</artifactId>
             <version>${revision}</version>
         </dependency>
 
@@ -59,13 +56,6 @@
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-spring-boot-starter-biz-error-code</artifactId>
         </dependency>
-
-        <!-- 工作流。默认注释，保证编译速度 -->
-        <!--        <dependency>-->
-        <!--            <groupId>io.github.eaopen</groupId>-->
-        <!--            <artifactId>eap-module-bpm-biz</artifactId>-->
-        <!--            <version>${revision}</version>-->
-        <!--        </dependency>-->
 
         <!-- spring boot 配置所需依赖 -->
         <dependency>
