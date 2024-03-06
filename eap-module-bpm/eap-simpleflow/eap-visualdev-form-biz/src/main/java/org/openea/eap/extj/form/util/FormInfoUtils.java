@@ -137,7 +137,7 @@ public class FormInfoUtils {
                             dataMap.put(vModel, value);
                         }
                     }catch(Exception e){
-                        log.warn("swapDataInfoType error, extnKey="+extnKey+", value="+value+", msg="+e.getMessage(), e);
+                        log.warn("swapDataInfoType error, extnKey="+extnKey+", value="+value+", msg="+e.getMessage());
                         // fix 以 [,[[ 开头但数据不是数组
                         dataMap.put(vModel, value);
                     }
