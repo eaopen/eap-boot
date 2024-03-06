@@ -14,6 +14,11 @@
     <dependencies>
         <dependency>
             <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
             <artifactId>eap-system-extj-common</artifactId>
             <version>${project.version}</version>
         </dependency>
