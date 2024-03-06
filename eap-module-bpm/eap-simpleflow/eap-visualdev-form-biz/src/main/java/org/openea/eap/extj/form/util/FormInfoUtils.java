@@ -126,13 +126,19 @@ public class FormInfoUtils {
                     dataMap.put(vModel, dateValue);
                     break;
                 default:
-                    if (FormPublicUtils.getMultiple(String.valueOf(value), MultipleControlEnum.MULTIPLE_JSON_TWO.getMultipleChar())) {
-                        String[][] data = JsonUtil.getJsonToBean(String.valueOf(value), String[][].class);
-                        dataMap.put(vModel, data);
-                    } else if (FormPublicUtils.getMultiple(String.valueOf(value), MultipleControlEnum.MULTIPLE_JSON_ONE.getMultipleChar())) {
-                        List<String> list = JsonUtil.getJsonToList(String.valueOf(value), String.class);
-                        dataMap.put(vModel, list);
-                    } else {
+                    try{
+                        if (FormPublicUtils.getMultiple(String.valueOf(value), MultipleControlEnum.MULTIPLE_JSON_TWO.getMultipleChar())) {
+                            String[][] data = JsonUtil.getJsonToBean(String.valueOf(value), String[][].class);
+                            dataMap.put(vModel, data);
+                        } else if (FormPublicUtils.getMultiple(String.valueOf(value), MultipleControlEnum.MULTIPLE_JSON_ONE.getMultipleChar())) {
+                            List<String> list = JsonUtil.getJsonToList(String.valueOf(value), String.class);
+                            dataMap.put(vModel, list);
+                        } else {
+                            dataMap.put(vModel, value);
+                        }
+                    }catch(Exception e){
+                        log.warn("swapDataInfoType error, extnKey="+extnKey+", value="+value+", msg="+e.getMessage(), e);
+                        // fix 以 [,[[ 开头但数据不是数组
                         dataMap.put(vModel, value);
                     }
                     break;
