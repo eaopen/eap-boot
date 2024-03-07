@@ -133,6 +133,7 @@ public class OnlineDevInfoUtils {
 					dataMap.put(vModel, null);
 				} else {
 					switch (extnKey) {
+
 						//组织组件
 						case ExtnKeyConsts.COMSELECT:
 							//部门组件
