@@ -190,9 +190,11 @@ public class DictTypeController {
     Map transToMap(DictTypeDO dictTypeDO){
         Map<String,Object> map=new HashMap<>();
         map.put("id",dictTypeDO.getId());
-        map.put("enCode",dictTypeDO.getType());
         map.put("parentId",(dictTypeDO.getParentId()==null || dictTypeDO.getParentId()==0)?-1:dictTypeDO.getParentId());
-        map.put("fullName",dictTypeDO.getName());
+        map.put("enCode",dictTypeDO.getType());  //兼容extn
+        map.put("fullName",dictTypeDO.getName()); //兼容extn
+        map.put("value",dictTypeDO.getType());
+        map.put("label",dictTypeDO.getName());
         map.put("dataType",dictTypeDO.getDataType());
         map.put("hasChildren",false);
         map.put("children",null);

@@ -58,9 +58,9 @@ public class EapUserService extends SuperServiceImpl<ExtjUserMapper,UserEntity> 
             return covertUser(adminUserDO);
         }catch (Throwable t){
             log.warn("getInfo: userId="+userId+", msg="+t.getMessage(), t);
-            throw t;
+            //throw t;
         }
-        //return null;
+        return null;
     }
 
     /**
