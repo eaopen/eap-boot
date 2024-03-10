@@ -336,7 +336,7 @@ public class PortalController extends SuperController<PortalService, PortalEntit
         map.put("parentId", menuDO.getParentId());
         map.put("propertyJson", null);
         map.put("sortCode", menuDO.getSort());
-        map.put("systemId", null);
+        map.put("systemId", menuDO.getId()); //same as id for treeSelect
         map.put("type", menuDO.getType());
         map.put("urlAddress", menuDO.getPath());
         return map;
