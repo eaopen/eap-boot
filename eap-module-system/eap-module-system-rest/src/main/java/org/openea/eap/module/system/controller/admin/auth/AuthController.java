@@ -89,6 +89,7 @@ public class AuthController {
     @Parameter(name = "refreshToken", description = "刷新令牌", required = true)
     @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
     public CommonResult<AuthLoginRespVO> refreshToken(@RequestParam("refreshToken") String refreshToken) {
+        // todo will catch  exception "刷新令牌已过期" in global exception handler
         return success(authService.refreshToken(refreshToken));
     }
 
