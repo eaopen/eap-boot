@@ -253,8 +253,8 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     total = dataList.size();
                 }
             }
-            // filter by keyword
-            if (StringUtil.isNotEmpty(page.getKeyword())){
+            // filter by keyword 静态数据返回时根据关键字再过滤
+            if (entity.getDataType()==2 && StringUtil.isNotEmpty(page.getKeyword())){
                 Set<String> colSet = new HashSet<>();
                 if(StringUtil.isNotEmpty(page.getRelationField())){
                     colSet.add(page.getRelationField());
