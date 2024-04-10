@@ -193,7 +193,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
         if (entity == null) {
             return ActionResult.page(new ArrayList<>(), JsonUtil.getJsonToBean(new Pagination(), PaginationVO.class));
         }
-        if (entity.getCheckType() == 1) {
+        if (entity.getCheckType() == 1) { //开启分页
             Map<String, String> map = null;
             if (page.getParamList() != null) {
                 map = new HashMap<>();
