@@ -64,6 +64,8 @@ public class EapUserProvider extends UserProvider {
     public static UserInfo getLoginUserInfo(){
         UserInfo user = new UserInfo();
         LoginUser loginUser = SecurityFrameworkUtils.getLoginUser();
+        if(loginUser==null) return user;
+
         user.setId(""+loginUser.getId());
         user.setUserId(""+loginUser.getId());
         String account = loginUser.getUserKey();
