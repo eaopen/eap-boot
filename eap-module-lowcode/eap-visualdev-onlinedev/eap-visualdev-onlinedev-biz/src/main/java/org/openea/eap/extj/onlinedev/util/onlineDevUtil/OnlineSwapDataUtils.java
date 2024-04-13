@@ -1863,7 +1863,8 @@ public class OnlineSwapDataUtils {
                 String vModel = field.getVModel();
                 String format = field.getFormat();
                 ConfigModel config = field.getConfig();
-                if (ExtnKeyConsts.DATE.equals(config.getExtnKey()) && map.get(vModel) != null) {
+                if (ExtnKeyConsts.DATE.equals(config.getExtnKey())
+                        && map.get(vModel) != null && !"".equals(map.get(vModel) )) {
                     Date date = new Date(Long.parseLong(String.valueOf(map.get(vModel))));
                     String completionStr = "";
                     switch (format) {
