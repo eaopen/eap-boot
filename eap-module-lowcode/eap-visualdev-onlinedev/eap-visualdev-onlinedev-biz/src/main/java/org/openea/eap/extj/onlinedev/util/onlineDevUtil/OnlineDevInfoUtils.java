@@ -786,13 +786,19 @@ public class OnlineDevInfoUtils {
 						dataMap.put(vModel, userValue);
 						break;
 					default:
-						if (OnlinePublicUtils.getMultiple(String.valueOf(value), MultipleControlEnum.MULTIPLE_JSON_TWO.getMultipleChar())) {
-							String[][] data = JsonUtil.getJsonToBean(String.valueOf(value), String[][].class);
-							dataMap.put(vModel, data);
-						} else if (OnlinePublicUtils.getMultiple(String.valueOf(value), MultipleControlEnum.MULTIPLE_JSON_ONE.getMultipleChar())) {
-							List<String> list = JsonUtil.getJsonToList(String.valueOf(value), String.class);
-							dataMap.put(vModel, list);
-						} else {
+						try{
+							// 解析JSON数组错误则按默认处理, 可能以“[[”/“[”开头数据并非json数组
+							if (OnlinePublicUtils.getMultiple(String.valueOf(value), MultipleControlEnum.MULTIPLE_JSON_TWO.getMultipleChar())) {
+								String[][] data = JsonUtil.getJsonToBean(String.valueOf(value), String[][].class);
+								dataMap.put(vModel, data);
+							} else if (OnlinePublicUtils.getMultiple(String.valueOf(value), MultipleControlEnum.MULTIPLE_JSON_ONE.getMultipleChar())) {
+								List<String> list = JsonUtil.getJsonToList(String.valueOf(value), String.class);
+								dataMap.put(vModel, list);
+							} else {
+								dataMap.put(vModel, value);
+							}
+						}catch (Throwable t){
+							log.warn(t.getMessage());
 							dataMap.put(vModel, value);
 						}
 						break;
