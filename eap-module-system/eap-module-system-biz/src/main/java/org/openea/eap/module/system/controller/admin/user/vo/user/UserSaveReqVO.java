@@ -5,7 +5,7 @@ import org.openea.eap.framework.common.validation.Mobile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
+
 
 import javax.validation.constraints.*;
 import java.util.Set;
@@ -53,8 +53,9 @@ public class UserSaveReqVO {
 
     // ========== 仅【创建】时，需要传递的字段 ==========
 
+    // todo 修改时密码校验不通过，先注释长度校验
     @Schema(description = "密码", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "123456")
-    @Length(min = 4, max = 16, message = "密码长度为 4-16 位")
+    //@Length(min = 4, max = 16, message = "密码长度为 4-16 位")
     private String password;
 
     @AssertTrue(message = "密码不能为空")
@@ -62,7 +63,7 @@ public class UserSaveReqVO {
     public boolean isPasswordValid() {
         // 修改时，不需要传递
         // 新增时，必须都传递 password
-        return id != null || (ObjectUtil.isAllNotEmpty(password));
+        return id != null || (ObjectUtil.isNotEmpty(password));
     }
 
 }

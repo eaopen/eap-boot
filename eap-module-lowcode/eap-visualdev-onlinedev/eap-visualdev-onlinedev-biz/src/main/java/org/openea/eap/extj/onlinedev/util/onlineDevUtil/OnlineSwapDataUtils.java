@@ -708,6 +708,7 @@ public class OnlineSwapDataUtils {
                             options = list.stream().map(dic -> {
                                 Map<String, Object> dictionaryMap = new HashMap<>(16);
                                 dictionaryMap.put("id", dic.getId());
+                                dictionaryMap.put("value", dic.getEnCode());
                                 dictionaryMap.put("enCode", dic.getEnCode());
                                 dictionaryMap.put("fullName", dic.getFullName());
                                 return dictionaryMap;
@@ -1529,6 +1530,7 @@ public class OnlineSwapDataUtils {
                             options = list.stream().map(dic -> {
                                 Map<String, Object> dictionaryMap = new HashMap<>(16);
                                 dictionaryMap.put("id", dic.getId());
+                                dictionaryMap.put("value", dic.getEnCode());
                                 dictionaryMap.put("enCode", dic.getEnCode());
                                 dictionaryMap.put("fullName", dic.getFullName());
                                 return dictionaryMap;

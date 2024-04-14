@@ -174,8 +174,8 @@ public class DictTypeController {
                 Map<String,Object> map=new HashMap<>();
                 // fix id same as value
                 map.put("id",dictDataDO.getId());
-                //map.put("id",dictDataDO.getValue());
-                map.put("enCode",dictDataDO.getValue());
+                map.put("value",dictDataDO.getValue());
+                map.put("enCode",dictDataDO.getValue()); // 兼容extn, will use value replace enCode
                 //map.put("parentId",dictionaryTypeId);
                 map.put("fullName",dictDataDO.getLabel());
                 map.put("hasChildren",false);
