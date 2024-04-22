@@ -14,8 +14,13 @@
     <name>${project.artifactId}</name>
     <description>文档处理</description>
 
-    <dependencies>
+    <properties>
+        <poi.version>4.1.2</poi.version>
+        <aspose-pdf.version>23.7</aspose-pdf.version>
+        <aspose-cells.version>24.4</aspose-cells.version>
+    </properties>
 
+    <dependencies>
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-system-api</artifactId>
@@ -27,12 +32,36 @@
             <version>${project.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.aspose</groupId>-->
+<!--            <artifactId>aspose-pdf</artifactId>-->
+<!--            <version>${aspose-pdf.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.aspose</groupId>-->
+<!--            <artifactId>aspose-cells</artifactId>-->
+<!--            <version>${aspose-cells.version}</version>-->
+<!--        </dependency>-->
 
         <!-- 三方云服务相关 -->
         <dependency>
