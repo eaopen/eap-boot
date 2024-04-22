@@ -1,20 +1,22 @@
 package org.openea.eap.framework.file.core.enums;
 
 import cn.hutool.core.util.ArrayUtil;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.openea.eap.framework.file.core.client.FileClient;
 import org.openea.eap.framework.file.core.client.FileClientConfig;
 import org.openea.eap.framework.file.core.client.db.DBFileClient;
 import org.openea.eap.framework.file.core.client.db.DBFileClientConfig;
 import org.openea.eap.framework.file.core.client.ftp.FtpFileClient;
 import org.openea.eap.framework.file.core.client.ftp.FtpFileClientConfig;
+import org.openea.eap.framework.file.core.client.git.GitFileClient;
+import org.openea.eap.framework.file.core.client.git.GitFileClientConfig;
 import org.openea.eap.framework.file.core.client.local.LocalFileClient;
 import org.openea.eap.framework.file.core.client.local.LocalFileClientConfig;
 import org.openea.eap.framework.file.core.client.s3.S3FileClient;
 import org.openea.eap.framework.file.core.client.s3.S3FileClientConfig;
 import org.openea.eap.framework.file.core.client.sftp.SftpFileClient;
 import org.openea.eap.framework.file.core.client.sftp.SftpFileClientConfig;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * 文件存储器枚举
@@ -31,6 +33,8 @@ public enum FileStorageEnum {
     SFTP(12, SftpFileClientConfig.class, SftpFileClient.class),
 
     S3(20, S3FileClientConfig.class, S3FileClient.class),
+
+    GIT(31, GitFileClientConfig.class, GitFileClient.class),
     ;
 
     /**
