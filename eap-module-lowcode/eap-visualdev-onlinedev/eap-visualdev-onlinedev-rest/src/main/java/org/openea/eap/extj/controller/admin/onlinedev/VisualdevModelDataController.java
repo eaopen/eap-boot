@@ -188,8 +188,10 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
         VisualdevEntity entity;
         //线上版本
         if ("0".equals(type)) {
+            // db
             entity = visualdevService.getInfo(modelId);
         } else {
+            // todo 根据策略获取表单发布配置
             VisualdevReleaseEntity releaseEntity = visualdevReleaseService.getById(modelId);
             entity = JsonUtil.getJsonToBean(releaseEntity, VisualdevEntity.class);
         }

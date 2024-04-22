@@ -81,6 +81,10 @@ public class ObpmPermissionServiceImpl extends PermissionServiceImpl implements 
 
     private List<MenuDO> getObpmUserMenuList(String userKey, boolean withButton) {
         List<MenuDO> listMenu = new ArrayList<>();
+        // 保留用户前缀
+        if(StringUtil.isEmpty(userKey) || userKey.startsWith("eap")){
+            return listMenu;
+        }
         List<JSONObject> listResource = obmpClientService.queryUserMenu(userKey, "", withButton);
         if(listResource!=null){
             for(JSONObject sysRes: listResource){
