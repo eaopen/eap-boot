@@ -1,6 +1,6 @@
 package org.openea.eap.framework.file.core.client.git;
 
-import org.eclipse.jgit.api.Git;
+//import org.eclipse.jgit.api.Git;
 import org.openea.eap.framework.file.core.client.AbstractFileClient;
 
 /**
@@ -8,7 +8,7 @@ import org.openea.eap.framework.file.core.client.AbstractFileClient;
  */
 public class GitFileClient extends AbstractFileClient<GitFileClientConfig> {
 
-    protected Git git;
+    //protected Git git;
 
     public GitFileClient(Long id, GitFileClientConfig config) {
         super(id, config);

@@ -29,6 +29,8 @@
 
     <modules>
 
+        <module>eap-bpm-common</module>
+
         <!-- 简易流程simplefow(visualdev) -->
         <module>eap-simpleflow</module>
 
