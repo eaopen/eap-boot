@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -86,6 +87,9 @@ public class GlobalExceptionHandler {
         }
         if (ex instanceof AccessDeniedException) {
             return accessDeniedExceptionHandler(request, (AccessDeniedException) ex);
+        }
+        if (ex instanceof DuplicateKeyException){
+            return duplicateKeyExceptionHandler(request, (DuplicateKeyException)ex);
         }
 
         return defaultExceptionHandler(request, ex);
@@ -200,6 +204,19 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 处理 MyBatis 的 DuplicateKeyException 唯一索引重复异常
+     * @param req
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(value = DuplicateKeyException.class)
+    public CommonResult<?> duplicateKeyExceptionHandler(HttpServletRequest req, DuplicateKeyException ex) {
+        log.warn("[duplicateKeyException][ {}]", ex.getMessage(), ex);
+        return CommonResult.error(DB_DUPLICATE_KEY, ex.getMessage());
+    }
+
+
+    /**
      * 处理业务异常 ServiceException
      *
      * 例如说，商品库存不足，用户手机号已存在。
@@ -237,7 +254,7 @@ public class GlobalExceptionHandler {
         // 插入异常日志
         this.createExceptionLog(req, ex);
         // 返回 ERROR CommonResult
-        return CommonResult.error(INTERNAL_SERVER_ERROR.getCode(), INTERNAL_SERVER_ERROR.getMsg());
+        return CommonResult.error(INTERNAL_SERVER_ERROR.getCode(), INTERNAL_SERVER_ERROR.getMsg() +"["+ex.getMessage()+"]");
     }
 
     private void createExceptionLog(HttpServletRequest req, Throwable e) {
