@@ -1,10 +1,10 @@
 package org.openea.eap.module.infra.convert.file;
 
+import org.openea.eap.module.infra.controller.admin.file.vo.config.FileConfigSaveReqVO;
+import org.openea.eap.module.infra.dal.dataobject.file.FileConfigDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import org.openea.eap.module.infra.controller.admin.file.vo.config.FileConfigSaveReqVO;
-import org.openea.eap.module.infra.dal.dataobject.file.FileConfigDO;
 
 /**
  * 文件配置 Convert

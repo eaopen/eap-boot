@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.system.controller.admin.language.vo.*;
 import org.openea.eap.module.system.convert.language.I18nJsonDataConvert;
 import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
@@ -25,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Tag(name = "管理后台 - 翻译")
 @RestController
@@ -97,7 +95,6 @@ public class I18nJsonDataController {
     @GetMapping("/export-excel")
     @Operation(summary = "导出翻译 Excel")
     @PreAuthorize("@ss.hasPermission('system:I18n-json-data:export')")
-    @OperateLog(type = EXPORT)
     public void exportI18nJsonDataExcel(@Valid I18nJsonDataExportReqVO exportReqVO,
               HttpServletResponse response) throws IOException {
         List<I18nJsonDataDO> list = i18nJsonDataService.getI18nJsonDataList(exportReqVO);

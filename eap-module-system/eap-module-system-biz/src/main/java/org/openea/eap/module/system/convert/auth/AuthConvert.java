@@ -1,6 +1,7 @@
 package org.openea.eap.module.system.convert.auth;
 
 import cn.hutool.core.collection.CollUtil;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeSendReqDTO;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeUseReqDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
@@ -29,7 +30,7 @@ public interface AuthConvert {
 
     default AuthPermissionInfoRespVO convert(AdminUserDO user, List<RoleDO> roleList, List<MenuDO> menuList) {
         return AuthPermissionInfoRespVO.builder()
-                .user(AuthPermissionInfoRespVO.UserVO.builder().id(user.getId()).nickname(user.getNickname()).avatar(user.getAvatar()).build())
+                .user(BeanUtils.toBean(user, AuthPermissionInfoRespVO.UserVO.class))
                 .roles(convertSet(roleList, RoleDO::getCode))
                 // 权限标识信息
                 .permissions(convertSet(menuList, MenuDO::getPermission))

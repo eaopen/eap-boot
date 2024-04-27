@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.openea.eap.framework.file.core.client.FileClientConfig;
+import org.openea.eap.module.infra.framework.file.core.client.FileClientConfig;
 
 import javax.validation.constraints.NotNull;
 

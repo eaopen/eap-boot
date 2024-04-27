@@ -1,7 +1,7 @@
 package org.openea.eap.extj.util;
 
 import org.openea.eap.extj.model.FileListVO;
-import org.openea.eap.framework.file.core.client.FileClientFactory;
+import org.openea.eap.module.infra.framework.file.core.client.FileClientFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;

@@ -1,6 +1,6 @@
 package org.openea.eap.module.infra.controller.admin.file.vo.config;
 
-import org.openea.eap.framework.file.core.client.FileClientConfig;
+import org.openea.eap.module.infra.framework.file.core.client.FileClientConfig;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

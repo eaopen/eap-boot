@@ -3,7 +3,9 @@ package org.openea.eap.module.system.api.social.dto;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.validation.InEnum;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -13,6 +15,8 @@ import javax.validation.constraints.NotNull;
  *
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SocialUserUnbindReqDTO {
 
     /**

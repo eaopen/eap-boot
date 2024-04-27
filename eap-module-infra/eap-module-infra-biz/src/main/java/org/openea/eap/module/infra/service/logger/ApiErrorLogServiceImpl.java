@@ -33,11 +33,6 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
     public void createApiErrorLog(ApiErrorLogCreateReqDTO createDTO) {
         ApiErrorLogDO apiErrorLog = BeanUtils.toBean(createDTO, ApiErrorLogDO.class)
                 .setProcessStatus(ApiErrorLogProcessStatusEnum.INIT.getStatus());
-        // check request_params max
-        int max = 8000;
-        if(apiErrorLog.getRequestParams().length()>max){
-            apiErrorLog.setRequestParams(apiErrorLog.getRequestParams().substring(0,max));
-        }
         apiErrorLogMapper.insert(apiErrorLog);
     }
 

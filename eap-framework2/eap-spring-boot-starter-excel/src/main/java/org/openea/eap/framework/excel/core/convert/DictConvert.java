@@ -1,7 +1,7 @@
 package org.openea.eap.framework.excel.core.convert;
 
 import cn.hutool.core.convert.Convert;
-import org.openea.eap.framework.dict.core.util.DictFrameworkUtils;
+import org.openea.eap.framework.dict.core.DictFrameworkUtils;
 import org.openea.eap.framework.excel.core.annotations.DictFormat;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;

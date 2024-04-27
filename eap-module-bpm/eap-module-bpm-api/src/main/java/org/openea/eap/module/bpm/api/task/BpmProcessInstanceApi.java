@@ -7,7 +7,6 @@ import javax.validation.Valid;
 /**
  * 流程实例 Api 接口
  *
- * @author 芋道源码
  */
 public interface BpmProcessInstanceApi {
 

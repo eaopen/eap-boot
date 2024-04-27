@@ -2,8 +2,7 @@ package org.openea.eap.module.system.controller.admin.sms;
 
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
-import org.openea.eap.framework.sms.core.enums.SmsChannelEnum;
+import org.openea.eap.module.system.framework.sms.core.enums.SmsChannelEnum;
 import org.openea.eap.module.system.service.sms.SmsSendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +27,6 @@ public class SmsCallbackController {
     @PostMapping("/aliyun")
     @PermitAll
     @Operation(summary = "阿里云短信的回调", description = "参见 https://help.aliyun.com/document_detail/120998.html 文档")
-    @OperateLog(enable = false)
     public CommonResult<Boolean> receiveAliyunSmsStatus(HttpServletRequest request) throws Throwable {
         String text = ServletUtils.getBody(request);
         smsSendService.receiveSmsStatus(SmsChannelEnum.ALIYUN.getCode(), text);
@@ -38,7 +36,6 @@ public class SmsCallbackController {
     @PostMapping("/tencent")
     @PermitAll
     @Operation(summary = "腾讯云短信的回调", description = "参见 https://cloud.tencent.com/document/product/382/52077 文档")
-    @OperateLog(enable = false)
     public CommonResult<Boolean> receiveTencentSmsStatus(HttpServletRequest request) throws Throwable {
         String text = ServletUtils.getBody(request);
         smsSendService.receiveSmsStatus(SmsChannelEnum.TENCENT.getCode(), text);

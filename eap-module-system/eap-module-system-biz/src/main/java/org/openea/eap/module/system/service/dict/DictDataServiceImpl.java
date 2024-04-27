@@ -1,8 +1,6 @@
 package org.openea.eap.module.system.service.dict;
 
 import cn.hutool.core.collection.CollUtil;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
@@ -13,6 +11,9 @@ import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataSaveRe
 import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictTypeDO;
 import org.openea.eap.module.system.dal.mysql.dict.DictDataMapper;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -25,7 +26,7 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
  *
  * @author ruoyi
  */
-//@Service
+@Service
 @Slf4j
 public class DictDataServiceImpl implements DictDataService {
 
@@ -199,6 +200,13 @@ public class DictDataServiceImpl implements DictDataService {
     @Override
     public List<DictDataDO> getDictData(String dictType) {
         return dictDataMapper.selectByDictType(dictType);
+    }
+
+    @Override
+    public List<DictDataDO> getDictDataListByDictType(String dictType) {
+        List<DictDataDO> list = dictDataMapper.selectList(DictDataDO::getDictType, dictType);
+        list.sort(Comparator.comparing(DictDataDO::getSort));
+        return list;
     }
 
 }

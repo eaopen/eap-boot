@@ -1,8 +1,5 @@
 package org.openea.eap.module.infra.controller.admin.file;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
@@ -11,12 +8,17 @@ import org.openea.eap.module.infra.controller.admin.file.vo.config.FileConfigRes
 import org.openea.eap.module.infra.controller.admin.file.vo.config.FileConfigSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.file.FileConfigDO;
 import org.openea.eap.module.infra.service.file.FileConfigService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
 
 @Tag(name = "管理后台 - 文件配置")
 @RestController
@@ -31,7 +33,7 @@ public class FileConfigController {
     @Operation(summary = "创建文件配置")
     @PreAuthorize("@ss.hasPermission('infra:file-config:create')")
     public CommonResult<Long> createFileConfig(@Valid @RequestBody FileConfigSaveReqVO createReqVO) {
-        return CommonResult.success(fileConfigService.createFileConfig(createReqVO));
+        return success(fileConfigService.createFileConfig(createReqVO));
     }
 
     @PutMapping("/update")
@@ -39,7 +41,7 @@ public class FileConfigController {
     @PreAuthorize("@ss.hasPermission('infra:file-config:update')")
     public CommonResult<Boolean> updateFileConfig(@Valid @RequestBody FileConfigSaveReqVO updateReqVO) {
         fileConfigService.updateFileConfig(updateReqVO);
-        return CommonResult.success(true);
+        return success(true);
     }
 
     @PutMapping("/update-master")
@@ -47,7 +49,7 @@ public class FileConfigController {
     @PreAuthorize("@ss.hasPermission('infra:file-config:update')")
     public CommonResult<Boolean> updateFileConfigMaster(@RequestParam("id") Long id) {
         fileConfigService.updateFileConfigMaster(id);
-        return CommonResult.success(true);
+        return success(true);
     }
 
     @DeleteMapping("/delete")
@@ -56,7 +58,7 @@ public class FileConfigController {
     @PreAuthorize("@ss.hasPermission('infra:file-config:delete')")
     public CommonResult<Boolean> deleteFileConfig(@RequestParam("id") Long id) {
         fileConfigService.deleteFileConfig(id);
-        return CommonResult.success(true);
+        return success(true);
     }
 
     @GetMapping("/get")
@@ -65,7 +67,7 @@ public class FileConfigController {
     @PreAuthorize("@ss.hasPermission('infra:file-config:query')")
     public CommonResult<FileConfigRespVO> getFileConfig(@RequestParam("id") Long id) {
         FileConfigDO config = fileConfigService.getFileConfig(id);
-        return CommonResult.success(BeanUtils.toBean(config, FileConfigRespVO.class));
+        return success(BeanUtils.toBean(config, FileConfigRespVO.class));
     }
 
     @GetMapping("/page")
@@ -73,7 +75,7 @@ public class FileConfigController {
     @PreAuthorize("@ss.hasPermission('infra:file-config:query')")
     public CommonResult<PageResult<FileConfigRespVO>> getFileConfigPage(@Valid FileConfigPageReqVO pageVO) {
         PageResult<FileConfigDO> pageResult = fileConfigService.getFileConfigPage(pageVO);
-        return CommonResult.success(BeanUtils.toBean(pageResult, FileConfigRespVO.class));
+        return success(BeanUtils.toBean(pageResult, FileConfigRespVO.class));
     }
 
     @GetMapping("/test")
@@ -81,6 +83,6 @@ public class FileConfigController {
     @PreAuthorize("@ss.hasPermission('infra:file-config:query')")
     public CommonResult<String> testFileConfig(@RequestParam("id") Long id) throws Exception {
         String url = fileConfigService.testFileConfig(id);
-        return CommonResult.success(url);
+        return success(url);
     }
 }

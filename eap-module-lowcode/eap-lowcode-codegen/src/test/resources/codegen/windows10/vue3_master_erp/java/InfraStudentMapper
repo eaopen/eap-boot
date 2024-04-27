@@ -12,7 +12,6 @@ import org.openea.eap.module.infra.controller.admin.demo.vo.*;
 /**
  * 学生 Mapper
  *
- * @author 芋道源码
  */
 @Mapper
 public interface InfraStudentMapper extends BaseMapperX<InfraStudentDO> {

@@ -3,12 +3,12 @@ package org.openea.eap.module.system.controller.admin.dict;
 import cn.hutool.core.map.MapUtil;
 import io.swagger.v3.oas.annotations.Parameters;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.system.controller.admin.dict.vo.type.DictTypePageReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.type.DictTypeRespVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.type.DictTypeSaveReqVO;
@@ -31,9 +31,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
 
+import static org.openea.eap.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.filterList;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.module.system.dal.dataobject.permission.MenuDO.ID_ROOT;
 
 @Tag(name = "管理后台 - 字典类型")
@@ -101,7 +101,7 @@ public class DictTypeController {
     @Operation(summary = "导出数据类型")
     @GetMapping("/export")
     @PreAuthorize("@ss.hasPermission('system:dict:query')")
-    @OperateLog(type = EXPORT)
+    @ApiAccessLog(operateType = EXPORT)
     public void export(HttpServletResponse response, @Valid DictTypePageReqVO exportReqVO) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<DictTypeDO> list = dictTypeService.getDictTypePage(exportReqVO).getList();

@@ -2,11 +2,11 @@ package org.openea.eap.module.system.controller.admin.ip;
 
 import cn.hutool.core.lang.Assert;
 import org.openea.eap.framework.common.pojo.CommonResult;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.ip.core.Area;
 import org.openea.eap.framework.ip.core.utils.AreaUtils;
 import org.openea.eap.framework.ip.core.utils.IPUtils;
 import org.openea.eap.module.system.controller.admin.ip.vo.AreaNodeRespVO;
-import org.openea.eap.module.system.convert.ip.AreaConvert;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +31,7 @@ public class AreaController {
     public CommonResult<List<AreaNodeRespVO>> getAreaTree() {
         Area area = AreaUtils.getArea(Area.ID_CHINA);
         Assert.notNull(area, "获取不到中国");
-        return success(AreaConvert.INSTANCE.convertList(area.getChildren()));
+        return success(BeanUtils.toBean(area.getChildren(), AreaNodeRespVO.class));
     }
 
     @GetMapping("/get-by-ip")

@@ -9,7 +9,7 @@ import org.openea.eap.module.system.api.sms.dto.code.SmsCodeValidateReqDTO;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsCodeDO;
 import org.openea.eap.module.system.dal.mysql.sms.SmsCodeMapper;
 import org.openea.eap.module.system.enums.sms.SmsSceneEnum;
-import org.openea.eap.module.system.framework.sms.SmsCodeProperties;
+import org.openea.eap.module.system.framework.sms.config.SmsCodeProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 

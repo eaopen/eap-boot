@@ -1,15 +1,15 @@
 package org.openea.eap.module.system.controller.admin.dept;
 
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.system.controller.admin.dept.vo.post.PostPageReqVO;
-import org.openea.eap.module.system.controller.admin.dept.vo.post.PostSaveReqVO;
 import org.openea.eap.module.system.controller.admin.dept.vo.post.PostRespVO;
+import org.openea.eap.module.system.controller.admin.dept.vo.post.PostSaveReqVO;
 import org.openea.eap.module.system.controller.admin.dept.vo.post.PostSimpleRespVO;
 import org.openea.eap.module.system.dal.dataobject.dept.PostDO;
 import org.openea.eap.module.system.service.dept.PostService;
@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static org.openea.eap.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Tag(name = "管理后台 - 岗位")
 @RestController
@@ -94,7 +94,7 @@ public class PostController {
     @GetMapping("/export")
     @Operation(summary = "岗位管理")
     @PreAuthorize("@ss.hasPermission('system:post:export')")
-    @OperateLog(type = EXPORT)
+    @ApiAccessLog(operateType = EXPORT)
     public void export(HttpServletResponse response, @Validated PostPageReqVO reqVO) throws IOException {
         reqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<PostDO> list = postService.getPostPage(reqVO).getList();

@@ -1,15 +1,15 @@
 package org.openea.eap.module.system.controller.admin.logger;
 
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
+import org.openea.eap.framework.translate.core.TranslateUtils;
 import org.openea.eap.module.system.controller.admin.logger.vo.operatelog.OperateLogPageReqVO;
 import org.openea.eap.module.system.controller.admin.logger.vo.operatelog.OperateLogRespVO;
-import org.openea.eap.module.system.convert.logger.OperateLogConvert;
 import org.openea.eap.module.system.dal.dataobject.logger.OperateLogDO;
-import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.service.logger.OperateLogService;
 import org.openea.eap.module.system.service.user.AdminUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,11 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
+import static org.openea.eap.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Tag(name = "管理后台 - 操作日志")
 @RestController
@@ -47,25 +45,18 @@ public class OperateLogController {
     @PreAuthorize("@ss.hasPermission('system:operate-log:query')")
     public CommonResult<PageResult<OperateLogRespVO>> pageOperateLog(@Valid OperateLogPageReqVO pageReqVO) {
         PageResult<OperateLogDO> pageResult = operateLogService.getOperateLogPage(pageReqVO);
-        // 获得拼接需要的数据
-        Map<Long, AdminUserDO> userMap = userService.getUserMap(
-                convertList(pageResult.getList(), OperateLogDO::getUserId));
-        return success(new PageResult<>(OperateLogConvert.INSTANCE.convertList(pageResult.getList(), userMap),
-                pageResult.getTotal()));
+        return success(BeanUtils.toBean(pageResult, OperateLogRespVO.class));
     }
 
     @Operation(summary = "导出操作日志")
     @GetMapping("/export")
     @PreAuthorize("@ss.hasPermission('system:operate-log:export')")
-    @OperateLog(type = EXPORT)
+    @ApiAccessLog(operateType = EXPORT)
     public void exportOperateLog(HttpServletResponse response, @Valid OperateLogPageReqVO exportReqVO) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<OperateLogDO> list = operateLogService.getOperateLogPage(exportReqVO).getList();
-        // 输出
-        Map<Long, AdminUserDO> userMap = userService.getUserMap(
-                convertList(list, OperateLogDO::getUserId));
         ExcelUtils.write(response, "操作日志.xls", "数据列表", OperateLogRespVO.class,
-                OperateLogConvert.INSTANCE.convertList(list, userMap));
+                TranslateUtils.translate(BeanUtils.toBean(list, OperateLogRespVO.class)));
     }
 
 }

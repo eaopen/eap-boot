@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.controller.admin.dict;
 
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataPageReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataRespVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataSaveReqVO;
@@ -26,8 +26,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+import static org.openea.eap.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Tag(name = "管理后台 - 字典数据")
 @RestController
@@ -92,7 +92,7 @@ public class DictDataController {
     @GetMapping("/export")
     @Operation(summary = "导出字典数据")
     @PreAuthorize("@ss.hasPermission('system:dict:export')")
-    @OperateLog(type = EXPORT)
+    @ApiAccessLog(operateType = EXPORT)
     public void export(HttpServletResponse response, @Valid DictDataPageReqVO exportReqVO) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);
         List<DictDataDO> list = dictDataService.getDictDataPage(exportReqVO).getList();

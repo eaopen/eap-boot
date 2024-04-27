@@ -1,9 +1,9 @@
 package org.openea.eap.module.infra.dal.dataobject.file;
 
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 
 /**
  * 文件表

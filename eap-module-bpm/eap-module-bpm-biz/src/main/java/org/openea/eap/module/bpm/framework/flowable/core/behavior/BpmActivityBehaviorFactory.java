@@ -1,14 +1,12 @@
 package org.openea.eap.module.bpm.framework.flowable.core.behavior;
 
-import org.openea.eap.module.bpm.service.definition.BpmTaskAssignRuleService;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.openea.eap.module.bpm.framework.flowable.core.candidate.BpmTaskCandidateInvoker;
 import lombok.Setter;
-import lombok.ToString;
 import org.flowable.bpmn.model.Activity;
 import org.flowable.bpmn.model.UserTask;
 import org.flowable.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.flowable.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
+import org.flowable.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
 import org.flowable.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.flowable.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 
@@ -16,29 +14,30 @@ import org.flowable.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFacto
  * 自定义的 ActivityBehaviorFactory 实现类，目的如下：
  * 1. 自定义 {@link #createUserTaskActivityBehavior(UserTask)}：实现自定义的流程任务的 assignee 负责人的分配
  *
- * @author 芋道源码
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@Setter
 public class BpmActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
-    @Setter
-    private BpmTaskAssignRuleService bpmTaskRuleService;
+    private BpmTaskCandidateInvoker taskCandidateInvoker;
 
     @Override
     public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
         return new BpmUserTaskActivityBehavior(userTask)
-                .setBpmTaskRuleService(bpmTaskRuleService);
+                .setTaskCandidateInvoker(taskCandidateInvoker);
     }
 
     @Override
     public ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(Activity activity,
-                                                                             AbstractBpmnActivityBehavior innerActivityBehavior) {
-        return new BpmParallelMultiInstanceBehavior(activity, innerActivityBehavior)
-                .setBpmTaskRuleService(bpmTaskRuleService);
+                                                                             AbstractBpmnActivityBehavior behavior) {
+        return new BpmParallelMultiInstanceBehavior(activity, behavior)
+                .setTaskCandidateInvoker(taskCandidateInvoker);
     }
 
-    // TODO @ke：SequentialMultiInstanceBehavior 这个抽空也可以看看
+    @Override
+    public SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(Activity activity,
+                                                                                 AbstractBpmnActivityBehavior behavior) {
+        return new BpmSequentialMultiInstanceBehavior(activity, behavior)
+                .setTaskCandidateInvoker(taskCandidateInvoker);
+    }
 
 }

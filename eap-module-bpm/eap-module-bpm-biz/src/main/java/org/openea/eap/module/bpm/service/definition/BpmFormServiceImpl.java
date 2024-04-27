@@ -1,18 +1,16 @@
 package org.openea.eap.module.bpm.service.definition;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.json.JsonUtils;
-import org.openea.eap.module.bpm.controller.admin.definition.vo.form.BpmFormCreateReqVO;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.bpm.controller.admin.definition.vo.form.BpmFormPageReqVO;
-import org.openea.eap.module.bpm.controller.admin.definition.vo.form.BpmFormUpdateReqVO;
-import org.openea.eap.module.bpm.convert.definition.BpmFormConvert;
+import org.openea.eap.module.bpm.controller.admin.definition.vo.form.BpmFormSaveReqVO;
 import org.openea.eap.module.bpm.dal.dataobject.definition.BpmFormDO;
 import org.openea.eap.module.bpm.dal.mysql.definition.BpmFormMapper;
 import org.openea.eap.module.bpm.enums.ErrorCodeConstants;
-import org.openea.eap.module.bpm.enums.definition.BpmModelFormTypeEnum;
 import org.openea.eap.module.bpm.service.definition.dto.BpmFormFieldRespDTO;
-import org.openea.eap.module.bpm.service.definition.dto.BpmModelMetaInfoRespDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -20,7 +18,6 @@ import javax.annotation.Resource;
 import java.util.*;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static org.openea.eap.module.bpm.enums.ErrorCodeConstants.*;
 
 /**
  * 动态表单 Service 实现类
@@ -35,22 +32,22 @@ public class BpmFormServiceImpl implements BpmFormService {
     private BpmFormMapper formMapper;
 
     @Override
-    public Long createForm(BpmFormCreateReqVO createReqVO) {
-        this.checkFields(createReqVO.getFields());
+    public Long createForm(BpmFormSaveReqVO createReqVO) {
+        this.validateFields(createReqVO.getFields());
         // 插入
-        BpmFormDO form = BpmFormConvert.INSTANCE.convert(createReqVO);
+        BpmFormDO form = BeanUtils.toBean(createReqVO, BpmFormDO.class);
         formMapper.insert(form);
         // 返回
         return form.getId();
     }
 
     @Override
-    public void updateForm(BpmFormUpdateReqVO updateReqVO) {
-        this.checkFields(updateReqVO.getFields());
+    public void updateForm(BpmFormSaveReqVO updateReqVO) {
+        validateFields(updateReqVO.getFields());
         // 校验存在
-        this.validateFormExists(updateReqVO.getId());
+        validateFormExists(updateReqVO.getId());
         // 更新
-        BpmFormDO updateObj = BpmFormConvert.INSTANCE.convert(updateReqVO);
+        BpmFormDO updateObj = BeanUtils.toBean(updateReqVO, BpmFormDO.class);
         formMapper.updateById(updateObj);
     }
 
@@ -80,6 +77,9 @@ public class BpmFormServiceImpl implements BpmFormService {
 
     @Override
     public List<BpmFormDO> getFormList(Collection<Long> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return Collections.emptyList();
+        }
         return formMapper.selectBatchIds(ids);
     }
 
@@ -88,30 +88,12 @@ public class BpmFormServiceImpl implements BpmFormService {
         return formMapper.selectPage(pageReqVO);
     }
 
-
-    @Override
-    public BpmFormDO checkFormConfig(String configStr) {
-        BpmModelMetaInfoRespDTO metaInfo = JsonUtils.parseObject(configStr, BpmModelMetaInfoRespDTO.class);
-        if (metaInfo == null || metaInfo.getFormType() == null) {
-            throw exception(MODEL_DEPLOY_FAIL_FORM_NOT_CONFIG);
-        }
-        // 校验表单存在
-        if (Objects.equals(metaInfo.getFormType(), BpmModelFormTypeEnum.NORMAL.getType())) {
-            BpmFormDO form = getForm(metaInfo.getFormId());
-            if (form == null) {
-                throw exception(FORM_NOT_EXISTS);
-            }
-            return form;
-        }
-        return null;
-    }
-
     /**
      * 校验 Field，避免 field 重复
      *
      * @param fields field 数组
      */
-    private void checkFields(List<String> fields) {
+    private void validateFields(List<String> fields) {
         if (true) { // TODO 芋艿：兼容 Vue3 工作流：因为采用了新的表单设计器，所以暂时不校验
             return;
         }

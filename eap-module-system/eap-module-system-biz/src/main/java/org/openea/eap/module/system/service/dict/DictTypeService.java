@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * 字典类型 Service 接口
  *
- * @author 芋道源码
  */
 public interface DictTypeService {
 
@@ -51,6 +50,7 @@ public interface DictTypeService {
      * @return 字典类型
      */
     DictTypeDO getDictTypeById(Long id);
+    DictTypeDO getDictType(Long id);
 
     /**
      * 获得字典类型详情

@@ -5,7 +5,7 @@ import org.openea.eap.framework.mybatis.core.util.JdbcUtils;
 import org.openea.eap.module.infra.controller.admin.db.vo.DataSourceConfigSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
 import org.openea.eap.module.infra.dal.mysql.db.DataSourceConfigMapper;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;

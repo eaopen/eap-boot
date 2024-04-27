@@ -69,11 +69,6 @@
 
 
         <!-- 三方云服务相关 -->
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-file</artifactId>
-        </dependency>
-
 
         <dependency>
             <groupId>cn.dev33</groupId>

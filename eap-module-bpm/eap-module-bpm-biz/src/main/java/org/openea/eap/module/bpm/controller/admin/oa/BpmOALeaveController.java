@@ -1,16 +1,16 @@
 package org.openea.eap.module.bpm.controller.admin.oa;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
+import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.bpm.controller.admin.oa.vo.BpmOALeaveCreateReqVO;
 import org.openea.eap.module.bpm.controller.admin.oa.vo.BpmOALeavePageReqVO;
 import org.openea.eap.module.bpm.controller.admin.oa.vo.BpmOALeaveRespVO;
-import org.openea.eap.module.bpm.convert.oa.BpmOALeaveConvert;
 import org.openea.eap.module.bpm.dal.dataobject.oa.BpmOALeaveDO;
-import org.openea.eap.framework.common.pojo.CommonResult;
-import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.bpm.service.oa.BpmOALeaveService;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +49,7 @@ public class BpmOALeaveController {
     @Parameter(name = "id", description = "编号", required = true, example = "1024")
     public CommonResult<BpmOALeaveRespVO> getLeave(@RequestParam("id") Long id) {
         BpmOALeaveDO leave = leaveService.getLeave(id);
-        return success(BpmOALeaveConvert.INSTANCE.convert(leave));
+        return success(BeanUtils.toBean(leave, BpmOALeaveRespVO.class));
     }
 
     @GetMapping("/page")
@@ -57,7 +57,7 @@ public class BpmOALeaveController {
     @Operation(summary = "获得请假申请分页")
     public CommonResult<PageResult<BpmOALeaveRespVO>> getLeavePage(@Valid BpmOALeavePageReqVO pageVO) {
         PageResult<BpmOALeaveDO> pageResult = leaveService.getLeavePage(getLoginUserId(), pageVO);
-        return success(BpmOALeaveConvert.INSTANCE.convertPage(pageResult));
+        return success(BeanUtils.toBean(pageResult, BpmOALeaveRespVO.class));
     }
 
 }

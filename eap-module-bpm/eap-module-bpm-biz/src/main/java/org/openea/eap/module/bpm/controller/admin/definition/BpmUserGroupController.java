@@ -1,18 +1,17 @@
 package org.openea.eap.module.bpm.controller.admin.definition;
 
-import org.openea.eap.module.bpm.controller.admin.definition.vo.group.BpmUserGroupCreateReqVO;
-import org.openea.eap.module.bpm.controller.admin.definition.vo.group.BpmUserGroupPageReqVO;
-import org.openea.eap.module.bpm.controller.admin.definition.vo.group.BpmUserGroupRespVO;
-import org.openea.eap.module.bpm.controller.admin.definition.vo.group.BpmUserGroupUpdateReqVO;
-import org.openea.eap.module.bpm.convert.definition.BpmUserGroupConvert;
-import org.openea.eap.module.bpm.dal.dataobject.definition.BpmUserGroupDO;
-import org.openea.eap.module.bpm.service.definition.BpmUserGroupService;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Parameter;
+import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.module.bpm.controller.admin.definition.vo.group.BpmUserGroupPageReqVO;
+import org.openea.eap.module.bpm.controller.admin.definition.vo.group.BpmUserGroupRespVO;
+import org.openea.eap.module.bpm.controller.admin.definition.vo.group.BpmUserGroupSaveReqVO;
+import org.openea.eap.module.bpm.dal.dataobject.definition.BpmUserGroupDO;
+import org.openea.eap.module.bpm.service.definition.BpmUserGroupService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
+import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
 
 @Tag(name = "管理后台 - 用户组")
 @RestController
@@ -35,14 +35,14 @@ public class BpmUserGroupController {
     @PostMapping("/create")
     @Operation(summary = "创建用户组")
     @PreAuthorize("@ss.hasPermission('bpm:user-group:create')")
-    public CommonResult<Long> createUserGroup(@Valid @RequestBody BpmUserGroupCreateReqVO createReqVO) {
+    public CommonResult<Long> createUserGroup(@Valid @RequestBody BpmUserGroupSaveReqVO createReqVO) {
         return success(userGroupService.createUserGroup(createReqVO));
     }
 
     @PutMapping("/update")
     @Operation(summary = "更新用户组")
     @PreAuthorize("@ss.hasPermission('bpm:user-group:update')")
-    public CommonResult<Boolean> updateUserGroup(@Valid @RequestBody BpmUserGroupUpdateReqVO updateReqVO) {
+    public CommonResult<Boolean> updateUserGroup(@Valid @RequestBody BpmUserGroupSaveReqVO updateReqVO) {
         userGroupService.updateUserGroup(updateReqVO);
         return success(true);
     }
@@ -62,7 +62,7 @@ public class BpmUserGroupController {
     @PreAuthorize("@ss.hasPermission('bpm:user-group:query')")
     public CommonResult<BpmUserGroupRespVO> getUserGroup(@RequestParam("id") Long id) {
         BpmUserGroupDO userGroup = userGroupService.getUserGroup(id);
-        return success(BpmUserGroupConvert.INSTANCE.convert(userGroup));
+        return success(BeanUtils.toBean(userGroup, BpmUserGroupRespVO.class));
     }
 
     @GetMapping("/page")
@@ -70,16 +70,14 @@ public class BpmUserGroupController {
     @PreAuthorize("@ss.hasPermission('bpm:user-group:query')")
     public CommonResult<PageResult<BpmUserGroupRespVO>> getUserGroupPage(@Valid BpmUserGroupPageReqVO pageVO) {
         PageResult<BpmUserGroupDO> pageResult = userGroupService.getUserGroupPage(pageVO);
-        return success(BpmUserGroupConvert.INSTANCE.convertPage(pageResult));
+        return success(BeanUtils.toBean(pageResult, BpmUserGroupRespVO.class));
     }
 
-    @GetMapping("/list-all-simple")
+    @GetMapping("/simple-list")
     @Operation(summary = "获取用户组精简信息列表", description = "只包含被开启的用户组，主要用于前端的下拉选项")
-    public CommonResult<List<BpmUserGroupRespVO>> getSimpleUserGroups() {
-        // 获用户门列表，只要开启状态的
+    public CommonResult<List<BpmUserGroupRespVO>> getUserGroupSimpleList() {
         List<BpmUserGroupDO> list = userGroupService.getUserGroupListByStatus(CommonStatusEnum.ENABLE.getStatus());
-        // 排序后，返回给前端
-        return success(BpmUserGroupConvert.INSTANCE.convertList2(list));
+        return success(convertList(list, group -> new BpmUserGroupRespVO().setId(group.getId()).setName(group.getName())));
     }
 
 }

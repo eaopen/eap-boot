@@ -2,25 +2,23 @@ package org.openea.eap.module.infra.service.file;
 
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.IdUtil;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.openea.eap.framework.common.exception.util.ServiceExceptionUtil;
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.framework.common.util.cache.CacheUtils;
 import org.openea.eap.framework.common.util.json.JsonUtils;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.common.util.validation.ValidationUtils;
-import org.openea.eap.framework.file.core.client.FileClient;
-import org.openea.eap.framework.file.core.client.FileClientConfig;
-import org.openea.eap.framework.file.core.client.FileClientFactory;
-import org.openea.eap.framework.file.core.enums.FileStorageEnum;
+import org.openea.eap.module.infra.framework.file.core.client.FileClient;
+import org.openea.eap.module.infra.framework.file.core.client.FileClientConfig;
+import org.openea.eap.module.infra.framework.file.core.client.FileClientFactory;
+import org.openea.eap.module.infra.framework.file.core.enums.FileStorageEnum;
 import org.openea.eap.module.infra.controller.admin.file.vo.config.FileConfigPageReqVO;
 import org.openea.eap.module.infra.controller.admin.file.vo.config.FileConfigSaveReqVO;
 import org.openea.eap.module.infra.convert.file.FileConfigConvert;
 import org.openea.eap.module.infra.dal.dataobject.file.FileConfigDO;
 import org.openea.eap.module.infra.dal.mysql.file.FileConfigMapper;
-import org.openea.eap.module.infra.enums.ErrorCodeConstants;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +28,11 @@ import javax.validation.Validator;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
+import static org.openea.eap.framework.common.util.cache.CacheUtils.buildAsyncReloadingCache;
+import static org.openea.eap.module.infra.enums.ErrorCodeConstants.FILE_CONFIG_DELETE_FAIL_MASTER;
+import static org.openea.eap.module.infra.enums.ErrorCodeConstants.FILE_CONFIG_NOT_EXISTS;
 
 /**
  * 文件配置 Service 实现类
@@ -46,7 +49,7 @@ public class FileConfigServiceImpl implements FileConfigService {
      * {@link FileClient} 缓存，通过它异步刷新 fileClientFactory
      */
     @Getter
-    private final LoadingCache<Long, FileClient> clientCache = CacheUtils.buildAsyncReloadingCache(Duration.ofSeconds(10L),
+    private final LoadingCache<Long, FileClient> clientCache = buildAsyncReloadingCache(Duration.ofSeconds(10L),
             new CacheLoader<Long, FileClient>() {
 
                 @Override
@@ -122,7 +125,7 @@ public class FileConfigServiceImpl implements FileConfigService {
         // 校验存在
         FileConfigDO config = validateFileConfigExists(id);
         if (Boolean.TRUE.equals(config.getMaster())) {
-            throw ServiceExceptionUtil.exception(ErrorCodeConstants.FILE_CONFIG_DELETE_FAIL_MASTER);
+            throw exception(FILE_CONFIG_DELETE_FAIL_MASTER);
         }
         // 删除
         fileConfigMapper.deleteById(id);
@@ -149,7 +152,7 @@ public class FileConfigServiceImpl implements FileConfigService {
     private FileConfigDO validateFileConfigExists(Long id) {
         FileConfigDO config = fileConfigMapper.selectById(id);
         if (config == null) {
-            throw ServiceExceptionUtil.exception(ErrorCodeConstants.FILE_CONFIG_NOT_EXISTS);
+            throw exception(FILE_CONFIG_NOT_EXISTS);
         }
         return config;
     }

@@ -1,16 +1,17 @@
 package org.openea.eap.module.infra.dal.dataobject.file;
 
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.module.infra.framework.file.core.client.db.DBFileClient;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 
 /**
  * 文件内容表
  *
- * 专门用于存储 {@link org.openea.eap.framework.file.core.client.db.DBFileClient} 的文件内容
+ * 专门用于存储 {@link DBFileClient} 的文件内容
  *
  */
 @TableName("infra_file_content")

@@ -58,10 +58,6 @@
             <artifactId>eap-module-lowcode-rest</artifactId>
             <version>${revision}</version>
         </dependency>
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-biz-error-code</artifactId>
-        </dependency>
 
         <!-- 会员中心。默认注释，保证编译速度 -->
 <!--        <dependency>-->
@@ -82,58 +78,13 @@
 <!--            <artifactId>eap-module-bpm-biz</artifactId>-->
 <!--            <version>${revision}</version>-->
 <!--        </dependency>-->
-        <!-- 支付服务。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-pay-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
 
-        <!-- 微信公众号模块。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-mp-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-
-        <!-- 商城相关模块。默认注释，保证编译速度-->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-promotion-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-product-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-trade-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-statistics-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-
-        <!-- CRM 相关模块。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-crm-biz</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
 
         <!-- spring boot 配置所需依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-banner</artifactId>
         </dependency>
 
         <!-- 服务保障相关 -->

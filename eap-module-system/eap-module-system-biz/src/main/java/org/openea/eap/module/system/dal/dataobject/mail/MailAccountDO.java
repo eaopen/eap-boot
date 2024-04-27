@@ -11,8 +11,6 @@ import lombok.EqualsAndHashCode;
  *
  * 用途：配置发送邮箱的账号
  *
- * @author wangjingyi
- * @since 2022-03-21
  */
 @TableName(value = "system_mail_account", autoResultMap = true)
 @Data
@@ -49,5 +47,9 @@ public class MailAccountDO extends BaseDO {
      * 是否开启 SSL
      */
     private Boolean sslEnable;
+    /**
+     * 是否开启 STARTTLS
+     */
+    private Boolean starttlsEnable;
 
 }

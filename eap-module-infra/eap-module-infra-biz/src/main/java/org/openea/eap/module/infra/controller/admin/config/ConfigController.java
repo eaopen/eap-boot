@@ -1,10 +1,10 @@
 package org.openea.eap.module.infra.controller.admin.config;
 
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.infra.controller.admin.config.vo.*;
 import org.openea.eap.module.infra.convert.config.ConfigConvert;
 import org.openea.eap.module.infra.dal.dataobject.config.ConfigDO;
@@ -23,9 +23,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+import static org.openea.eap.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Tag(name = "管理后台 - 参数配置")
 @RestController
@@ -93,7 +93,7 @@ public class ConfigController {
     @GetMapping("/export")
     @Operation(summary = "导出参数配置")
     @PreAuthorize("@ss.hasPermission('infra:config:export')")
-    @OperateLog(type = EXPORT)
+    @ApiAccessLog(operateType = EXPORT)
     public void exportConfig(@Valid ConfigPageReqVO exportReqVO,
                              HttpServletResponse response) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);

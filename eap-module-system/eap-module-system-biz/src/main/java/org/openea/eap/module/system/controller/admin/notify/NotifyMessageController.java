@@ -1,5 +1,6 @@
 package org.openea.eap.module.system.controller.admin.notify;
 
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -88,6 +89,7 @@ public class NotifyMessageController {
 
     @GetMapping("/get-unread-count")
     @Operation(summary = "获得当前用户的未读站内信数量")
+    @ApiAccessLog(enable = false) // 由于前端会不断轮询该接口，记录日志没有意义
     public CommonResult<Long> getUnreadNotifyMessageCount() {
         return success(notifyMessageService.getUnreadNotifyMessageCount(
                 getLoginUserId(), UserTypeEnum.ADMIN.getValue()));

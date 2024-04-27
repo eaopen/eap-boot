@@ -25,10 +25,7 @@
 
 
         <!-- 业务组件 -->
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-biz-operatelog</artifactId>
-        </dependency>
+
 
         <!-- Web 相关 -->
         <dependency>

@@ -1,11 +1,11 @@
 package org.openea.eap.module.infra.controller.admin.job;
 
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.infra.controller.admin.job.vo.log.JobLogPageReqVO;
 import org.openea.eap.module.infra.controller.admin.job.vo.log.JobLogRespVO;
 import org.openea.eap.module.infra.dal.dataobject.job.JobLogDO;
@@ -26,8 +26,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+import static org.openea.eap.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Tag(name = "管理后台 - 定时任务日志")
 @RestController
@@ -58,7 +58,7 @@ public class JobLogController {
     @GetMapping("/export-excel")
     @Operation(summary = "导出定时任务日志 Excel")
     @PreAuthorize("@ss.hasPermission('infra:job:export')")
-    @OperateLog(type = EXPORT)
+    @ApiAccessLog(operateType = EXPORT)
     public void exportJobLogExcel(@Valid JobLogPageReqVO exportReqVO,
                                   HttpServletResponse response) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);

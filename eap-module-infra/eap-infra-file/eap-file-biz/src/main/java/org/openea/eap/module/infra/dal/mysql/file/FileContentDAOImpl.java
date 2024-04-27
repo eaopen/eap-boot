@@ -1,7 +1,7 @@
 package org.openea.eap.module.infra.dal.mysql.file;
 
 import cn.hutool.core.collection.CollUtil;
-import org.openea.eap.framework.file.core.client.db.DBFileContentFrameworkDAO;
+import org.openea.eap.module.infra.framework.file.core.client.db.DBFileContentFrameworkDAO;
 import org.openea.eap.module.infra.dal.dataobject.file.FileContentDO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.stereotype.Repository;

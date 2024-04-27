@@ -1,9 +1,9 @@
 package org.openea.eap.module.infra.controller.admin.demo.demo02;
 
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.infra.controller.admin.demo.demo02.vo.Demo02CategoryListReqVO;
 import org.openea.eap.module.infra.controller.admin.demo.demo02.vo.Demo02CategoryRespVO;
 import org.openea.eap.module.infra.controller.admin.demo.demo02.vo.Demo02CategorySaveReqVO;
@@ -22,8 +22,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+import static org.openea.eap.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Tag(name = "管理后台 - 示例分类")
 @RestController
@@ -78,7 +78,7 @@ public class Demo02CategoryController {
     @GetMapping("/export-excel")
     @Operation(summary = "导出示例分类 Excel")
     @PreAuthorize("@ss.hasPermission('infra:demo02-category:export')")
-    @OperateLog(type = EXPORT)
+    @ApiAccessLog(operateType = EXPORT)
     public void exportDemo02CategoryExcel(@Valid Demo02CategoryListReqVO listReqVO,
               HttpServletResponse response) throws IOException {
         List<Demo02CategoryDO> list = demo02CategoryService.getDemo02CategoryList(listReqVO);

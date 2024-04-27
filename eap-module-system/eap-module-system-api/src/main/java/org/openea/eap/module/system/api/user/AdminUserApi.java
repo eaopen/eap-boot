@@ -3,10 +3,7 @@ package org.openea.eap.module.system.api.user;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Admin 用户 API 接口
@@ -24,14 +21,14 @@ public interface AdminUserApi {
 
     AdminUserRespDTO getUserByAccount(String account);
 
-    // TODO @puhui999：这里返回 List<AdminUserRespDTO> 方法名可以改成 getUserListBySubordinate
     /**
      * 通过用户 ID 查询用户下属
      *
      * @param id 用户编号
-     * @return 用户下属用户编号列表
+     * @return 用户下属用户列表
      */
     Set<Long> getSubordinateIds(Long id);
+    List<AdminUserRespDTO> getUserListBySubordinate(Long id);
 
     /**
      * 通过用户 ID 查询用户们
@@ -66,6 +63,17 @@ public interface AdminUserApi {
     default Map<Long, AdminUserRespDTO> getUserMap(Collection<Long> ids) {
         List<AdminUserRespDTO> users = getUserList(ids);
         return CollectionUtils.convertMap(users, AdminUserRespDTO::getId);
+    }
+
+    /**
+     * 校验用户是否有效。如下情况，视为无效：
+     * 1. 用户编号不存在
+     * 2. 用户被禁用
+     *
+     * @param id 用户编号
+     */
+    default void validateUser(Long id) {
+        validateUserList(Collections.singleton(id));
     }
 
     /**

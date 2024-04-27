@@ -17,7 +17,7 @@ package org.openea.eap.extj.database.plugins;
 
 import cn.hutool.core.text.StrPool;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.support.DdConstants;
+import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import org.openea.eap.extj.database.util.DynamicDataSourceUtil;
 import org.openea.eap.extj.database.util.TenantDataSourceUtil;
@@ -69,7 +69,7 @@ public class MyMasterSlaveAutoRoutingPlugin implements Interceptor {
         try {
             TenantDataSourceUtil.initTenantAssignDataSource();
             String tenantId = StringUtil.isNotEmpty(DataSourceContextHolder.getDatasourceId()) ? DataSourceContextHolder.getDatasourceId() : "";
-            String masterKey = tenantId + StrPool.DASHED +DdConstants.MASTER;
+            String masterKey = tenantId + StrPool.DASHED + DdConstants.MASTER;
             String slaveKey = tenantId + StrPool.DASHED +DdConstants.SLAVE;
             // 判断切库
             String dataSource = SqlCommandType.SELECT == ms.getSqlCommandType() ? slaveKey :masterKey;

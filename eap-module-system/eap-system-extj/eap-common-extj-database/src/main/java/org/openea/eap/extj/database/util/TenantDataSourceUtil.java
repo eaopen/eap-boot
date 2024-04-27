@@ -4,7 +4,7 @@ import cn.hutool.core.text.StrPool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.dynamic.datasource.ds.ItemDataSource;
-import com.baomidou.dynamic.datasource.support.DdConstants;
+import com.baomidou.dynamic.datasource.enums.DdConstants;
 import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ import java.util.Map;
 
 /**
  * 租户数据工具类
- * 
+ *
  */
 @Slf4j
 @Component

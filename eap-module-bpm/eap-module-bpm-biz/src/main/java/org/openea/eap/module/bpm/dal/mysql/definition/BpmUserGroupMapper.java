@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * 用户组 Mapper
  *
- * @author 芋道源码
  */
 @Mapper
 public interface BpmUserGroupMapper extends BaseMapperX<BpmUserGroupDO> {

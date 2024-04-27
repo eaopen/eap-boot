@@ -7,15 +7,21 @@ import lombok.Data;
  * BPM 流程 MetaInfo Response DTO
  * 主要用于 { Model#setMetaInfo(String)} 的存储
  *
- * @author 芋道源码
+ * 最终，它的字段和 {@link org.openea.eap.module.bpm.dal.dataobject.definition.BpmProcessDefinitionInfoDO} 是一致的
+ *
  */
 @Data
 public class BpmModelMetaInfoRespDTO {
 
     /**
+     * 流程图标
+     */
+    private String icon;
+    /**
      * 流程描述
      */
     private String description;
+
     /**
      * 表单类型
      */

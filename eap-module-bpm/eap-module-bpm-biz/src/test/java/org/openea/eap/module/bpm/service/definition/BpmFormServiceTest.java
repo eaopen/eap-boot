@@ -4,9 +4,8 @@ import cn.hutool.core.util.RandomUtil;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.json.JsonUtils;
 import org.openea.eap.framework.test.core.ut.BaseDbUnitTest;
-import org.openea.eap.module.bpm.controller.admin.definition.vo.form.BpmFormCreateReqVO;
+import org.openea.eap.module.bpm.controller.admin.definition.vo.form.BpmFormSaveReqVO;
 import org.openea.eap.module.bpm.controller.admin.definition.vo.form.BpmFormPageReqVO;
-import org.openea.eap.module.bpm.controller.admin.definition.vo.form.BpmFormUpdateReqVO;
 import org.openea.eap.module.bpm.dal.dataobject.definition.BpmFormDO;
 import org.openea.eap.module.bpm.dal.mysql.definition.BpmFormMapper;
 import org.openea.eap.module.bpm.service.definition.dto.BpmFormFieldRespDTO;
@@ -29,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * {@link BpmFormServiceImpl} 的单元测试类
  *
- * @author 芋道源码
  */
 @Import(BpmFormServiceImpl.class)
 public class BpmFormServiceTest extends BaseDbUnitTest {
@@ -43,7 +41,7 @@ public class BpmFormServiceTest extends BaseDbUnitTest {
     @Test
     public void testCreateForm_success() {
         // 准备参数
-        BpmFormCreateReqVO reqVO = randomPojo(BpmFormCreateReqVO.class, o -> {
+        BpmFormSaveReqVO reqVO = randomPojo(BpmFormSaveReqVO.class, o -> {
             o.setConf("{}");
             o.setFields(randomFields());
         });
@@ -66,7 +64,7 @@ public class BpmFormServiceTest extends BaseDbUnitTest {
         });
         formMapper.insert(dbForm);// @Sql: 先插入出一条存在的数据
         // 准备参数
-        BpmFormUpdateReqVO reqVO = randomPojo(BpmFormUpdateReqVO.class, o -> {
+        BpmFormSaveReqVO reqVO = randomPojo(BpmFormSaveReqVO.class, o -> {
             o.setId(dbForm.getId()); // 设置更新的 ID
             o.setConf("{'eap': 'yuanma'}");
             o.setFields(randomFields());
@@ -82,7 +80,7 @@ public class BpmFormServiceTest extends BaseDbUnitTest {
     @Test
     public void testUpdateForm_notExists() {
         // 准备参数
-        BpmFormUpdateReqVO reqVO = randomPojo(BpmFormUpdateReqVO.class, o -> {
+        BpmFormSaveReqVO reqVO = randomPojo(BpmFormSaveReqVO.class, o -> {
             o.setConf("{'eap': 'yuanma'}");
             o.setFields(randomFields());
         });

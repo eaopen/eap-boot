@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.system.controller.admin.language.vo.*;
 import org.openea.eap.module.system.convert.language.LangTypeConvert;
 import org.openea.eap.module.system.dal.dataobject.language.LangTypeDO;
@@ -23,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 
 @Tag(name = "管理后台 - 语言")
 @RestController
@@ -87,7 +85,6 @@ public class LangTypeController {
     @GetMapping("/export-excel")
     @Operation(summary = "导出语言 Excel")
     @PreAuthorize("@ss.hasPermission('system:lang-type:export')")
-    @OperateLog(type = EXPORT)
     public void exportLangTypeExcel(@Valid LangTypeExportReqVO exportReqVO,
               HttpServletResponse response) throws IOException {
         List<LangTypeDO> list = langTypeService.getLangTypeList(exportReqVO);

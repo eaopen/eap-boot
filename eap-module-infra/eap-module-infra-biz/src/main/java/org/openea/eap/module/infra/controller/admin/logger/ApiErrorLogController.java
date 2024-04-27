@@ -1,11 +1,11 @@
 package org.openea.eap.module.infra.controller.admin.logger;
 
+import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.excel.core.util.ExcelUtils;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.module.infra.controller.admin.logger.vo.apierrorlog.ApiErrorLogPageReqVO;
 import org.openea.eap.module.infra.controller.admin.logger.vo.apierrorlog.ApiErrorLogRespVO;
 import org.openea.eap.module.infra.dal.dataobject.logger.ApiErrorLogDO;
@@ -24,8 +24,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+import static org.openea.eap.framework.apilog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
 @Tag(name = "管理后台 - API 错误日志")
@@ -61,7 +61,7 @@ public class ApiErrorLogController {
     @GetMapping("/export-excel")
     @Operation(summary = "导出 API 错误日志 Excel")
     @PreAuthorize("@ss.hasPermission('infra:api-error-log:export')")
-    @OperateLog(type = EXPORT)
+    @ApiAccessLog(operateType = EXPORT)
     public void exportApiErrorLogExcel(@Valid ApiErrorLogPageReqVO exportReqVO,
               HttpServletResponse response) throws IOException {
         exportReqVO.setPageSize(PageParam.PAGE_SIZE_NONE);

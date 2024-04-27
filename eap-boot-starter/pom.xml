@@ -52,20 +52,12 @@
             <artifactId>eap-module-lowcode-rest</artifactId>
             <version>${revision}</version>
         </dependency>
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-biz-error-code</artifactId>
-        </dependency>
 
         <!-- spring boot 配置所需依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-banner</artifactId>
         </dependency>
 
         <!-- 服务保障相关 -->

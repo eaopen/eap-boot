@@ -1,8 +1,7 @@
 package org.openea.eap.module.system.service.permission;
 
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuCreateReqVO;
+import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSaveVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuListReqVO;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuUpdateReqVO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 
 import java.util.Collection;
@@ -20,14 +19,14 @@ public interface MenuService {
      * @param createReqVO 菜单信息
      * @return 创建出来的菜单编号
      */
-    Long createMenu(MenuCreateReqVO createReqVO);
+    Long createMenu(MenuSaveVO createReqVO);
 
     /**
      * 更新菜单
      *
      * @param updateReqVO 菜单信息
      */
-    void updateMenu(MenuUpdateReqVO updateReqVO);
+    void updateMenu(MenuSaveVO updateReqVO);
 
     /**
      * 删除菜单

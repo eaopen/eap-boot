@@ -24,11 +24,11 @@
 
 
         <!-- fix bug, 继续使用infra/codegen -->
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-lowcode-codegen</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.github.eaopen</groupId>-->
+<!--            <artifactId>eap-lowcode-codegen</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
 
 
         <!-- 在线可视化设计 -->

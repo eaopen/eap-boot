@@ -87,17 +87,10 @@
         </dependency>
 
         <!-- 业务组件 -->
+
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-biz-operatelog</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-biz-sms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-spring-boot-starter-biz-dict</artifactId>
+            <artifactId>eap-spring-boot-starter-excel</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.eaopen</groupId>

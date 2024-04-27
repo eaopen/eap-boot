@@ -21,7 +21,7 @@
     <modules>
 
         <!-- 代码生成 -->
-        <module>eap-lowcode-codegen</module>
+<!--        <module>eap-lowcode-codegen</module>-->
 
         <!-- 整合 lowcode 服务 -->
         <module>eap-module-lowcode-biz</module>

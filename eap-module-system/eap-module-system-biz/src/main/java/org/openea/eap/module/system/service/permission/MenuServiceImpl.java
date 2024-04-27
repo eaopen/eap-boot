@@ -4,13 +4,10 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.i18n.core.I18nUtil;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuCreateReqVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuListReqVO;
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuUpdateReqVO;
+import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSaveVO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.mysql.permission.MenuMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
@@ -18,6 +15,9 @@ import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 import org.openea.eap.module.system.service.language.I18nDataService;
 import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.openea.eap.module.system.service.tenant.TenantService;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
@@ -61,7 +61,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @CacheEvict(value = RedisKeyConstants.PERMISSION_MENU_ID_LIST, key = "#createReqVO.permission",
             condition = "#createReqVO.permission != null")
-    public Long createMenu(MenuCreateReqVO createReqVO) {
+    public Long createMenu(MenuSaveVO createReqVO) {
         // 校验父菜单存在
         validateParentMenu(createReqVO.getParentId(), null);
         // 校验菜单（自己）
@@ -80,7 +80,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @CacheEvict(value = RedisKeyConstants.PERMISSION_MENU_ID_LIST,
             allEntries = true) // allEntries 清空所有缓存，因为 permission 如果变更，涉及到新老两个 permission。直接清理，简单有效
-    public void updateMenu(MenuUpdateReqVO updateReqVO) {
+    public void updateMenu(MenuSaveVO updateReqVO) {
         // 校验更新的菜单是否存在
         if (menuMapper.selectById(updateReqVO.getId()) == null) {
             throw exception(MENU_NOT_EXISTS);
@@ -158,6 +158,10 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuDO> getMenuList(Collection<Long> ids) {
+        // 当ids为空时，返回一个空的实例对象
+        if (CollUtil.isEmpty(ids)) {
+            return Lists.newArrayList();
+        }
         return menuMapper.selectBatchIds(ids);
     }
 

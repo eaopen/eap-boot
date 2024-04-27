@@ -4,20 +4,26 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
-import lombok.SneakyThrows;
-import org.openea.eap.framework.common.exception.util.ServiceExceptionUtil;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.io.FileUtils;
-import org.openea.eap.framework.file.core.client.FileClient;
-import org.openea.eap.framework.file.core.utils.FileTypeUtils;
+import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.module.infra.framework.file.core.client.FileClient;
+import org.openea.eap.module.infra.framework.file.core.client.s3.FilePresignedUrlRespDTO;
+import org.openea.eap.module.infra.framework.file.core.utils.FileTypeUtils;
+import org.openea.eap.module.infra.controller.admin.file.vo.file.FileCreateReqVO;
 import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePageReqVO;
+import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePresignedUrlRespVO;
 import org.openea.eap.module.infra.dal.dataobject.file.FileDO;
 import org.openea.eap.module.infra.dal.mysql.file.FileMapper;
-import org.openea.eap.module.infra.enums.ErrorCodeConstants;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
 import java.util.List;
+
+import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
+import static org.openea.eap.module.infra.enums.ErrorCodeConstants.FILE_NOT_EXISTS;
 
 /**
  * 文件 Service 实现类
@@ -74,6 +80,13 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public Long createFile(FileCreateReqVO createReqVO) {
+        FileDO file = BeanUtils.toBean(createReqVO, FileDO.class);
+        fileMapper.insert(file);
+        return file.getId();
+    }
+
+    @Override
     public void deleteFile(Long id) throws Exception {
         // 校验存在
         FileDO file = validateFileExists(id);
@@ -90,7 +103,7 @@ public class FileServiceImpl implements FileService {
     private FileDO validateFileExists(Long id) {
         FileDO fileDO = fileMapper.selectById(id);
         if (fileDO == null) {
-            throw ServiceExceptionUtil.exception(ErrorCodeConstants.FILE_NOT_EXISTS);
+            throw exception(FILE_NOT_EXISTS);
         }
         return fileDO;
     }
@@ -100,6 +113,14 @@ public class FileServiceImpl implements FileService {
         FileClient client = fileConfigService.getFileClient(configId);
         Assert.notNull(client, "客户端({}) 不能为空", configId);
         return client.getContent(path);
+    }
+
+    @Override
+    public FilePresignedUrlRespVO getFilePresignedUrl(String path) throws Exception {
+        FileClient fileClient = fileConfigService.getMasterFileClient();
+        FilePresignedUrlRespDTO presignedObjectUrl = fileClient.getPresignedObjectUrl(path);
+        return BeanUtils.toBean(presignedObjectUrl, FilePresignedUrlRespVO.class,
+                object -> object.setConfigId(fileClient.getId()));
     }
 
     /**

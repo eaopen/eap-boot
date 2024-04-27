@@ -1,7 +1,9 @@
 package org.openea.eap.module.infra.service.file;
 
-import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePageReqVO;
 import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.module.infra.controller.admin.file.vo.file.FileCreateReqVO;
+import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePageReqVO;
+import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePresignedUrlRespVO;
 import org.openea.eap.module.infra.dal.dataobject.file.FileDO;
 
 import java.util.List;
@@ -32,6 +34,14 @@ public interface FileService {
     FileDO uploadFile(String name, String path, byte[] content);
 
     /**
+     * 创建文件
+     *
+     * @param createReqVO 创建信息
+     * @return 编号
+     */
+    Long createFile(FileCreateReqVO createReqVO);
+
+    /**
      * 删除文件
      *
      * @param id 编号
@@ -46,6 +56,14 @@ public interface FileService {
      * @return 文件内容
      */
     byte[] getFileContent(Long configId, String path) throws Exception;
+
+    /**
+     * 生成文件预签名地址信息
+     *
+     * @param path 文件路径
+     * @return 预签名地址信息
+     */
+    FilePresignedUrlRespVO getFilePresignedUrl(String path) throws Exception;
 
     /**
      * 根据你文件id获取文件

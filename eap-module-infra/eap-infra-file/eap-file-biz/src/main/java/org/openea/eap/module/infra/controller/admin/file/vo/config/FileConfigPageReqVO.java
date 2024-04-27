@@ -1,14 +1,15 @@
 package org.openea.eap.module.infra.controller.admin.file.vo.config;
 
+import org.openea.eap.framework.common.pojo.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.openea.eap.framework.common.pojo.PageParam;
-import org.openea.eap.framework.common.util.date.DateUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+
+import static org.openea.eap.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
 
 @Schema(description = "管理后台 - 文件配置分页 Request VO")
 @Data
@@ -23,7 +24,7 @@ public class FileConfigPageReqVO extends PageParam {
     private Integer storage;
 
     @Schema(description = "创建时间", example = "[2022-07-01 00:00:00, 2022-07-01 23:59:59]")
-    @DateTimeFormat(pattern = DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime[] createTime;
 
 }

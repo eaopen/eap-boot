@@ -1,6 +1,7 @@
 package org.openea.eap.extj.database.plugins;
 
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
 import com.baomidou.dynamic.datasource.tx.ConnectionProxy;
@@ -15,13 +16,18 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 自定义动态数据源类
- * 
+ *
  */
 @Slf4j
 public class MyDynamicRoutingDataSource extends DynamicRoutingDataSource {
+
+    public MyDynamicRoutingDataSource(List<DynamicDataSourceProvider> providers) {
+        super(providers);
+    }
 
     @Override
     public Connection getConnection() throws SQLException {
@@ -31,7 +37,7 @@ public class MyDynamicRoutingDataSource extends DynamicRoutingDataSource {
         } else {
             String ds = DynamicDataSourceContextHolder.peek();
             ds = !StringUtils.hasText(ds) ? "default" : ds;
-            ConnectionProxy connection = ConnectionFactory.getConnection(ds);
+            ConnectionProxy connection = ConnectionFactory.getConnection(ds,ds);
             return connection == null ? getConnectionProxy(ds, getMyDataSource()) : connection;
         }
     }
@@ -78,7 +84,7 @@ public class MyDynamicRoutingDataSource extends DynamicRoutingDataSource {
 
     private Connection getConnectionProxy(String ds, Connection connection) {
         ConnectionProxy connectionProxy = new ConnectionProxy(connection, ds);
-        ConnectionFactory.putConnection(ds, connectionProxy);
+        ConnectionFactory.putConnection(ds, ds, connectionProxy);
         return connectionProxy;
     }
 }

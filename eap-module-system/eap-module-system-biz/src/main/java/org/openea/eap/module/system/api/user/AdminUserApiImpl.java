@@ -1,5 +1,6 @@
 package org.openea.eap.module.system.api.user;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
@@ -10,10 +11,7 @@ import org.openea.eap.module.system.service.user.AdminUserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertSet;
 
@@ -57,6 +55,34 @@ public class AdminUserApiImpl implements AdminUserApi {
             subordinateIds = convertSet(users, AdminUserDO::getId);
         }
         return subordinateIds;
+    }
+
+    @Override
+    public List<AdminUserRespDTO> getUserListBySubordinate(Long id) {
+        // 1.1 获取用户负责的部门
+        AdminUserDO user = userService.getUser(id);
+        if (user == null) {
+            return Collections.emptyList();
+        }
+        ArrayList<Long> deptIds = new ArrayList<>();
+        DeptDO dept = deptService.getDept(user.getDeptId());
+        if (dept == null) {
+            return Collections.emptyList();
+        }
+        if (ObjUtil.notEqual(dept.getLeaderUserId(), id)) { // 校验为负责人
+            return Collections.emptyList();
+        }
+        deptIds.add(dept.getId());
+        // 1.2 获取所有子部门
+        List<DeptDO> childDeptList = deptService.getChildDeptList(dept.getId());
+        if (CollUtil.isNotEmpty(childDeptList)) {
+            deptIds.addAll(convertSet(childDeptList, DeptDO::getId));
+        }
+
+        // 2. 获取部门对应的用户信息
+        List<AdminUserDO> users = userService.getUserListByDeptIds(deptIds);
+        users.removeIf(item -> ObjUtil.equal(item.getId(), id)); // 排除自己
+        return BeanUtils.toBean(users, AdminUserRespDTO.class);
     }
 
     @Override

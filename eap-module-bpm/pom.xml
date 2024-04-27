@@ -43,7 +43,6 @@
             <id>bpm-flowable</id>
             <modules>
                 <!-- BPM流程引擎(flowable) -->
-                <module>eap-spring-boot-starter-flowable</module>
                 <module>eap-module-bpm-api</module>
                 <module>eap-module-bpm-biz</module>
             </modules>

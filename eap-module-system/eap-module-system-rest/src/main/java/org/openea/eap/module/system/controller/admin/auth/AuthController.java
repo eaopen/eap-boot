@@ -2,15 +2,9 @@ package org.openea.eap.module.system.controller.admin.auth;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
-import org.openea.eap.framework.operatelog.core.annotations.OperateLog;
 import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.security.core.util.SecurityFrameworkUtils;
 import org.openea.eap.module.system.controller.admin.auth.vo.*;
@@ -25,6 +19,11 @@ import org.openea.eap.module.system.service.permission.PermissionService;
 import org.openea.eap.module.system.service.permission.RoleService;
 import org.openea.eap.module.system.service.social.SocialClientService;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
+import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertSet;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
 @Tag(name = "管理后台 - 认证")
@@ -65,15 +65,13 @@ public class AuthController {
     @PostMapping("/login")
     @PermitAll
     @Operation(summary = "使用账号密码登录")
-    @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
-    public CommonResult<AuthLoginRespVO> login(HttpServletRequest request, @RequestBody @Valid AuthLoginReqVO reqVO) {
+    public CommonResult<AuthLoginRespVO> login(@RequestBody @Valid AuthLoginReqVO reqVO) {
         return success(authService.login(reqVO));
     }
 
     @PostMapping("/logout")
     @PermitAll
     @Operation(summary = "登出系统")
-    @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
     public CommonResult<Boolean> logout(HttpServletRequest request) {
         String token = SecurityFrameworkUtils.obtainAuthorization(request,
                 securityProperties.getTokenHeader(), securityProperties.getTokenParameter());
@@ -87,9 +85,7 @@ public class AuthController {
     @PermitAll
     @Operation(summary = "刷新令牌")
     @Parameter(name = "refreshToken", description = "刷新令牌", required = true)
-    @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
     public CommonResult<AuthLoginRespVO> refreshToken(@RequestParam("refreshToken") String refreshToken) {
-        // todo will catch  exception "刷新令牌已过期" in global exception handler
         return success(authService.refreshToken(refreshToken));
     }
 
@@ -99,7 +95,7 @@ public class AuthController {
         // 1.1 获得用户信息
         AdminUserDO user = userService.getUser(getLoginUserId());
         if (user == null) {
-            return null;
+            return success(null);
         }
 
         // 1.2 获得角色列表
@@ -128,7 +124,6 @@ public class AuthController {
     @PostMapping("/sms-login")
     @PermitAll
     @Operation(summary = "使用短信验证码登录")
-    @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
     public CommonResult<AuthLoginRespVO> smsLogin(@RequestBody @Valid AuthSmsLoginReqVO reqVO) {
         return success(authService.smsLogin(reqVO));
     }
@@ -136,7 +131,6 @@ public class AuthController {
     @PostMapping("/send-sms-code")
     @PermitAll
     @Operation(summary = "发送手机验证码")
-    @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
     public CommonResult<Boolean> sendLoginSmsCode(@RequestBody @Valid AuthSmsSendReqVO reqVO) {
         authService.sendSmsCode(reqVO);
         return success(true);
@@ -160,7 +154,6 @@ public class AuthController {
     @PostMapping("/social-login")
     @PermitAll
     @Operation(summary = "社交快捷登录，使用 code 授权码", description = "适合未登录的用户，但是社交账号已绑定用户")
-    @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
     public CommonResult<AuthLoginRespVO> socialQuickLogin(@RequestBody @Valid AuthSocialLoginReqVO reqVO) {
         return success(authService.socialLogin(reqVO));
     }
