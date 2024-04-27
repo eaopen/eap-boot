@@ -24,9 +24,8 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 /**
  * 字典数据 Service 实现类
  *
- * @author ruoyi
  */
-@Service
+//@Service
 @Slf4j
 public class DictDataServiceImpl implements DictDataService {
 

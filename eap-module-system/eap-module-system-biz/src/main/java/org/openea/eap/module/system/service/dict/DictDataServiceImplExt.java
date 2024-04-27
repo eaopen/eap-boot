@@ -20,6 +20,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * 数据字典扩展实现类
+ */
+
 @Service
 @Slf4j
 public class DictDataServiceImplExt extends DictDataServiceImpl implements DictDataService{
