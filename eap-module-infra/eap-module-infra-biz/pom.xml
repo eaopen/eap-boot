@@ -131,6 +131,13 @@
             <artifactId>tika-core</artifactId> <!-- 文件客户端：文件类型的识别 -->
         </dependency>
 
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-file-biz</artifactId>
+            <version>2.6.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
