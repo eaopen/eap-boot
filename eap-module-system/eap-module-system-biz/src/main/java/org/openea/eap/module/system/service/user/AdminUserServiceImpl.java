@@ -61,14 +61,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     private String userInitPassword;
 
     @Resource
-    private AdminUserMapper userMapper;
+    protected AdminUserMapper userMapper;
 
     @Resource
     private DeptService deptService;
     @Resource
     private PostService postService;
     @Resource
-    private PermissionService permissionService;
+    protected PermissionService permissionService;
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
@@ -80,7 +80,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Resource
     @Lazy // 延迟，不需要及时加载
-    private FileApi fileApi;
+    protected FileApi fileApi;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
