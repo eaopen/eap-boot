@@ -59,6 +59,7 @@ public class EapWebAutoConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    @ConditionalOnMissingBean(GlobalExceptionHandler.class)
     public GlobalExceptionHandler globalExceptionHandler(ApiErrorLogFrameworkService ApiErrorLogFrameworkService) {
         return new GlobalExceptionHandler(applicationName, ApiErrorLogFrameworkService);
     }
