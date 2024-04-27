@@ -2,7 +2,9 @@ package org.openea.eap.framework.web.core.handler;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openea.eap.framework.apilog.core.service.ApiErrorLog;
 import org.openea.eap.framework.apilog.core.service.ApiErrorLogFrameworkService;
 import org.openea.eap.framework.common.exception.ServiceException;
@@ -11,9 +13,6 @@ import org.openea.eap.framework.common.util.json.JsonUtils;
 import org.openea.eap.framework.common.util.monitor.TracerUtils;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
 import org.openea.eap.framework.web.core.util.WebFrameworkUtils;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindException;
@@ -88,6 +87,10 @@ public class GlobalExceptionHandler {
         if (ex instanceof AccessDeniedException) {
             return accessDeniedExceptionHandler(request, (AccessDeniedException) ex);
         }
+//        if (ex instanceof DuplicateKeyException){
+//            return duplicateKeyExceptionHandler(request, (DuplicateKeyException)ex);
+//        }
+
         return defaultExceptionHandler(request, ex);
     }
 
@@ -200,6 +203,19 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 处理 MyBatis 的 DuplicateKeyException 唯一索引重复异常
+     * @param req
+     * @param ex
+     * @return
+     */
+//    @ExceptionHandler(value = DuplicateKeyException.class)
+//    public CommonResult<?> duplicateKeyExceptionHandler(HttpServletRequest req, DuplicateKeyException ex) {
+//        log.warn("[duplicateKeyException][ {}]", ex.getMessage(), ex);
+//        return CommonResult.error(DB_DUPLICATE_KEY, ex.getMessage());
+//    }
+
+
+    /**
      * 处理业务异常 ServiceException
      *
      * 例如说，商品库存不足，用户手机号已存在。
@@ -215,6 +231,12 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public CommonResult<?> defaultExceptionHandler(HttpServletRequest req, Throwable ex) {
+        // 处理 extn exception handler
+        if(ex.getClass().getPackage().getName().indexOf("extj")>0){
+            String msg = ex.getMessage();
+            return CommonResult.error(ERROR_EXTN.getCode(), msg);
+        }
+
         // 情况一：处理表不存在的异常
         CommonResult<?> tableNotExistsResult = handleTableNotExists(ex);
         if (tableNotExistsResult != null) {
@@ -231,7 +253,15 @@ public class GlobalExceptionHandler {
         // 插入异常日志
         this.createExceptionLog(req, ex);
         // 返回 ERROR CommonResult
-        return CommonResult.error(INTERNAL_SERVER_ERROR.getCode(), INTERNAL_SERVER_ERROR.getMsg());
+        String extendMsg = null;
+        if(ex!=null){
+            if(ex.getCause()!=null){
+                extendMsg = ex.getCause().getMessage();
+            }else{
+                extendMsg = ex.getMessage();
+            }
+        }
+        return CommonResult.error(INTERNAL_SERVER_ERROR.getCode(), INTERNAL_SERVER_ERROR.getMsg() + (extendMsg==null?"":"["+extendMsg+"]"));
     }
 
     private void createExceptionLog(HttpServletRequest req, Throwable e) {
@@ -290,33 +320,15 @@ public class GlobalExceptionHandler {
         }
         // 1. 数据报表
         if (message.contains("report_")) {
-            log.error("[报表模块 eap-module-report - 表结构未导入][参考 https://doc.iocoder.cn/report/ 开启]");
+            log.error("[报表模块 eap-module-report - 表结构未导入]");
             return CommonResult.error(NOT_IMPLEMENTED.getCode(),
-                    "[报表模块 eap-module-report - 表结构未导入][参考 https://doc.iocoder.cn/report/ 开启]");
+                    "[报表模块 eap-module-report - 表结构未导入]");
         }
         // 2. 工作流
         if (message.contains("bpm_")) {
-            log.error("[工作流模块 eap-module-bpm - 表结构未导入][参考 https://doc.iocoder.cn/bpm/ 开启]");
+            log.error("[工作流模块 eap-module-bpm - 表结构未导入]");
             return CommonResult.error(NOT_IMPLEMENTED.getCode(),
-                    "[工作流模块 eap-module-bpm - 表结构未导入][参考 https://doc.iocoder.cn/bpm/ 开启]");
-        }
-        // 3. 微信公众号
-        if (message.contains("mp_")) {
-            log.error("[微信公众号 eap-module-mp - 表结构未导入][参考 https://doc.iocoder.cn/mp/build/ 开启]");
-            return CommonResult.error(NOT_IMPLEMENTED.getCode(),
-                    "[微信公众号 eap-module-mp - 表结构未导入][参考 https://doc.iocoder.cn/mp/build/ 开启]");
-        }
-        // 4. 商城系统
-        if (StrUtil.containsAny(message, "product_", "promotion_", "trade_")) {
-            log.error("[商城系统 eap-module-mall - 已禁用][参考 https://doc.iocoder.cn/mall/build/ 开启]");
-            return CommonResult.error(NOT_IMPLEMENTED.getCode(),
-                    "[商城系统 eap-module-mall - 已禁用][参考 https://doc.iocoder.cn/mall/build/ 开启]");
-        }
-        // 5. 支付平台
-        if (message.contains("pay_")) {
-            log.error("[支付模块 eap-module-pay - 表结构未导入][参考 https://doc.iocoder.cn/pay/build/ 开启]");
-            return CommonResult.error(NOT_IMPLEMENTED.getCode(),
-                    "[支付模块 eap-module-pay - 表结构未导入][参考 https://doc.iocoder.cn/pay/build/ 开启]");
+                    "[工作流模块 eap-module-bpm - 表结构未导入]");
         }
         return null;
     }

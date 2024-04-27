@@ -1,0 +1,15 @@
+1 配置信息
+
+2 输出变量或书签
+{
+  "cell12": company.name,
+  "cell13": company.address,
+  "cell14": company.phone,
+}
+
+3 列表
+起点坐标
+列对应关系
+col2: name
+col3: xxxx
+

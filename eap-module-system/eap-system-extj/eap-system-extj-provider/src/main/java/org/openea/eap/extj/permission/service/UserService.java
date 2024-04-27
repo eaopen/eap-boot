@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * 用户信息
  *
- * 
+ *
  */
 public interface UserService extends SuperService<UserEntity> {
 
@@ -188,10 +188,10 @@ public interface UserService extends SuperService<UserEntity> {
     /**
      * 查询用户名称
      *
-     * @param id 主键值
+     * @param ids 主键值
      * @return
      */
-    List<UserEntity> getUserName(List<String> id);
+    List<UserEntity> getUserName(List<String> ids);
 
     /**
      * 查询用户名称

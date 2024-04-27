@@ -47,7 +47,7 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public List<UserRelationEntity> getListByUserIdAll(List<String> userId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -58,7 +58,7 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public List<UserRelationEntity> getListByObjectId(String objectId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -69,17 +69,17 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public List<UserRelationEntity> getListByObjectType(String objectType) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public List<UserRelationEntity> getListByObjectId(String objectId, String objectType) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public List<UserRelationEntity> getListByObjectIdAll(List<String> objectId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -191,7 +191,7 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public List<UserRelationEntity> getAllOrgRelationByUserId(String userId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -201,7 +201,7 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public List<PermissionModel> getObjectVoList(String objectType) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -213,7 +213,7 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public Boolean existByObj(String objectType, String objectId) {
-        return null;
+        return false;
     }
 
     /**
@@ -223,12 +223,12 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public List<UserRelationEntity> getListByRoleId(String roleId) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public List<UserRelationEntity> getListByUserId(String userId, String department) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -239,7 +239,7 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public List<UserRelationEntity> getListByOrgId(List<String> orgIdList) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -269,7 +269,7 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
 
     @Override
     public Map<String, Object> getMap(Wrapper<UserRelationEntity> queryWrapper) {
-        return null;
+        return Collections.emptyMap();
     }
 
     @Override
@@ -342,7 +342,7 @@ public class EapUserRelationService extends SuperServiceImpl<ExtjUserRelationMap
      */
     @Override
     public Map<String, Object> getMapIgnoreLogic(Wrapper<UserRelationEntity> queryWrapper) {
-        return null;
+        return Collections.emptyMap();
     }
 
     /**

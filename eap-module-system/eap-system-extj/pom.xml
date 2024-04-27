@@ -24,6 +24,9 @@
     </properties>
 
     <modules>
+        <module>eap-common-extj-auth</module>
+        <module>eap-common-extj-database</module>
+
         <module>eap-system-extj-common</module>
         <module>eap-system-extj-provider</module>
 

@@ -154,6 +154,7 @@ public class PortalDataServiceImpl extends SuperServiceImpl<PortalDataMapper, Po
             PortalDataEntity creEntity = primary.getEntity();
             creEntity.setFormData(formData);
             String authorSignature = ServletUtil.getRequest().getHeader(Constants.AUTHORIZATION);
+            // todo
             UserInfo userInfo = userProvider.get(authorSignature.substring(7,authorSignature.length()));
 
             creEntity.setCreatorUserId(userInfo.getUserId());

@@ -1,19 +1,26 @@
 package org.openea.eap.extj.base.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openea.eap.extj.base.ActionResult;
 import org.openea.eap.extj.base.entity.DictionaryDataEntity;
 import org.openea.eap.extj.base.entity.DictionaryTypeEntity;
 import org.openea.eap.extj.base.entity.VisualdevEntity;
 import org.openea.eap.extj.base.service.DictionaryDataService;
 import org.openea.eap.extj.base.service.DictionaryTypeService;
 import org.openea.eap.extj.constant.MsgCode;
+import org.openea.eap.extj.engine.entity.FlowTemplateEntity;
+import org.openea.eap.extj.engine.model.flowtemplate.FlowTemplateCrForm;
+import org.openea.eap.extj.engine.model.flowtemplate.FlowTemplateInfoVO;
+import org.openea.eap.extj.engine.service.FlowTemplateService;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.form.entity.FlowFormEntity;
 import org.openea.eap.extj.form.service.FlowFormService;
 import org.openea.eap.extj.model.visualJson.OnlineDevData;
 import org.openea.eap.extj.util.EapUserProvider;
+import org.openea.eap.extj.util.JsonUtil;
 import org.openea.eap.extj.util.StringUtil;
 import org.openea.eap.extj.util.enums.DictionaryDataEnum;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +38,8 @@ import java.util.Optional;
 public class VisualFlowFormUtil {
     @Autowired
     private FlowFormService flowFormService;
-
+    @Autowired
+    private FlowTemplateService flowTemplateService;
     @Autowired
     private DictionaryTypeService dictionaryTypeService;
     @Autowired
@@ -39,6 +47,45 @@ public class VisualFlowFormUtil {
     @Autowired
     private EapUserProvider userProvider;
 
+    /**
+     * 修改流程基本信息及状态
+     *
+     */
+    public ActionResult saveOrUpdateFlowTemp(VisualdevEntity entity, Integer state, Boolean isSave) {
+        ActionResult result;
+        FlowTemplateCrForm flowTemplateCrForm = new FlowTemplateCrForm();
+        BeanUtils.copyProperties(entity, flowTemplateCrForm);
+//        String copyNum = UUID.randomUUID().toString().substring(0, 5);
+        flowTemplateCrForm.setFullName(entity.getFullName());
+        flowTemplateCrForm.setEnCode(entity.getEnCode());
+        flowTemplateCrForm.setEnabledMark(state);
+        flowTemplateCrForm.setId(entity.getId());
+        flowTemplateCrForm.setType(OnlineDevData.FLOW_TYPE_DEV);
+        flowTemplateCrForm.setFormId(entity.getId());
+        flowTemplateCrForm.setCategory(categaryMapping(entity.getCategory()));
+        if (flowTemplateService.isExistByFullName(flowTemplateCrForm.getFullName(), flowTemplateCrForm.getId())) {
+            return ActionResult.fail("流程名称不能重复");
+        }
+        if (flowTemplateService.isExistByEnCode(flowTemplateCrForm.getEnCode(), flowTemplateCrForm.getId())) {
+            return ActionResult.fail("流程编码不能重复");
+        }
+        try {
+            if (isSave) {
+                FlowTemplateEntity creEntity = JsonUtil.getJsonToBean(flowTemplateCrForm, FlowTemplateEntity.class);
+                flowTemplateService.create(creEntity);
+                result = ActionResult.success("创建成功");
+            } else {
+                FlowFormEntity byId = flowFormService.getById(entity.getId());
+                FlowTemplateEntity creEntity = JsonUtil.getJsonToBean(flowTemplateCrForm, FlowTemplateEntity.class);
+                flowTemplateService.update(byId.getFlowId(), creEntity);
+                result = ActionResult.success("修改成功");
+            }
+        } catch (Exception e) {
+            result = ActionResult.fail("操作失败！");
+        }
+
+        return result;
+    }
 
     /**
      * 保存或修改流程表单信息
@@ -72,14 +119,19 @@ public class VisualFlowFormUtil {
             flowFormEntity.setCreatorTime(new Date());
             flowFormEntity.setCreatorUserId(userId);
         } else {
-
             flowFormEntity.setLastModifyTime(new Date());
             flowFormEntity.setLastModifyUserId(userId);
         }
         flowFormEntity.setTableJson(entity.getVisualTables());
         flowFormEntity.setDbLinkId(entity.getDbLinkId());
         if (isSave) {
-            flowFormEntity.setFlowId(entity.getId());
+            // fix flowId
+            if(StringUtil.isNotEmpty(entity.getFlowId() )){
+                flowFormEntity.setFlowId(entity.getFlowId());
+            }else{
+                // 默认两者id一样
+                flowFormEntity.setFlowId(entity.getId());
+            }
         }
         //判断名称是否重复
         if (flowFormService.isExistByFullName(flowFormEntity.getFullName(), flowFormEntity.getId())) {
@@ -171,6 +223,36 @@ public class VisualFlowFormUtil {
         try {
             flowFormService.removeById(id);
         } catch (Exception e) {
+        }
+    }
+
+    /**
+     * 获取流程引擎信息
+     *
+     */
+    public FlowTemplateInfoVO getTemplateInfo(String id) {
+        FlowFormEntity byId = flowFormService.getById(id);
+        FlowTemplateInfoVO vo = new FlowTemplateInfoVO();
+        try {
+            vo = flowTemplateService.info(byId.getFlowId());
+        } catch (Exception e) {
+            vo = null;
+        }
+        return vo;
+    }
+
+    /**
+     * 删除流程引擎信息
+     *
+     */
+
+    public void deleteTemplateInfo(String id) {
+        String msg = "";
+        try {
+            FlowTemplateEntity entity = flowTemplateService.getInfo(id);
+            flowTemplateService.delete(entity);
+        } catch (Exception e) {
+            msg = e.getMessage();
         }
     }
 }

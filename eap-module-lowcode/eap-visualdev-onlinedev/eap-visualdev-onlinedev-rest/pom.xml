@@ -18,7 +18,11 @@
             <artifactId>eap-visualdev-onlinedev-biz</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-flow-biz</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 
     </dependencies>

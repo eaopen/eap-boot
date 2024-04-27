@@ -36,6 +36,12 @@ public class AdminUserApiImpl implements AdminUserApi {
     }
 
     @Override
+    public AdminUserRespDTO getUserByAccount(String account) {
+        AdminUserDO user = userService.getUserByUsername(account);
+        return BeanUtils.toBean(user, AdminUserRespDTO.class);
+    }
+
+    @Override
     public Set<Long> getSubordinateIds(Long id) {
         AdminUserDO user = userService.getUser(id);
         if (user == null) {

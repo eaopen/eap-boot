@@ -172,6 +172,11 @@ public class UserController extends SuperController<UserService, UserEntity> {
     public ActionResult<?> imUserSelectorSimple(@PathVariable("organizeId") String organizeIdForm, @RequestBody Pagination pagination) {
         String organizeId = XSSEscape.escape(organizeIdForm);
         List<UserSelectorVO> jsonToList = new ArrayList<>();
+        // todo 当前不支持组织查询，待优化为部门查询
+        if(!"0".equals(organizeId)){
+            PaginationVO jsonToBean = JsonUtil.getJsonToBean(pagination, PaginationVO.class);
+            return ActionResult.page(jsonToList, jsonToBean);
+        }
         //通过关键字查询
         List<UserEntity> list = userService.getList(pagination, false);
         //遍历用户给要返回的值插入值

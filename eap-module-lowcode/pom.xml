@@ -19,23 +19,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
-<!--        &lt;!&ndash; 在线设计模块 基础 &ndash;&gt;-->
-        <module>eap-visualdev-base</module>
-
-<!--        &lt;!&ndash; 在线设计模块 &ndash;&gt;-->
-        <module>eap-visualdev-form</module>
-        <module>eap-visualdev-onlinedev</module>
-        <module>eap-visualdev-portal</module>
 
         <!-- 代码生成 -->
         <module>eap-lowcode-codegen</module>
 
-        <module>eap-integration-obpm</module>
-
         <!-- 整合 lowcode 服务 -->
         <module>eap-module-lowcode-biz</module>
         <module>eap-module-lowcode-rest</module>
-        <module>eap-visualdev-flow</module>
+
+        <!--   在线设计模块 基础 -->
+        <module>eap-visualdev-base</module>
+
+        <!--  在线设计模块 -->
+        <!-- 在线设计的简单流程在bpm模块中 -->
+        <module>eap-visualdev-onlinedev</module>
+        <module>eap-visualdev-portal</module>
+
     </modules>
+    <profiles>
+        <profile>
+            <id>report</id>
+            <modules>
+                <!-- 报表设计 -->
+                <module>eap-module-report</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

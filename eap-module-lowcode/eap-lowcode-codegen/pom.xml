@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>eap-lowcode-codegen</artifactId>
-
+    <description>codegen 代码生成器</description>
 
     <dependencies>
         <dependency>

@@ -8,7 +8,7 @@ import org.openea.eap.module.system.controller.admin.dept.vo.dept.DeptSimpleResp
 import org.openea.eap.module.system.controller.admin.dept.vo.post.PostSimpleRespVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.role.RoleSimpleRespVO;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileRespVO;
-import org.openea.eap.module.system.controller.admin.user.vo.user.ImUserListVo;
+import org.openea.eap.module.system.controller.admin.user.vo.user.ExtUserListVo;
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserRespVO;
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserSimpleRespVO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
@@ -42,7 +42,7 @@ public interface UserConvert {
     @Mapping(source = "bean.username", target = "account")
     @Mapping(source = "bean.nickname", target = "realName")
     @Mapping(source = "bean.avatar", target = "headIcon")
-    ImUserListVo convertIm(AdminUserDO bean);
+    ExtUserListVo convertIm(AdminUserDO bean);
 
 
     default List<UserSimpleRespVO> convertSimpleList(List<AdminUserDO> list, Map<Long, DeptDO> deptMap) {

@@ -8,11 +8,11 @@ package org.openea.eap.extj.onlinedev.model.OnlineDevEnum;
 
 public enum MultipleControlEnum {
 	/**
-	 * 数组
+	 * 数组 []
 	 */
 	MULTIPLE_JSON_ONE("[",1),
 	/**
-	 * 二维数组
+	 * 二维数组  [[],[]]
 	 */
 	MULTIPLE_JSON_TWO("[[",2),
 	/**

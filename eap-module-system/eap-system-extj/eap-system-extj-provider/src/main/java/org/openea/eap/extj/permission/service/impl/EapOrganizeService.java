@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, OrganizeEntity> implements OrganizeService {
     @Override
     public List<String> getUnderOrganizations(String orgId) {
-        return null;
+        return  Collections.emptyList();
     }
 
     /**
@@ -28,7 +28,7 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public List<String> getUnderOrganizationss(String organizeId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -39,7 +39,7 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public List<OrganizeEntity> getListByFullName(String fullName) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -50,7 +50,7 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public List<OrganizeEntity> getListByParentId(String id) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -61,7 +61,7 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public List<OrganizeEntity> getAllOrgByUserId(String userId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -94,7 +94,7 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public List<OrganizeEntity> getOrganizeByParentId() {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -105,7 +105,7 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public List<OrganizeEntity> getDepartmentAll(String organizeId) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -139,7 +139,7 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public List<String> getOrgIdTree(OrganizeEntity entity) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -151,7 +151,7 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public List<String> upWardRecursion(List<String> orgIDs, String orgID) {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -172,7 +172,9 @@ public class EapOrganizeService extends SuperServiceImpl<ExtjOrganizeMapper, Org
      */
     @Override
     public Map<String, OrganizeEntity> getInfoList() {
-        return null;
+        // todo
+        log.warn("getInfoList emptyMap");
+        return Collections.emptyMap();
     }
 
     @Override

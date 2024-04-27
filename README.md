@@ -302,6 +302,9 @@ RuoYi-Vue 全新 Pro 版本，优化重构所有功能。
 
 https://github.com/YunaiV/ruoyi-vue-pro
 
+开发指南
+https://doc.iocoder.cn/
+
 * yudao/yudao-cloud   
 
 Ruoyi-vue-pro 全新 Cloud 版本，优化重构所有功能。  
@@ -323,6 +326,7 @@ RuoYi-Vue-CMS是前后端分离的企业级内容管理系统。
 项目基于RuoYi-Vue重构，集成SaToken用户权限，xxl-job任务调度。
 支持站群管理、多平台静态化、元数据模型扩展、轻松组织各种复杂内容形态、多语言、全文检索。
 
+https://gitee.com/liweiyi/ChestnutCMS
 https://gitee.com/liweiyi/RuoYi-Vue-CMS
 
 * eladmin

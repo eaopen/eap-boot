@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 @Data
 public class FileTemplateConfigRespVO {
 
+    @Schema(description = "主键Id")
+    private Long id;
+
     @Schema(description = "模板Key")
     private String tempKey;
 

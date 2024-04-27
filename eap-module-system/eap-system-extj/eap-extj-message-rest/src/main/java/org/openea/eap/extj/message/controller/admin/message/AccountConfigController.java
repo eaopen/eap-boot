@@ -26,7 +26,6 @@ import org.openea.eap.extj.message.model.message.EmailModel;
 import org.openea.eap.extj.message.service.AccountConfigService;
 import org.openea.eap.extj.message.service.MessageDataTypeService;
 import org.openea.eap.extj.message.service.SendConfigTemplateService;
-import org.openea.eap.extj.message.util.DingTalkUtil;
 import org.openea.eap.extj.message.util.EmailUtil;
 import org.openea.eap.extj.message.util.QyWebChatUtil;
 import org.openea.eap.extj.permission.entity.UserEntity;
@@ -34,7 +33,6 @@ import org.openea.eap.extj.permission.service.UserService;
 import org.openea.eap.extj.util.*;
 import org.openea.eap.extj.util.enums.ModuleTypeEnum;
 import org.openea.eap.extj.util.file.FileExport;
-import org.openea.eap.extj.util.wxutil.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -476,61 +474,6 @@ public class AccountConfigController extends SuperController<AccountConfigServic
         return ActionResult.success("已发送");
     }
 
-    /**
-     * 测试企业微信配置的连接功能
-     *
-     * @param accountConfigForm 账号测试模型
-     * @return ignore
-     */
-    @Operation(summary = "测试企业微信配置的连接")
-    @Parameters({
-            @Parameter(name = "accountConfigForm", description = "账号测试模型", required = true)
-    })
-//    @SaCheckPermission("msgCenter.accountConfig")
-    @PostMapping("/testQyWebChatConnect")
-    public ActionResult testQyWebChatConnect(@RequestBody @Valid AccountConfigForm accountConfigForm) {
-        JSONObject retMsg;
-        // 测试发送消息、组织同步的连接
-        //企业微信企业id
-        String corpId = accountConfigForm.getEnterpriseId();
-        //企业微信应用secret
-        String agentSecret = accountConfigForm.getAppSecret();
-//        String corpSecret = testAccountConfigForm.getQyhCorpSecret();
-        // 测试发送消息的连接
-        retMsg = QyWebChatUtil.getAccessToken(corpId, agentSecret);
-        if (HttpUtil.isWxError(retMsg)) {
-            return ActionResult.fail("连接失败。失败原因：" + retMsg.getString("errmsg"));
-        }
-        return ActionResult.success("连接成功");
-    }
-
-    /**
-     * 测试钉钉配置的连接功能
-     *
-     * @param accountConfigForm 账号测试模型
-     * @return ignore
-     */
-    @Operation(summary = "测试钉钉配置的连接")
-    @Parameters({
-            @Parameter(name = "accountConfigForm", description = "账号测试模型", required = true)
-    })
-//    @SaCheckPermission("msgCenter.accountConfig")
-    @PostMapping("/testDingTalkConnect")
-    public ActionResult testDingTalkConnect(@RequestBody @Valid AccountConfigForm accountConfigForm) {
-        JSONObject retMsg;
-        // 测试钉钉配置的连接
-        String appKey = accountConfigForm.getAppId();
-        String appSecret = accountConfigForm.getAppSecret();
-        ///
-//        String agentId = dingTalkModel.getDingAgentId();
-        // 测试钉钉的连接
-        retMsg = DingTalkUtil.getAccessToken(appKey, appSecret);
-        if (!retMsg.getBoolean("code")) {
-            return ActionResult.fail("连接失败。失败原因：" + retMsg.getString("error"));
-        }
-
-        return ActionResult.success("连接成功");
-    }
 
     public boolean isEmail(String email) {
         String EMAIL_REGEX = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";

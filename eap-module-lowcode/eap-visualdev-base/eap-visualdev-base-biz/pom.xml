@@ -48,6 +48,12 @@
 
         <dependency>
             <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-visualdev-flow-biz</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
             <artifactId>eap-spring-boot-starter-mybatis</artifactId>
         </dependency>
 
@@ -75,6 +81,7 @@
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
         </dependency>
+
 
     </dependencies>
 

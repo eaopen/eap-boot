@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -73,25 +74,26 @@ public class ProvinceAtlasController extends SuperController<ProvinceAtlasServic
     @Operation(summary = "获取所有列表")
     @GetMapping
     public ActionResult<List<ProvinceListTreeVO>> list() {
-        List<ProvinceAtlasEntity> list = provinceAtlasService.getList();
-        List<ProvinceListTreeVO> listVOS = JsonUtil.getJsonToList(list, ProvinceListTreeVO.class);
-        listVOS.forEach(item -> {
-            if( StringUtil.isNotEmpty(item.getAtlasCenter())){
-                String[] split = item.getAtlasCenter().split(",");
-                item.setCenterLong(new BigDecimal(split[0]));
-                item.setCenterLat(new BigDecimal(split[1]));
-            }
-        });
-        for (int i = 0; i < listVOS.size(); i++) {
-            ProvinceListTreeVO item = listVOS.get(i);
-            if (!StringUtil.isEmpty(item.getParentId())) {
-                if (addChild(item, listVOS) && listVOS.size() > 0) {
-                    listVOS.remove(item);
-                    i--;
-                }
-            }
-        }
-        return ActionResult.success(listVOS);
+        return ActionResult.success(Collections.emptyList());
+//        List<ProvinceAtlasEntity> list = provinceAtlasService.getList();
+//        List<ProvinceListTreeVO> listVOS = JsonUtil.getJsonToList(list, ProvinceListTreeVO.class);
+//        listVOS.forEach(item -> {
+//            if( StringUtil.isNotEmpty(item.getAtlasCenter())){
+//                String[] split = item.getAtlasCenter().split(",");
+//                item.setCenterLong(new BigDecimal(split[0]));
+//                item.setCenterLat(new BigDecimal(split[1]));
+//            }
+//        });
+//        for (int i = 0; i < listVOS.size(); i++) {
+//            ProvinceListTreeVO item = listVOS.get(i);
+//            if (!StringUtil.isEmpty(item.getParentId())) {
+//                if (addChild(item, listVOS) && listVOS.size() > 0) {
+//                    listVOS.remove(item);
+//                    i--;
+//                }
+//            }
+//        }
+//        return ActionResult.success(listVOS);
     }
 
     /**

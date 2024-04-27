@@ -48,4 +48,21 @@ public class SecurityProperties {
      * PasswordEncoder 加密复杂度，越高开销越大
      */
     private Integer passwordEncoderLength = 4;
+
+
+    // for poc
+    /**
+     * 是否启用POC验证
+     */
+    private boolean enablePoc = false;
+
+    private String pocUserHeader = "pocUser";
+    private String pocAuthUser = "pocuser";  //默认用户
+    private String pocUserPrefix = "poc,op";
+
+    private String pocAuthHeader = "pocToken";
+    private String pocAuthToken;
+
+    private String pocSignHeader = "pocSign";
+    private String pocSignPasswd = "poc";
 }

@@ -23,9 +23,14 @@ import org.openea.eap.extj.base.vo.PaginationVO;
 import org.openea.eap.extj.config.ConfigValueUtil;
 import org.openea.eap.extj.constant.MsgCode;
 import org.openea.eap.extj.database.model.entity.DbLinkEntity;
+import org.openea.eap.extj.engine.entity.FlowTaskEntity;
+import org.openea.eap.extj.engine.model.flowtemplate.FlowTemplateInfoVO;
+import org.openea.eap.extj.engine.service.FlowTaskService;
+import org.openea.eap.extj.engine.service.FlowTemplateService;
 import org.openea.eap.extj.exception.DataException;
 import org.openea.eap.extj.exception.WorkFlowException;
 import org.openea.eap.extj.extend.util.ExcelUtil;
+import org.openea.eap.extj.form.entity.FlowFormEntity;
 import org.openea.eap.extj.form.model.flow.DataModel;
 import org.openea.eap.extj.form.service.FlowFormService;
 import org.openea.eap.extj.form.service.FormDataService;
@@ -100,9 +105,14 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
     @Autowired
     private OnlineSwapDataUtils onlineSwapDataUtils;
     @Autowired
+    private FlowTemplateService flowTemplateService;
+    @Autowired
     private UserService userService;
     @Autowired
     private FormDataService formDataService;
+
+    @Autowired
+    private FlowTaskService flowTaskService;
 
     @Operation(summary = "获取数据列表" )
 	@Parameters({
@@ -178,8 +188,10 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
         VisualdevEntity entity;
         //线上版本
         if ("0".equals(type)) {
+            // db
             entity = visualdevService.getInfo(modelId);
         } else {
+            // todo 根据策略获取表单发布配置
             VisualdevReleaseEntity releaseEntity = visualdevReleaseService.getById(modelId);
             entity = JsonUtil.getJsonToBean(releaseEntity, VisualdevEntity.class);
         }
@@ -194,8 +206,16 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
         }
         DataInfoVO vo = JsonUtil.getJsonToBean(entity, DataInfoVO.class);
         if (entity.getEnableFlow() == 1) {
-            //FlowFormEntity byId = flowFormService.getById(entity.getId());
             // todo 待集成flowable
+            FlowFormEntity byId = flowFormService.getById(entity.getId());
+            FlowTemplateInfoVO templateInfo = flowTemplateService.info(byId.getFlowId());
+            if (templateInfo == null) {
+                return ActionResult.fail(MsgCode.VS403.get());
+            }
+            if (OnlineDevData.STATE_DISABLE == templateInfo.getEnabledMark()) {
+                return ActionResult.fail(MsgCode.VS406.get());
+            }
+            vo.setFlowId(templateInfo.getId());
         }
 
         visualdevService.loadI18nData(vo);
@@ -407,6 +427,17 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
 
         if (!StringUtil.isEmpty(visualdevEntity.getVisualTables()) && !OnlineDevData.TABLE_CONST.equals(visualdevEntity.getVisualTables())) {
             // todo 待集成flowable
+            FlowTaskEntity taskEntity = flowTaskService.getInfoSubmit(id, FlowTaskEntity::getId, FlowTaskEntity::getStatus, FlowTaskEntity::getFullName, FlowTaskEntity::getParentId);
+            if (taskEntity != null) {
+                if (!"0".equals(taskEntity.getParentId())) {
+                    return ActionResult.fail(taskEntity.getFullName() + "不能删除" );
+                }
+                if (taskEntity.getStatus().equals(0) || taskEntity.getStatus().equals(4)) {
+                    flowTaskService.delete(taskEntity);
+                }
+            }
+
+
             boolean result = visualdevModelDataService.tableDelete(id, visualJsonModel);
             if (result) {
                 return ActionResult.success(MsgCode.SU003.get());
@@ -447,6 +478,15 @@ public class VisualdevModelDataController extends SuperController<VisualdevModel
         if (visualdevEntity.getEnableFlow() == 1) {
             for (String id : idsVoList) {
                 // todo 待集成flowable
+                FlowTaskEntity taskEntity = flowTaskService.getInfoSubmit(id, FlowTaskEntity::getId, FlowTaskEntity::getStatus);
+                if (taskEntity != null) {
+                    if (taskEntity.getStatus().equals(0) || taskEntity.getStatus().equals(4)) {
+                        idsList.add(id);
+                        flowTaskService.delete(taskEntity);
+                    }
+                } else {
+                    idsList.add(id);
+                }
             }
         } else {
             idsList = idsVoList;

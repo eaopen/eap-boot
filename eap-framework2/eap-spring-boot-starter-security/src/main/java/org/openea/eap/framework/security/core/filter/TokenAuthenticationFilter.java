@@ -2,17 +2,21 @@ package org.openea.eap.framework.security.core.filter;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
+import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.ServiceException;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
 import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.security.core.LoginUser;
+import org.openea.eap.framework.security.core.util.PocAuthUtil;
 import org.openea.eap.framework.security.core.util.SecurityFrameworkUtils;
 import org.openea.eap.framework.web.core.handler.GlobalExceptionHandler;
 import org.openea.eap.framework.web.core.util.WebFrameworkUtils;
 import org.openea.eap.module.system.api.oauth2.OAuth2TokenApi;
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCheckRespDTO;
-import lombok.RequiredArgsConstructor;
+import org.openea.eap.module.system.api.user.AdminUserApi;
+import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -36,12 +40,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final OAuth2TokenApi oauth2TokenApi;
 
+    private final AdminUserApi adminUserApi;
+
     @Override
     @SuppressWarnings("NullableProblems")
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+
         String token = SecurityFrameworkUtils.obtainAuthorization(request,
                 securityProperties.getTokenHeader(), securityProperties.getTokenParameter());
+
         if (StrUtil.isNotEmpty(token)) {
             Integer userType = WebFrameworkUtils.getLoginUserType(request);
             try {
@@ -61,10 +69,106 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 ServletUtils.writeJSON(response, result);
                 return;
             }
+        }else{
+            checkPocAuth(request, response);
         }
-
         // 继续过滤链
         chain.doFilter(request, response);
+    }
+    private void checkPocAuth(HttpServletRequest request, HttpServletResponse response) {
+        // 0 prepare
+        if(SecurityFrameworkUtils.getLoginUser()!=null) return;
+        // poc only
+        boolean enablePoc = securityProperties.isEnablePoc();
+        if(!enablePoc) return;
+        if(request.getRequestURI().indexOf("/auth/login")>0) return;
+
+        // 1 get poc user
+        String pocUser = request.getHeader(securityProperties.getPocUserHeader());
+        if(StrUtil.isEmpty(pocUser)){
+            pocUser = request.getHeader(StrUtil.upperFirst(securityProperties.getPocUserHeader()));
+        }
+        if(StrUtil.isEmpty(pocUser)){
+            pocUser = request.getParameter(securityProperties.getPocUserHeader());
+            if(StrUtil.isNotEmpty(pocUser)){
+                // 增加限制只支持op或poc开头的用户
+                boolean withPrefix = false;
+                String pocUserPrefix = securityProperties.getPocUserPrefix();
+                if(StrUtil.isEmpty(pocUserPrefix)){
+                    pocUserPrefix="poc,op";
+                }
+                String[] prefixes =pocUserPrefix.split(",");
+                for(String prefix:prefixes){
+                    if(pocUser.startsWith(prefix)){
+                        withPrefix = true;
+                        break;
+                    }
+                }
+                if(!withPrefix){
+                    // 不符合前缀要求的，强制改为默认poc用户
+                    pocUser = securityProperties.getPocAuthUser();
+                }
+            }
+        }
+        // 必须指定poc用户
+        if(StrUtil.isEmpty(pocUser)){
+            return;
+        }
+        // 2 check
+        boolean pocPass = false;
+        String pocToken = null;
+        // 2.1 poc 1: check poc token
+        String pocAuthToken = securityProperties.getPocAuthToken();
+        if(StrUtil.isNotEmpty(pocAuthToken)){
+            pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
+                    securityProperties.getPocAuthHeader(), securityProperties.getPocAuthHeader());
+            if(StrUtil.isEmpty(pocToken)){
+                pocToken = SecurityFrameworkUtils.obtainAuthorization(request,
+                        StrUtil.upperFirst(securityProperties.getPocAuthHeader()), StrUtil.upperFirst(securityProperties.getPocAuthHeader()));
+            }
+            if(StrUtil.isNotEmpty(pocToken)
+                    && pocToken.equals(pocAuthToken)){
+                pocPass = true;
+            }
+        }
+
+        // 2.2 poc 2: check poc sign
+        if(!pocPass){
+            String sign = request.getHeader(securityProperties.getPocSignHeader());
+            if(StrUtil.isEmpty(sign)){
+                sign = request.getParameter(securityProperties.getPocSignHeader());
+            }
+            if(StrUtil.isNotEmpty(sign)){
+                String userSign = PocAuthUtil.authSignToday(pocUser, securityProperties.getPocSignPasswd());
+                if(sign.equals(userSign)){
+                    pocPass = true;
+                    pocToken = sign;
+                }
+            }
+        }
+        // 3 login
+        if(pocPass){
+            Integer userType = UserTypeEnum.ADMIN.getValue();
+            try{
+                AdminUserRespDTO userResp = adminUserApi.getUserByAccount(pocUser);
+                Long userId = userResp.getId();
+
+                // 构建登录用户
+                LoginUser loginUser = new LoginUser();
+                loginUser.setId(userId);
+                loginUser.setUserType(userType);
+                loginUser.setUserKey(pocUser);
+                loginUser.setTenantId(0L);
+
+                // 设置当前用户
+                SecurityFrameworkUtils.setLoginUser(loginUser, request);
+
+            } catch (Throwable ex) {
+                CommonResult<?> result = globalExceptionHandler.allExceptionHandler(request, ex);
+                ServletUtils.writeJSON(response, result);
+                return;
+            }
+        }
     }
 
     private LoginUser buildLoginUserByToken(String token, Integer userType) {

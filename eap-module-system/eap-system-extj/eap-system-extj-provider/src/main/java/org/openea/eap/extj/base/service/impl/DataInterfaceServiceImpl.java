@@ -1,6 +1,9 @@
 package org.openea.eap.extj.base.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -69,6 +72,8 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
     @Autowired
     private OrganizeAdministratorService organizeAdminIsTratorService;
 
+
+    private static String bodyJsonKey = "bodyJson";
 
     @Override
     public List<DataInterfaceEntity> getList(PaginationDataInterface pagination, String dataType, boolean enabledMark) {
@@ -188,7 +193,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
         if (entity == null) {
             return ActionResult.page(new ArrayList<>(), JsonUtil.getJsonToBean(new Pagination(), PaginationVO.class));
         }
-        if (entity.getCheckType() == 1) {
+        if (entity.getCheckType() == 1) { //开启分页
             Map<String, String> map = null;
             if (page.getParamList() != null) {
                 map = new HashMap<>();
@@ -248,8 +253,8 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     total = dataList.size();
                 }
             }
-            // filter by keyword
-            if (StringUtil.isNotEmpty(page.getKeyword())){
+            // filter by keyword 静态数据返回时根据关键字再过滤
+            if (entity.getDataType()==2 && StringUtil.isNotEmpty(page.getKeyword())){
                 Set<String> colSet = new HashSet<>();
                 if(StringUtil.isNotEmpty(page.getRelationField())){
                     colSet.add(page.getRelationField());
@@ -897,21 +902,27 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     }
                     requestMethod = "GET";
                 } else {  //post=7
-                    // 判断是否使用默认值
+
                     if (Objects.nonNull(map)) {
                         for (String field : map.keySet()) {
                             String value = String.valueOf(map.get(field));
                             jsonObject.put(field, value);
                         }
-                    } else {
-                        for (DataInterfaceModel model : jsonToListMap) {
-                            if (Objects.nonNull(model)) {
-                                String field = String.valueOf(model.getField());
+                    }
+                    // 判断是否使用默认值
+                    for (DataInterfaceModel model : jsonToListMap) {
+                        if (Objects.nonNull(model)) {
+                            String field = String.valueOf(model.getField());
+                            // 如字段不存在或者值未空，则设置为默认值
+                            if(!jsonObject.containsKey(field)
+                                    || StrUtil.isEmpty(jsonObject.getString(field))
+                                    || field.equals(bodyJsonKey)){
                                 String value = String.valueOf(model.getDefaultValue());
                                 jsonObject.put(field, value);
                             }
                         }
                     }
+
                     requestMethod = "POST";
                 }
             }
@@ -992,7 +1003,26 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
             String jsonObjects = null;
             if(jsonObject.size() > 0){
                 if(isBodyJson){
-                    jsonObjects = jsonObject.toJSONString();
+                    // check JSON: "bodyJson"
+                    try{
+                        if(jsonObject.containsKey(bodyJsonKey)){
+                            String strBodyJson = jsonObject.getString(bodyJsonKey);
+                            jsonObject.remove(bodyJsonKey);
+                            // 替换变量 $变量$
+                            for(String key: jsonObject.keySet()){
+                                if(strBodyJson.indexOf("$"+key+"$")>0){
+                                    strBodyJson = strBodyJson.replaceAll("\\$"+key+"\\$", jsonObject.getString(key));
+                                }
+                            }
+                            jsonObjects = JSONUtil.toJsonStr(JSONObject.parseObject(strBodyJson));
+                        }
+                    }catch (Exception e){
+                        jsonObjects = null;
+                        log.warn("check bodyJson error:" + e.getMessage(), e);
+                    }
+                    if(ObjectUtil.isEmpty(jsonObjects)){
+                        jsonObjects = jsonObject.toJSONString();
+                    }
                 }else{
                     Set<String> keys = jsonObject.keySet();
                     for(String key: keys){
@@ -1001,6 +1031,7 @@ public class DataInterfaceServiceImpl extends SuperServiceImpl<DataInterfaceMapp
                     }
                 }
             }
+            // todo API 调用日志
             //String jsonObjects = jsonObject.size() > 0 ? jsonObject.toJSONString() : null;
             get = HttpUtil.httpRequest(path, requestMethod, jsonObjects, token, jsonObject.size() > 0 ? JsonUtil.getObjectToString(jsonObject) : null);
             return get;
