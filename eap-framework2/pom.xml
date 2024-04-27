@@ -31,7 +31,7 @@
 
         <module>eap-spring-boot-starter-biz-sms</module>
 
-
+        <module>eap-spring-boot-starter-test</module>
     </modules>
 
     <artifactId>eap-framework2</artifactId>

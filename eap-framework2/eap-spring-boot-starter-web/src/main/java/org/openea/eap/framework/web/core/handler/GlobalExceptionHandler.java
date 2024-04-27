@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -88,9 +87,9 @@ public class GlobalExceptionHandler {
         if (ex instanceof AccessDeniedException) {
             return accessDeniedExceptionHandler(request, (AccessDeniedException) ex);
         }
-        if (ex instanceof DuplicateKeyException){
-            return duplicateKeyExceptionHandler(request, (DuplicateKeyException)ex);
-        }
+//        if (ex instanceof DuplicateKeyException){
+//            return duplicateKeyExceptionHandler(request, (DuplicateKeyException)ex);
+//        }
 
         return defaultExceptionHandler(request, ex);
     }
@@ -209,11 +208,11 @@ public class GlobalExceptionHandler {
      * @param ex
      * @return
      */
-    @ExceptionHandler(value = DuplicateKeyException.class)
-    public CommonResult<?> duplicateKeyExceptionHandler(HttpServletRequest req, DuplicateKeyException ex) {
-        log.warn("[duplicateKeyException][ {}]", ex.getMessage(), ex);
-        return CommonResult.error(DB_DUPLICATE_KEY, ex.getMessage());
-    }
+//    @ExceptionHandler(value = DuplicateKeyException.class)
+//    public CommonResult<?> duplicateKeyExceptionHandler(HttpServletRequest req, DuplicateKeyException ex) {
+//        log.warn("[duplicateKeyException][ {}]", ex.getMessage(), ex);
+//        return CommonResult.error(DB_DUPLICATE_KEY, ex.getMessage());
+//    }
 
 
     /**
@@ -254,7 +253,15 @@ public class GlobalExceptionHandler {
         // 插入异常日志
         this.createExceptionLog(req, ex);
         // 返回 ERROR CommonResult
-        return CommonResult.error(INTERNAL_SERVER_ERROR.getCode(), INTERNAL_SERVER_ERROR.getMsg() +"["+ex.getMessage()+"]");
+        String extendMsg = null;
+        if(ex!=null){
+            if(ex.getCause()!=null){
+                extendMsg = ex.getCause().getMessage();
+            }else{
+                extendMsg = ex.getMessage();
+            }
+        }
+        return CommonResult.error(INTERNAL_SERVER_ERROR.getCode(), INTERNAL_SERVER_ERROR.getMsg() + (extendMsg==null?"":"["+extendMsg+"]"));
     }
 
     private void createExceptionLog(HttpServletRequest req, Throwable e) {
