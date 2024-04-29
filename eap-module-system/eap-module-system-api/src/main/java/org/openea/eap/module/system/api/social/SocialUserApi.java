@@ -51,4 +51,9 @@ public interface SocialUserApi {
      */
     SocialUserRespDTO getSocialUserByCode(Integer userType, Integer socialType, String code, String state);
 
+    /**
+     * @deprecated since 2.6 replace by {@link #getSocialUserByCode(Integer, Integer, String, String)}
+     */
+    SocialUserRespDTO getSocialUser(Integer userType, Integer socialType, String code, String state);
+
 }
