@@ -44,10 +44,11 @@ import static org.openea.eap.framework.common.exception.enums.GlobalErrorCodeCon
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final String applicationName;
 
     private final ApiErrorLogFrameworkService apiErrorLogFrameworkService;
-
+    
     /**
      * 处理所有异常，主要是提供给 Filter 使用
      * 因为 Filter 不走 SpringMVC 的流程，但是我们又需要兜底处理异常，所以这里提供一个全量的异常处理过程，保持逻辑统一。

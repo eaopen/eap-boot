@@ -81,5 +81,4 @@ public interface TenantService {
      */
     void handleTenantMenu(TenantMenuHandler handler);
 
-
 }

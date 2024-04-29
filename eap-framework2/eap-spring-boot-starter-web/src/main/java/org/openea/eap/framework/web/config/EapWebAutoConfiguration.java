@@ -37,7 +37,7 @@ public class EapWebAutoConfiguration implements WebMvcConfigurer {
     /**
      * 应用名
      */
-    @Value("${spring.application.name}")
+    @Value("${spring.application.name:eap-server}")
     private String applicationName;
 
     @Override
@@ -59,9 +59,9 @@ public class EapWebAutoConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    @ConditionalOnMissingBean(GlobalExceptionHandler.class)
-    public GlobalExceptionHandler globalExceptionHandler(ApiErrorLogFrameworkService ApiErrorLogFrameworkService) {
-        return new GlobalExceptionHandler(applicationName, ApiErrorLogFrameworkService);
+    public GlobalExceptionHandler globalExceptionHandler(ApiErrorLogFrameworkService apiErrorLogFrameworkService) {
+        String strAppName = applicationName;
+        return new GlobalExceptionHandler(strAppName, apiErrorLogFrameworkService);
     }
 
     @Bean
