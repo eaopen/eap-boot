@@ -38,6 +38,7 @@ import me.chanjar.weixin.common.redis.RedisTemplateWxRedisOps;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpRedisConfigImpl;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -61,9 +62,12 @@ public class SocialClientServiceImpl implements SocialClientService {
     private AuthRequestFactory authRequestFactory;
 
     @Resource
+    @Lazy
     private WxMpService wxMpService;
+
     @Resource
     private WxMpProperties wxMpProperties;
+
     @Resource
     private StringRedisTemplate stringRedisTemplate; // WxMpService 需要使用到，所以在 Service 注入了它
     /**
@@ -87,7 +91,9 @@ public class SocialClientServiceImpl implements SocialClientService {
             });
 
     @Resource
+    @Lazy
     private WxMaService wxMaService;
+
     @Resource
     private WxMaProperties wxMaProperties;
     /**
