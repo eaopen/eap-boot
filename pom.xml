@@ -9,7 +9,9 @@
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>openEAP项目基础脚手架 spring boot 多模块</description>
+    <description>openEAP spring boot with multi module
+        String Boot 多模块框架，包含系统框架、工作流和低代码工具
+    </description>
     <url>https://github.com/eaopen/openea-eap</url>
 
     <properties>
