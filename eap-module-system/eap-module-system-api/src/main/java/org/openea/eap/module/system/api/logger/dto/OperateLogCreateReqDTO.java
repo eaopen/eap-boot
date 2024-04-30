@@ -1,11 +1,10 @@
 package org.openea.eap.module.system.api.logger.dto;
 
-import org.openea.eap.framework.common.enums.UserTypeEnum;
 import lombok.Data;
+import org.openea.eap.framework.common.enums.UserTypeEnum;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 /**
  * 操作日志创建 Request DTO
@@ -80,44 +79,5 @@ public class OperateLogCreateReqDTO {
      */
     @NotEmpty(message = "浏览器 UA 不能为空")
     private String userAgent;
-
-    /**
-     * Java 方法名
-     */
-    @NotEmpty(message = "Java 方法名不能为空")
-    private String javaMethod;
-
-    /**
-     * Java 方法的参数
-     */
-    private String javaMethodArgs;
-
-    /**
-     * 开始时间
-     */
-    @NotNull(message = "开始时间不能为空")
-    private LocalDateTime startTime;
-
-    /**
-     * 执行时长，单位：毫秒
-     */
-    @NotNull(message = "执行时长不能为空")
-    private Integer duration;
-
-    /**
-     * 结果码
-     */
-    @NotNull(message = "结果码不能为空")
-    private Integer resultCode;
-
-    /**
-     * 结果提示
-     */
-    private String resultMsg;
-
-    /**
-     * 结果数据
-     */
-    private String resultData;
 
 }
