@@ -24,8 +24,6 @@ import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils
 /**
  * OA 请假申请 Controller，用于演示自己存储数据，接入工作流的例子
  *
- * @author jason
- * @author 芋道源码
  */
 @Tag(name = "管理后台 - OA 请假申请")
 @RestController

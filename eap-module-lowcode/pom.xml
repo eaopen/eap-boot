@@ -36,14 +36,5 @@
         <module>eap-visualdev-portal</module>
 
     </modules>
-    <profiles>
-        <profile>
-            <id>report</id>
-            <modules>
-                <!-- 报表设计 -->
-                <module>eap-module-report</module>
-            </modules>
-        </profile>
-    </profiles>
 
 </project>

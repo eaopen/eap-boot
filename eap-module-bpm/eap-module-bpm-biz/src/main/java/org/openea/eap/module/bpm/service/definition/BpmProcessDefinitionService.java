@@ -20,9 +20,6 @@ import static org.openea.eap.framework.common.util.collection.CollectionUtils.co
 /**
  * Flowable流程定义接口
  *
- * @author yunlong.li
- * @author ZJQ
- * @author 芋道源码
  */
 public interface BpmProcessDefinitionService {
 

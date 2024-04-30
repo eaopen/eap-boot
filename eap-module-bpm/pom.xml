@@ -31,22 +31,17 @@
 
         <module>eap-bpm-common</module>
 
+        <!-- BPM流程引擎(flowable) -->
+        <module>eap-module-bpm-api</module>
+        <module>eap-module-bpm-biz</module>
+
         <!-- 简易流程simplefow(visualdev) -->
         <module>eap-simpleflow</module>
 
         <module>eap-module-bpm-rest</module>
     </modules>
 
-
     <profiles>
-        <profile>
-            <id>bpm-flowable</id>
-            <modules>
-                <!-- BPM流程引擎(flowable) -->
-                <module>eap-module-bpm-api</module>
-                <module>eap-module-bpm-biz</module>
-            </modules>
-        </profile>
         <profile>
             <id>obpm</id>
             <modules>

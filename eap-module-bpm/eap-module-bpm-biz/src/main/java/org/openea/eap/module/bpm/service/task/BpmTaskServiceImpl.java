@@ -57,8 +57,6 @@ import static org.openea.eap.module.bpm.enums.ErrorCodeConstants.*;
 /**
  * 流程任务实例 Service 实现类
  *
- * @author 芋道源码
- * @author jason
  */
 @Slf4j
 @Service

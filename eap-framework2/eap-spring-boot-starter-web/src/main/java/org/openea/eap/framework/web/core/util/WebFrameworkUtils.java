@@ -1,6 +1,7 @@
 package org.openea.eap.framework.web.core.util;
 
 import cn.hutool.core.util.NumberUtil;
+import org.openea.eap.framework.common.enums.TerminalEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.web.config.WebProperties;
@@ -23,6 +24,13 @@ public class WebFrameworkUtils {
     private static final String REQUEST_ATTRIBUTE_COMMON_RESULT = "common_result";
 
     public static final String HEADER_TENANT_ID = "tenant-id";
+
+    /**
+     * 终端的 Header
+     *
+     * @see org.openea.eap.framework.common.enums.TerminalEnum
+     */
+    public static final String HEADER_TERMINAL = "terminal";
 
     private static WebProperties properties;
 
@@ -104,6 +112,15 @@ public class WebFrameworkUtils {
     public static Long getLoginUserId() {
         HttpServletRequest request = getRequest();
         return getLoginUserId(request);
+    }
+
+    public static Integer getTerminal() {
+        HttpServletRequest request = getRequest();
+        if (request == null) {
+            return TerminalEnum.UNKNOWN.getTerminal();
+        }
+        String terminalValue = request.getHeader(HEADER_TERMINAL);
+        return NumberUtil.parseInt(terminalValue, TerminalEnum.UNKNOWN.getTerminal());
     }
 
     public static void setCommonResult(ServletRequest request, CommonResult<?> result) {

@@ -22,13 +22,13 @@
     <dependencies>
 
         <!-- eap dependence import -->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-dependencies</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--            <type>pom</type>-->
-<!--            <scope>import</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-dependencies</artifactId>
+            <version>${revision}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
 
         <!-- boot dependence system/infra/lowcode -->
         <dependency>
@@ -36,11 +36,13 @@
             <artifactId>eap-module-system-rest</artifactId>
             <version>${revision}</version>
         </dependency>
+
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-infra-rest</artifactId>
             <version>${revision}</version>
         </dependency>
+
         <dependency>
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-bpm-rest</artifactId>

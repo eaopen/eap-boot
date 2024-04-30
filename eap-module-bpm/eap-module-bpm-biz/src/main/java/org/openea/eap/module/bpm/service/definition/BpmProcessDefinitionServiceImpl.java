@@ -36,9 +36,6 @@ import static java.util.Collections.emptyList;
  * 流程定义实现
  * 主要进行 Flowable {@link ProcessDefinition} 和 {@link Deployment} 的维护
  *
- * @author yunlongn
- * @author ZJQ
- * @author 芋道源码
  */
 @Service
 @Validated

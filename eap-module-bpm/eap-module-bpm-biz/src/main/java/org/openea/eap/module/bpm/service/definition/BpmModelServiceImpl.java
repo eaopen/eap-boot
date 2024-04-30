@@ -41,9 +41,6 @@ import static org.openea.eap.module.bpm.enums.ErrorCodeConstants.*;
  * Flowable流程模型实现
  * 主要进行 Flowable {@link Model} 的维护
  *
- * @author yunlongn
- * @author 芋道源码
- * @author jason
  */
 @Service
 @Validated
