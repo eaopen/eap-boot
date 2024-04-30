@@ -33,7 +33,6 @@ import org.openea.eap.extj.util.TenantProvider;
 import org.openea.eap.extj.util.data.DataSourceContextHolder;
 import org.openea.eap.extj.util.wxutil.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -51,11 +50,10 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-@ConditionalOnMissingBean(name="tenantDataSourceUtil")
 public class TenantDataSourceUtil {
 
     private static ConfigValueUtil configValueUtil;
-    private static MyTenantLineInnerInterceptor myTenantLineInnerInterceptor;
+    private static TenantLineInnerInterceptor myTenantLineInnerInterceptor;
     private static MySchemaInnerInterceptor mySchemaInnerInterceptor;
 
     @Autowired(required = false)
@@ -65,7 +63,7 @@ public class TenantDataSourceUtil {
 
     @Autowired(required = false)
     public void setMyTenantLineInnerInterceptor(TenantLineInnerInterceptor tenantLineInnerInterceptor) {
-        TenantDataSourceUtil.myTenantLineInnerInterceptor = (MyTenantLineInnerInterceptor) tenantLineInnerInterceptor;
+        TenantDataSourceUtil.myTenantLineInnerInterceptor = tenantLineInnerInterceptor;
     }
 
     @Autowired

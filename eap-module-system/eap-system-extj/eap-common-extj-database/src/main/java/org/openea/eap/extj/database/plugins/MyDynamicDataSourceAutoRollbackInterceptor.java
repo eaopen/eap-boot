@@ -15,13 +15,8 @@ import org.springframework.util.StringUtils;
 import java.sql.Connection;
 import java.util.Properties;
 
-/**
- * 
- */@Intercepts(
-        {
-                @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
-        }
-)
+@Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
+})
 public class MyDynamicDataSourceAutoRollbackInterceptor implements Interceptor {
 
 
