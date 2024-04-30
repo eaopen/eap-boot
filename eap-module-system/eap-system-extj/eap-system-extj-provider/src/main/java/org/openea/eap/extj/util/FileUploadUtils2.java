@@ -142,5 +142,12 @@ public class FileUploadUtils2  {
     }
 
 
+    public static void deleteFileByPathAndFileName(String typePath, String fileName) {
 
+    }
+
+    public static boolean exists(String type, String fileName) {
+        // todo
+        return false;
+    }
 }
