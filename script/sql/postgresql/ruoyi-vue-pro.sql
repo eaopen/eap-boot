@@ -6835,12 +6835,12 @@ VALUES (1, '芋道源码', NULL, '芋艿', '17321315478', 0, 'https://www.iocode
 INSERT INTO "system_tenant" ("id", "name", "contact_user_id", "contact_name", "contact_mobile", "status", "website",
                              "package_id", "expire_time", "account_count", "creator", "create_time", "updater",
                              "update_time", "deleted")
-VALUES (121, '小租户', 110, '小王2', '15601691300', 0, 'http://www.iocoder.cn', 111, '2024-03-11 00:00:00', 20, '1',
+VALUES (121, '小租户', 110, '小王2', '18911009900', 0, 'http://www.iocoder.cn', 111, '2024-03-11 00:00:00', 20, '1',
         '2022-02-22 00:56:14', '1', '2022-03-19 18:37:20', 0);
 INSERT INTO "system_tenant" ("id", "name", "contact_user_id", "contact_name", "contact_mobile", "status", "website",
                              "package_id", "expire_time", "account_count", "creator", "create_time", "updater",
                              "update_time", "deleted")
-VALUES (122, '测试租户', 113, '芋道', '15601691300', 0, 'https://www.iocoder.cn', 111, '2022-04-30 00:00:00', 50, '1',
+VALUES (122, '测试租户', 113, '芋道', '18911009900', 0, 'https://www.iocoder.cn', 111, '2022-04-30 00:00:00', 50, '1',
         '2022-03-07 21:37:58', '1', '2022-03-07 21:37:58', 0);
 COMMIT;
 
@@ -7117,7 +7117,7 @@ INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", 
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",
                             "updater", "update_time", "deleted", "tenant_id")
 VALUES (100, 'eap', '$2a$10$11U48RhyJ5pSBYWSn12AD./ld671.ycSzJHbyrtpeoMeYiw31eo8a', '芋道', '不要吓我', 104, '[1]',
-        'eap@iocoder.cn', '15601691300', 1, '', 1, '', NULL, '', '2021-01-07 09:07:17', '104', '2021-12-16 09:26:10',
+        'eap@iocoder.cn', '18911009900', 1, '', 1, '', NULL, '', '2021-01-07 09:07:17', '104', '2021-12-16 09:26:10',
         0, 1);
 INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", "dept_id", "post_ids", "email",
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",
@@ -7135,22 +7135,22 @@ INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", 
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",
                             "updater", "update_time", "deleted", "tenant_id")
 VALUES (107, 'admin107', '$2a$10$dYOOBKMO93v/.ReCqzyFg.o67Tqk.bbc2bhrpyBGkIw9aypCtr2pm', '芋艿', NULL, NULL, NULL, '',
-        '15601691300', 0, '', 0, '', NULL, '1', '2022-02-20 22:59:33', '1', '2022-02-27 08:26:51', 0, 118);
+        '18911009900', 0, '', 0, '', NULL, '1', '2022-02-20 22:59:33', '1', '2022-02-27 08:26:51', 0, 118);
 INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", "dept_id", "post_ids", "email",
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",
                             "updater", "update_time", "deleted", "tenant_id")
 VALUES (108, 'admin108', '$2a$10$y6mfvKoNYL1GXWak8nYwVOH.kCWqjactkzdoIDgiKl93WN3Ejg.Lu', '芋艿', NULL, NULL, NULL, '',
-        '15601691300', 0, '', 0, '', NULL, '1', '2022-02-20 23:00:50', '1', '2022-02-27 08:26:53', 0, 119);
+        '18911009900', 0, '', 0, '', NULL, '1', '2022-02-20 23:00:50', '1', '2022-02-27 08:26:53', 0, 119);
 INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", "dept_id", "post_ids", "email",
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",
                             "updater", "update_time", "deleted", "tenant_id")
 VALUES (109, 'admin109', '$2a$10$JAqvH0tEc0I7dfDVBI7zyuB4E3j.uH6daIjV53.vUS6PknFkDJkuK', '芋艿', NULL, NULL, NULL, '',
-        '15601691300', 0, '', 0, '', NULL, '1', '2022-02-20 23:11:50', '1', '2022-02-27 08:26:56', 0, 120);
+        '18911009900', 0, '', 0, '', NULL, '1', '2022-02-20 23:11:50', '1', '2022-02-27 08:26:56', 0, 120);
 INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", "dept_id", "post_ids", "email",
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",
                             "updater", "update_time", "deleted", "tenant_id")
 VALUES (110, 'admin110', '$2a$10$qYxoXs0ogPHgYllyEneYde9xcCW5hZgukrxeXZ9lmLhKse8TK6IwW', '小王', NULL, NULL, NULL, '',
-        '15601691300', 0, '', 0, '127.0.0.1', '2022-02-23 19:36:28', '1', '2022-02-22 00:56:14', NULL,
+        '18911009900', 0, '', 0, '127.0.0.1', '2022-02-23 19:36:28', '1', '2022-02-22 00:56:14', NULL,
         '2022-02-27 08:26:59', 0, 121);
 INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", "dept_id", "post_ids", "email",
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",
@@ -7166,7 +7166,7 @@ INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", 
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",
                             "updater", "update_time", "deleted", "tenant_id")
 VALUES (113, 'aoteman', '$2a$10$0acJOIk2D25/oC87nyclE..0lzeu9DtQ/n3geP4fkun/zIVRhHJIO', '芋道', NULL, NULL, NULL, '',
-        '15601691300', 0, '', 0, '127.0.0.1', '2022-03-19 18:38:51', '1', '2022-03-07 21:37:58', NULL,
+        '18911009900', 0, '', 0, '127.0.0.1', '2022-03-19 18:38:51', '1', '2022-03-07 21:37:58', NULL,
         '2022-03-19 18:38:51', 0, 122);
 INSERT INTO "system_users" ("id", "username", "password", "nickname", "remark", "dept_id", "post_ids", "email",
                             "mobile", "sex", "avatar", "status", "login_ip", "login_date", "creator", "create_time",

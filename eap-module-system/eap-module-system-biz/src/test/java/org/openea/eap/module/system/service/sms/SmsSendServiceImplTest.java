@@ -59,7 +59,7 @@ public class SmsSendServiceImplTest extends BaseMockitoUnitTest {
         Map<String, Object> templateParams = MapUtil.<String, Object>builder().put("code", "1234")
                 .put("op", "login").build();
         // mock adminUserService 的方法
-        AdminUserDO user = randomPojo(AdminUserDO.class, o -> o.setMobile("15601691300"));
+        AdminUserDO user = randomPojo(AdminUserDO.class, o -> o.setMobile("18911009900"));
         when(adminUserService.getUser(eq(userId))).thenReturn(user);
 
         // mock SmsTemplateService 的方法
@@ -98,7 +98,7 @@ public class SmsSendServiceImplTest extends BaseMockitoUnitTest {
         Map<String, Object> templateParams = MapUtil.<String, Object>builder().put("code", "1234")
                 .put("op", "login").build();
         // mock memberService 的方法
-        String mobile = "15601691300";
+        String mobile = "18911009900";
         when(memberService.getMemberUserMobile(eq(userId))).thenReturn(mobile);
 
         // mock SmsTemplateService 的方法

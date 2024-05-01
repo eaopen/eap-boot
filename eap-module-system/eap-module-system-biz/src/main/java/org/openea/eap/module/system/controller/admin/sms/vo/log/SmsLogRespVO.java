@@ -54,7 +54,7 @@ public class SmsLogRespVO {
     @ExcelProperty("短信 API 的模板编号")
     private String apiTemplateId;
 
-    @Schema(description = "手机号", requiredMode = Schema.RequiredMode.REQUIRED, example = "15601691300")
+    @Schema(description = "手机号", requiredMode = Schema.RequiredMode.REQUIRED, example = "18911009900")
     @ExcelProperty("手机号")
     private String mobile;
 

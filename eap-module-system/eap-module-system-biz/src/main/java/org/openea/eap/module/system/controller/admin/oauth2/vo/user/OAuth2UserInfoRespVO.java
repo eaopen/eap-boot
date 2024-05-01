@@ -24,7 +24,7 @@ public class OAuth2UserInfoRespVO {
 
     @Schema(description = "用户邮箱", example = "eap@iocoder.cn")
     private String email;
-    @Schema(description = "手机号码", example = "15601691300")
+    @Schema(description = "手机号码", example = "18911009900")
     private String mobile;
 
     @Schema(description = "用户性别，参见 SexEnum 枚举类", example = "1")

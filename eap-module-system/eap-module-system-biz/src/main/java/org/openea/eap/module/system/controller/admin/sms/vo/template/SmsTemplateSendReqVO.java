@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 public class SmsTemplateSendReqVO {
 
-    @Schema(description = "手机号", requiredMode = Schema.RequiredMode.REQUIRED, example = "15601691300")
+    @Schema(description = "手机号", requiredMode = Schema.RequiredMode.REQUIRED, example = "18911009900")
     @NotNull(message = "手机号不能为空")
     private String mobile;
 

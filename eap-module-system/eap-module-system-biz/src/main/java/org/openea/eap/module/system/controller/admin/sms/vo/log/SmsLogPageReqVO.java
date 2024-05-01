@@ -23,7 +23,7 @@ public class SmsLogPageReqVO extends PageParam {
     @Schema(description = "模板编号", example = "20")
     private Long templateId;
 
-    @Schema(description = "手机号", example = "15601691300")
+    @Schema(description = "手机号", example = "18911009900")
     private String mobile;
 
     @Schema(description = "发送状态，参见 SmsSendStatusEnum 枚举类", example = "1")

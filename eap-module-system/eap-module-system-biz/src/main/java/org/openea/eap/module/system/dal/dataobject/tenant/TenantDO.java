@@ -76,4 +76,11 @@ public class TenantDO extends BaseDO {
      */
     private Integer accountCount;
 
+
+
+    /**
+     * 交付部门 ID
+     */
+    private Long deptId;
+
 }

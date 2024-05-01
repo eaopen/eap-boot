@@ -24,7 +24,7 @@ public class OAuth2UserUpdateReqVO {
     @Size(max = 50, message = "邮箱长度不能超过 50 个字符")
     private String email;
 
-    @Schema(description = "手机号码", example = "15601691300")
+    @Schema(description = "手机号码", example = "18911009900")
     @Length(min = 11, max = 11, message = "手机号长度必须 11 位")
     private String mobile;
 

@@ -72,7 +72,7 @@ public class MailSendServiceImplTest extends BaseMockitoUnitTest {
         Map<String, Object> templateParams = MapUtil.<String, Object>builder().put("code", "1234")
                 .put("op", "login").build();
         // mock adminUserService 的方法
-        AdminUserDO user = randomPojo(AdminUserDO.class, o -> o.setMobile("15601691300"));
+        AdminUserDO user = randomPojo(AdminUserDO.class, o -> o.setMobile("18911009900"));
         when(adminUserService.getUser(eq(userId))).thenReturn(user);
 
         // mock MailTemplateService 的方法

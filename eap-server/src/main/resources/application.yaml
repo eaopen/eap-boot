@@ -153,7 +153,7 @@ spring:
 
 eap:
   info:
-    version: 1.0.0
+    version: 2.6.0
     base-package: org.openea.eap
   web:
     admin-ui:
@@ -236,6 +236,9 @@ eap:
       - infra_job_log
       - infra_job_log
       - infra_data_source_config
+      - base_messagereceive
+      - base_imcontent
+      - base_imreply
       - jimu_dict
       - jimu_dict_item
       - jimu_report

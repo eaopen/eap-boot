@@ -48,6 +48,14 @@ public class LoginUser {
      */
     private List<String> scopes;
 
+    public String getNickname() {
+        return info.get(INFO_KEY_NICKNAME);
+    }
+
+    public Long getDeptId() {
+        return MapUtil.getLong(info, INFO_KEY_DEPT_ID);
+    }
+
     // ========== 上下文 ==========
     /**
      * 上下文字段，不进行持久化
