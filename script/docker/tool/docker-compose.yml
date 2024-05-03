@@ -1,0 +1,52 @@
+version: "3.4"
+
+name: eap-system
+
+services:
+  mysql:
+    container_name: eap-mysql
+    image: mysql:8
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-eap-db}
+      MYSQL_USER: ${MYSQL_USER:-eap}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-eap123}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root321}
+    volumes:
+      - ./mysql/conf/:/etc/mysql/conf.d/
+      - ./mysql/data/:/var/lib/mysql/
+      - ./sql/mysql/eap-db.sql:/docker-entrypoint-initdb.d/eap-db.sql:ro
+
+  adminer:
+    image: adminer
+    ports:
+      - 13306:8080
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    depends_on:
+      - mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - 23306:80
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    depends_on:
+      - mysql
+
+  redis:
+    container_name: eap-redis
+    image: redis:6-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass nopass
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/data
