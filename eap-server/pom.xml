@@ -20,6 +20,10 @@
     </description>
     <url>https://github.com/eaopen/openea-eap</url>
 
+    <properties>
+
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.github.eaopen</groupId>
@@ -41,41 +45,21 @@
 <!--        </dependency>-->
 
         <!-- 集成平台内IM消息 -->
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-extj-message-rest</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-module-bpm-rest</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-module-lowcode-rest</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <!-- 会员中心。默认注释，保证编译速度 -->
 <!--        <dependency>-->
 <!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-member-biz</artifactId>-->
+<!--            <artifactId>eap-extj-message-rest</artifactId>-->
 <!--            <version>${revision}</version>-->
 <!--        </dependency>-->
 
-        <!-- 数据报表。默认注释，保证编译速度 -->
 <!--        <dependency>-->
 <!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-report-biz</artifactId>-->
+<!--            <artifactId>eap-module-bpm-rest</artifactId>-->
 <!--            <version>${revision}</version>-->
 <!--        </dependency>-->
-        <!-- 工作流。默认注释，保证编译速度 -->
+
 <!--        <dependency>-->
 <!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-bpm-biz</artifactId>-->
+<!--            <artifactId>eap-module-lowcode-rest</artifactId>-->
 <!--            <version>${revision}</version>-->
 <!--        </dependency>-->
 

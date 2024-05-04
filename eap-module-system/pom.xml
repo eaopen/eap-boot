@@ -11,7 +11,6 @@
     <modules>
         <module>eap-module-system-api</module>
         <module>eap-module-system-biz</module>
-        <module>eap-system-extj</module>
         <module>eap-module-system-rest</module>
     </modules>
     <artifactId>eap-module-system</artifactId>

@@ -6,11 +6,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.openea.eap.extj.base.vo.ListVO;
-import org.openea.eap.extj.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
+import org.openea.eap.module.system.controller.admin.user.vo.ListVO;
 import org.openea.eap.module.system.controller.admin.user.vo.user.ExtUserIdModel;
 import org.openea.eap.module.system.controller.admin.user.vo.user.ExtUserListVo;
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserPageReqVO;
@@ -80,7 +80,7 @@ public class UserExtController {
         if(vo.getDepartment()==null){
             vo.setDepartment("");
         }
-        if(StringUtil.isEmpty(vo.getFullName())){
+        if(StringUtils.isEmpty(vo.getFullName())){
             vo.setFullName(vo.getRealName());
         }
         return vo;
