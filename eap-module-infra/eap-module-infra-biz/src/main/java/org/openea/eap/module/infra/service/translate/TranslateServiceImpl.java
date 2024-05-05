@@ -6,11 +6,19 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * 翻译服务实现
+ *
+ * todo 可支持翻译实现，可配置优先顺序
+ * 1、调用eap在线翻译服务（优化了翻译效果）
+ * 2、直接调用google translate（已内建支持）
+ * 3、调用chatgpt或兼容API(需要设置API key)
+ *
+ */
 @Service
 @Slf4j
 public class TranslateServiceImpl implements TranslateService{
