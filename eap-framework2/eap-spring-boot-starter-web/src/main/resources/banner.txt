@@ -1,4 +1,4 @@
-OpenEAP http://eap.openea.org
+OpenEAP http://eap.openea.site
 Application Version: ${eap.info.version}
 Spring Boot Version: ${spring-boot.version}
    ___                   _____    _    ____
