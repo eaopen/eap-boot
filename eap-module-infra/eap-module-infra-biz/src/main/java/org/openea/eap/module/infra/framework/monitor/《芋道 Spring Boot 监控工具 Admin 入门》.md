@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/Admin/?eap>
+<https://yu0doc.openea.site/Spring-Boot/Admin/?eap>
