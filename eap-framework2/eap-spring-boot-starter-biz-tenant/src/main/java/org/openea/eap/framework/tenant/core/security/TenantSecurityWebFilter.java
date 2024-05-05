@@ -77,7 +77,7 @@ public class TenantSecurityWebFilter extends ApiRequestFilter {
             // 2. 如果请求未带租户的编号，不允许访问。
             if (tenantId == null) {
                 log.error("[doFilterInternal][URL({}/{}) 未传递租户编号]", request.getRequestURI(), request.getMethod());
-                ServletUtils.writeJSON(response, CommonResult.error(GlobalErrorCodeConstants.BAD_REQUEST.getCode(),
+                ServletUtils.writeJSON(response, CommonResult.error(GlobalErrorCodeConstants.LOST_TENANTID.getCode(),
                         "请求的租户标识未传递，请进行排查"));
                 return;
             }
