@@ -1,14 +1,20 @@
-package org.openea.eap.module.system.service.language.translate;
+package org.openea.eap.module.system.service.language;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.openea.eap.framework.common.util.spring.EapAppUtil;
+import org.openea.eap.module.infra.api.translate.TranslateApi;
 
 import java.util.*;
 
 @Slf4j
 public class TranslateUtil {
+
+    public static TranslateApi getTranslateApi() {
+        return EapAppUtil.getBean(TranslateApi.class);
+    }
 
     /**
      * 翻译文本
@@ -21,35 +27,22 @@ public class TranslateUtil {
         if(ObjectUtil.isEmpty(originText) || ObjectUtil.isEmpty(targetLang)){
             return originText;
         }
-        String targetText = originText;
-        // check type
-        String type = "text";
-        if(params != null && params.containsKey("type")){
-            type = params.get("type").trim();
-        }
-        if(ObjectUtil.isEmpty(type)){
-            type = "text";
-        }else{
-            type = type.toLowerCase();
-        }
-        // check source lang
-        String sourceLang = "auto";
-        if(params != null && params.containsKey("sourceLang")){
-            sourceLang = params.get("sourceLang");
-        }
-        // todo 根据 type 不同选择不同的翻译机制
-        // 优先大语言模型（默认chatgpt），其次才是翻译（默认google翻译）
-        // 需要考虑国内环境的可用性，翻译待增加有道翻译
-        try {
-            targetText =  GT.getInstance().translateText(originText, sourceLang, targetLang);
-        } catch (Exception e) {
-            log.warn("google translate error", e);
-            //throw new RuntimeException(e);
-        }
-        //
-
-        return targetText;
+        return getTranslateApi().translateText(originText, targetLang, params);
     }
+
+    public static String translateText(String originText, String targetLang) {
+        return translateText(originText, targetLang, Collections.EMPTY_MAP);
+    }
+
+    public static String translateText(String originText, String sourceLang, String targetLang){
+        if(ObjectUtil.isNotEmpty(sourceLang) && !"auto".equals(sourceLang)){
+            Map<String, String> params = new HashMap<>();
+            params.put("sourceLang", sourceLang);
+            return translateText(originText, targetLang, params);
+        }
+        return translateText(originText, targetLang);
+    }
+
 
     /**
      * 国际化词条
@@ -113,26 +106,18 @@ public class TranslateUtil {
         return targetJson;
     }
 
-    public static String translateText(String originText, String targetLang) {
-        return translateText(originText, targetLang, Collections.EMPTY_MAP);
-    }
-
-    public static String translateText(String originText, String sourceLang, String targetLang){
-        if(ObjectUtil.isNotEmpty(sourceLang) && !"auto".equals(sourceLang)){
-            Map<String, String> params = new HashMap<>();
-            params.put("sourceLang", sourceLang);
-            return translateText(originText, targetLang, params);
-        }
-        return translateText(originText, targetLang);
-    }
-
-
     public static JSONObject queryMenuI18n(String type, String key, String name, int len) {
         JSONObject json = null;
         String strJson = null;
         try{
-            strJson = ChatGPT.getInstance().queryMenuI18n(type, key, name, len);
-            json = JSONUtil.parseObj(strJson);
+            Map<String, String> params = new HashMap<>();
+            params.put("type", type);
+            if(len>0){
+                params.put("len", ""+len);
+            }
+            json = getTranslateApi().queryMenuI18n(key, name, params);
+            //strJson = ChatGPT.getInstance().queryMenuI18n(type, key, name, len);
+            //json = JSONUtil.parseObj(strJson);
         }catch (Exception e){
             log.warn(e.getMessage()+"\r\n"+strJson);
             log.debug(String.format("queryMenuI18n key=%s name=%s",key, name),e);

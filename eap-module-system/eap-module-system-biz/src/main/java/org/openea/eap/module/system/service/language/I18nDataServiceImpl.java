@@ -12,7 +12,6 @@ import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.mysql.language.I18nJsonDataMapper;
 import org.openea.eap.module.system.dal.mysql.language.LangTypeMapper;
-import org.openea.eap.module.system.service.language.translate.TranslateUtil;
 import org.openea.eap.module.system.service.permission.MenuServiceImpl;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package org.openea.eap.module.system.service.language.translate;
+package org.openea.eap.module.infra.service.translate;
 
 import cn.hutool.core.util.ObjectUtil;
 import io.github.asleepyfish.annotation.EnableChatGPT;

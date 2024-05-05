@@ -1,4 +1,4 @@
-package org.openea.eap.module.system.service.language.translate;
+package org.openea.eap.module.infra.service.translate;
 
 
 import cn.hutool.http.HttpRequest;
@@ -12,8 +12,8 @@ import java.util.Map;
 /**
  * google translate
  */
-public class GT {
-    private static GT _instance = null;
+public class GoogleTranslate {
+    private static GoogleTranslate _instance = null;
 
     private static int timeout = 5000;
 
@@ -21,9 +21,9 @@ public class GT {
      * 获取单例
      * @return
      */
-    public static GT getInstance() {
+    public static GoogleTranslate getInstance() {
         if( null == _instance){
-            _instance = new GT();
+            _instance = new GoogleTranslate();
             _instance.init();
         }
         return _instance;
@@ -43,15 +43,14 @@ public class GT {
             sourceLang = "auto";
         }else{
             sourceLang = sourceLang.toLowerCase().replace("-","_");
+            sourceLang = sourceLang.split("_")[0];
+            if(!isSupport(sourceLang)){
+                sourceLang = "auto";
+            }
         }
         if(!StringUtils.isEmpty(targetLang)){
             targetLang = targetLang.toLowerCase().replace("-","_");
-            if("en_us".equalsIgnoreCase(targetLang)){
-                targetLang = "en";
-            }
-            if("ja_jp".equalsIgnoreCase(targetLang)){
-                targetLang = "ja";
-            }
+            targetLang = targetLang.split("_")[0];
         }
         if( !( isSupport(sourceLang) || isSupport(targetLang) ) ){
             throw new Exception("不支持的语言类型");

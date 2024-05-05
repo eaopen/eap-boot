@@ -13,7 +13,7 @@ import org.openea.eap.module.system.controller.admin.language.vo.I18nJsonDataUpd
 import org.openea.eap.module.system.convert.language.I18nJsonDataConvert;
 import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 import org.openea.eap.module.system.service.language.I18nDataService;
-import org.openea.eap.module.system.service.language.translate.TranslateUtil;
+import org.openea.eap.module.system.service.language.TranslateUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

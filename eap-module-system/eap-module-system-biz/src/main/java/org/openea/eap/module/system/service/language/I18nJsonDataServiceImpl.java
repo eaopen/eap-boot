@@ -11,7 +11,6 @@ import org.openea.eap.module.system.controller.admin.language.vo.I18nJsonDataUpd
 import org.openea.eap.module.system.convert.language.I18nJsonDataConvert;
 import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 import org.openea.eap.module.system.dal.mysql.language.I18nJsonDataMapper;
-import org.openea.eap.module.system.service.language.translate.TranslateUtil;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
