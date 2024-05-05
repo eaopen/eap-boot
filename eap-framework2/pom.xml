@@ -14,6 +14,7 @@
         <module>eap-spring-boot-starter-web</module>
         <module>eap-spring-boot-starter-mybatis</module>
         <module>eap-spring-boot-starter-security</module>
+        <module>eap-spring-boot-starter-protection</module>
         <module>eap-spring-boot-starter-websocket</module>
         <module>eap-spring-boot-starter-biz-i18n</module>
 
