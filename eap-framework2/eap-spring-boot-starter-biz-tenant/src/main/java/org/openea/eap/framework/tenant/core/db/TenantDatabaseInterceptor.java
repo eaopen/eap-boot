@@ -17,7 +17,6 @@ import java.util.Set;
 public class TenantDatabaseInterceptor implements TenantLineHandler {
 
     private final Set<String> ignoreTables = new HashSet<>();
-
     public TenantDatabaseInterceptor(TenantProperties properties) {
         // 不同 DB 下，大小写的习惯不同，所以需要都添加进去
         properties.getIgnoreTables().forEach(table -> {
@@ -34,7 +33,18 @@ public class TenantDatabaseInterceptor implements TenantLineHandler {
     }
 
     @Override
+    public String getTenantIdColumn() {
+        // "tenant_id" or "F_TenantId"
+        String column = "tenant_id";
+        return column;
+    }
+
+    @Override
     public boolean ignoreTable(String tableName) {
+        // 1 全局忽略
+        // 2 忽略表，全名/前缀
+        // 3 多租户表，全名/前缀
+        // 4 default
         return TenantContextHolder.isIgnore() // 情况一，全局忽略多租户
             || CollUtil.contains(ignoreTables, tableName); // 情况二，忽略多租户的表
     }

@@ -38,4 +38,11 @@ public class TenantProperties {
      */
     private Set<String> ignoreTables = Collections.emptySet();
 
+    /**
+     * 兼容extj租户表
+     * 租户字段为"F_TenantId"
+     */
+    private Set<String> extjTables = Collections.emptySet();
+    private String extjTenantColumn = "F_TenantId";
+
 }

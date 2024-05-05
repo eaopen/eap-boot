@@ -1,9 +1,12 @@
 package org.openea.eap.framework.tenant.config;
 
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import org.openea.eap.framework.common.enums.WebFilterOrderEnum;
 import org.openea.eap.framework.mybatis.core.util.MyBatisUtils;
 import org.openea.eap.framework.redis.config.EapCacheProperties;
 import org.openea.eap.framework.tenant.core.aop.TenantIgnoreAspect;
+import org.openea.eap.framework.tenant.core.db.MyTenantLineInnerInterceptor;
 import org.openea.eap.framework.tenant.core.db.TenantDatabaseInterceptor;
 import org.openea.eap.framework.tenant.core.job.TenantJobAspect;
 import org.openea.eap.framework.tenant.core.mq.rabbitmq.TenantRabbitMQInitializer;
@@ -17,8 +20,6 @@ import org.openea.eap.framework.tenant.core.web.TenantContextWebFilter;
 import org.openea.eap.framework.web.config.WebProperties;
 import org.openea.eap.framework.web.core.handler.GlobalExceptionHandler;
 import org.openea.eap.module.system.api.tenant.TenantApi;
-import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -57,7 +58,7 @@ public class EapTenantAutoConfiguration {
     @Bean
     public TenantLineInnerInterceptor tenantLineInnerInterceptor(TenantProperties properties,
                                                                  MybatisPlusInterceptor interceptor) {
-        TenantLineInnerInterceptor inner = new TenantLineInnerInterceptor(new TenantDatabaseInterceptor(properties));
+        TenantLineInnerInterceptor inner = new MyTenantLineInnerInterceptor(new TenantDatabaseInterceptor(properties), properties);
         // 添加到 interceptor 中
         // 需要加在首个，主要是为了在分页插件前面。这个是 MyBatis Plus 的规定
         MyBatisUtils.addInterceptor(interceptor, inner, 0);
