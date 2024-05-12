@@ -2,6 +2,7 @@ package org.openea.eap.module.infra.service.file;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -56,10 +57,13 @@ public class FileServiceImpl implements FileService {
         String type = FileTypeUtils.getMineType(content, name);
         if (StrUtil.isEmpty(path)) {
             path = FileUtils.generatePath(content, name);
+        } else if (StrUtil.isBlank(FileUtil.getSuffix(path))) {
+            //如果传了path且文件path是文件夹路径 拼接下
+            path = path + "/" + FileUtils.generatePath(content, name);
         }
         // 如果 name 为空，则使用 path 填充
         if (StrUtil.isEmpty(name)) {
-            name = path;
+            name = FileUtil.getName(path);
         }
 
         // 上传到文件存储器

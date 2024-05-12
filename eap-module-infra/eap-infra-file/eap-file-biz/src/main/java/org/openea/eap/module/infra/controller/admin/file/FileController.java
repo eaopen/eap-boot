@@ -47,10 +47,11 @@ public class FileController {
 
     @PostMapping("/upload")
     @Operation(summary = "上传文件", description = "模式一：后端上传文件")
-    public CommonResult<String> uploadFile(FileUploadReqVO uploadReqVO) throws Exception {
+    public CommonResult<FileDO> uploadFile(FileUploadReqVO uploadReqVO) throws Exception {
         MultipartFile file = uploadReqVO.getFile();
         String path = uploadReqVO.getPath();
-        return success(fileService.createFile(file.getOriginalFilename(), path, IoUtil.readBytes(file.getInputStream())));
+        FileDO fileDo = fileService.uploadFile(file.getOriginalFilename(), path, IoUtil.readBytes(file.getInputStream()));;
+        return CommonResult.success(fileDo);
     }
 
     @GetMapping("/presigned-url")
