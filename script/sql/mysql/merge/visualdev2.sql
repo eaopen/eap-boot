@@ -12,8 +12,16 @@ set t.F_Form_Data=REPLACE(t.F_Form_Data,'jnpfKey','extnKey')
 where locate('jnpfKey',t.F_Form_Data)>0;
 
 update base_visual_dev t
+set t.F_Form_Data=REPLACE(t.F_Form_Data,'Jnpf','Extn')
+where locate('Jnpf',t.F_Form_Data)>0;
+
+update base_visual_dev t
 set t.F_Column_Data=REPLACE(t.F_Column_Data,'jnpfKey','extnKey')
 where locate('jnpfKey',t.F_Column_Data)>0;
+
+update base_visual_dev t
+set t.F_Column_Data=REPLACE(t.F_Column_Data,'Jnpf','Extn')
+where locate('Jnpf',t.F_Column_Data)>0;
 
 update base_visual_dev t
 set t.F_App_Column_Data=REPLACE(t.F_App_Column_Data,'jnpfKey','extnKey')
@@ -24,12 +32,25 @@ set t.F_Form_Data=REPLACE(t.F_Form_Data,'jnpfKey','extnKey')
 where locate('jnpfKey',t.F_Form_Data)>0;
 
 update base_visual_release t
+set t.F_Form_Data=REPLACE(t.F_Form_Data,'Jnpf','Extn')
+where locate('Jnpf',t.F_Form_Data)>0;
+
+update base_visual_release t
 set t.F_Column_Data=REPLACE(t.F_Column_Data,'jnpfKey','extnKey')
 where locate('jnpfKey',t.F_Column_Data)>0;
 
 update base_visual_release t
+set t.F_Column_Data=REPLACE(t.F_Column_Data,'Jnpf','Extn')
+where locate('Jnpf',t.F_Column_Data)>0;
+
+update base_visual_release t
 set t.F_App_Column_Data=REPLACE(t.F_App_Column_Data,'jnpfKey','extnKey')
 where locate('jnpfKey',t.F_App_Column_Data)>0;
+
+update base_visual_release t
+set t.F_App_Column_Data=REPLACE(t.F_App_Column_Data,'Jnpf','Extn')
+where locate('Jnpf',t.F_App_Column_Data)>0;
+
 
 
 update base_portal_data t
