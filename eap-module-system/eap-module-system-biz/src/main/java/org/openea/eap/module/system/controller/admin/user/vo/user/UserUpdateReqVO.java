@@ -1,21 +1,21 @@
 package org.openea.eap.module.system.controller.admin.user.vo.user;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mzt.logapi.starter.annotation.DiffLogField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 import org.openea.eap.module.system.framework.operatelog.core.DeptParseFunction;
 import org.openea.eap.module.system.framework.operatelog.core.PostParseFunction;
 import org.openea.eap.module.system.framework.operatelog.core.SexParseFunction;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Schema(description = "管理后台 - 用户创建/修改 Request VO")
 @Data
-public class UserSaveReqVO {
+public class UserUpdateReqVO {
 
     @Schema(description = "用户编号", example = "1024")
     private Long id;
@@ -62,18 +62,4 @@ public class UserSaveReqVO {
     @Schema(description = "用户头像", example = "https://www.iocoder.cn/xxx.png")
     @DiffLogField(name = "用户头像")
     private String avatar;
-
-    // ========== 仅【创建】时，需要传递的字段 ==========
-
-    @Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
-    //@Length(min = 4, max = 16, message = "密码长度为 4-16 位")
-    private String password;
-
-    @AssertTrue(message = "密码不能为空")
-    @JsonIgnore
-    public boolean isPasswordValid() {
-        return id != null // 修改时，不需要传递
-                || (ObjectUtil.isAllNotEmpty(password)); // 新增时，必须都传递 password
-    }
-
 }

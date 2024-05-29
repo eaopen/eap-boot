@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -57,8 +58,10 @@ public class UserController {
     @PutMapping("update")
     @Operation(summary = "修改用户")
     @PreAuthorize("@ss.hasPermission('system:user:update')")
-    public CommonResult<Boolean> updateUser(@Valid @RequestBody UserSaveReqVO reqVO) {
-        userService.updateUser(reqVO);
+    public CommonResult<Boolean> updateUser(@Valid @RequestBody UserUpdateReqVO reqVO) {
+        UserSaveReqVO reqVO2 = new UserSaveReqVO();
+        BeanUtils.copyProperties(reqVO, reqVO2);
+        userService.updateUser(reqVO2);
         return success(true);
     }
 

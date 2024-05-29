@@ -56,3 +56,11 @@ where locate('Jnpf',t.F_App_Column_Data)>0;
 update base_portal_data t
 set t.F_Form_Data=REPLACE(t.F_Form_Data,'jnpfKey','extnKey')
 where locate('jnpfKey',t.F_Form_Data)>0;
+
+update flow_form t
+set t.f_property_json=REPLACE(t.f_property_json,'jnpfKey','extnKey')
+where locate('jnpfKey',t.f_property_json)>0;
+
+update flow_form t
+set t.f_draft_json=REPLACE(t.f_draft_json,'jnpfKey','extnKey')
+where locate('jnpfKey',t.f_draft_json)>0;
