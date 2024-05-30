@@ -12,6 +12,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -100,9 +101,12 @@ public class ReactorUtil {
         // 获得需要复制的文件
         log.info("[main][开始获得需要重写的文件，预计需要 10-20 秒]");
         Collection<File> files = listFiles(projectBaseDir);
-        log.info("[main][需要重写的文件数量：{}，预计需要 15-30 秒]", files.size());
+        int filesSize = files.size();
+        log.info("[main][需要重写的文件数量：{}，预计需要 {}-{} 秒]", filesSize, filesSize/100, filesSize/30);
         // 写入文件
+        AtomicInteger index = new AtomicInteger(0);
         files.forEach(file -> {
+            int currentIndex = index.getAndIncrement();
             // 如果是白名单的文件类型，不进行重写，直接拷贝
             String fileType = getFileType(file);
             if (WHITE_FILE_TYPES.contains(fileType)) {
@@ -112,6 +116,9 @@ public class ReactorUtil {
             // 如果非白名单的文件类型，重写内容，在生成文件
             String content = replaceFileContent(file, groupIdNew, artifactIdNew, packageNameNew, titleNew, keywordNew);
             writeFile(file, content, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew, keywordNew);
+            if(currentIndex%100 == 0){
+                log.info("index="+currentIndex);
+            }
         });
         log.info("[main][重写完成]共耗时：{} 秒", (System.currentTimeMillis() - start) / 1000);
     }
@@ -154,10 +161,19 @@ public class ReactorUtil {
             content = content.replaceAll(ARTIFACT_ID, artifactIdNew) // - 可区分package
                     .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
         }
+        // replace keyword + key
+        if(ObjectUtils.isNotEmpty(keywordNew) && !keywordNew.equals(KEYWORD)){
+            content = content.replaceAll(KEYWORD.toLowerCase()+"Key", keywordNew.toLowerCase()+"Key")
+                    .replaceAll(StrUtil.upperFirst(KEYWORD)+"Key", StrUtil.upperFirst(keywordNew)+"Key");
+        }
         if(ObjectUtils.isNotEmpty(packageNameNew) && !packageNameNew.equals(PACKAGE_NAME)){
-            content = content.replaceAll(PACKAGE_NAME, packageNameNew);
-            if(packageNameNew.contains(".")){
+            if(PACKAGE_NAME.contains(".")){
+                content = content.replaceAll(PACKAGE_NAME, packageNameNew);
                 content = content.replaceAll(PACKAGE_NAME.replaceAll("\\.","/"), packageNameNew.replaceAll("\\.","/"));
+            }else{
+                content = content.replaceAll(PACKAGE_NAME+"\\.", packageNameNew+".");
+                content = content.replaceAll(PACKAGE_NAME+"/", packageNameNew+"/");
+                //content = content.replaceAll(PACKAGE_NAME, packageNameNew);
             }
         }
         content = content.replaceAll(TITLE, titleNew);
@@ -171,7 +187,28 @@ public class ReactorUtil {
                     .replaceAll(KEYWORD.toLowerCase(), keywordNew.toLowerCase())
                     .replaceAll(StrUtil.upperFirst(KEYWORD), StrUtil.upperFirst(keywordNew));
         }
+        // replace 注释
+        content = removeContentCust(content);
+        return content;
+    }
 
+    private static String removeContentCust(String content){
+        // 去掉部分中文注释
+        // 类注释
+        content = content.replaceAll("( \\* @.*\\n)* \\* @.*有限公司.*\\n( \\* @.*\\n)*( \\*\\n)* \\*/", " */")
+                .replaceAll("( \\* @.*\\n)* \\* @.*EXTN.*\\n( \\* @.*\\n)*( \\*\\n)* \\*/", " */")
+                .replaceAll("/\\*\\*\\n( \\* @.*\\n)* \\* @.*有限公司.*\\n( \\* @.*\\n)*( \\*\\n)* \\*/", "")
+                .replaceAll("/\\*\\*\\n( \\* @.*\\n)* \\* @.*EXTN.*\\n( \\* @.*\\n)*( \\*\\n)* \\*/", "")
+                .replaceAll("(?m)^ \\* .*芋道源码.*\\n", "")
+                .replaceAll("example = \"芋道\"", "example = \"eap\"")
+                .replaceAll("(?m)^ \\* .*版本.*\\n", "")
+                .replaceAll("(?m)^ \\* .*版权.*\\n", "")
+                .replaceAll("(?m)^ \\* .*作者.*\\n", "")
+                .replaceAll("(?m)^ \\* .*日期.*\\n", "")
+                .replaceAll("/\\*\\*\\n( \\*\\n)* \\*/", "");   //空注释
+        // 方法注释
+        content = content.replaceAll("\n( )*\\* @.*有限公司.*\\n(( )*\\* @.*\\n)*( \\*\\n)*( )*\\*/", "\n */")
+                .replaceAll("\n( )*\\* @.*EXTN.*\\n(( )*\\* @.*\\n)*( \\*\\n)*( )*\\*/", "\n */");
         return content;
     }
 
@@ -194,21 +231,17 @@ public class ReactorUtil {
             newPath = newPath.replace(ARTIFACT_ID, artifactIdNew) //
                     .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
         }
+        newPath = newPath.replace(PACKAGE_NAME.replaceAll("\\.", Matcher.quoteReplacement(separator).replace(KEYWORD,keywordNew)),
+                packageNameNew.replaceAll("\\.", Matcher.quoteReplacement(separator)));
+        if(!artifactIdNew.contains("-")){
+            newPath = newPath.replace(ARTIFACT_ID, artifactIdNew) //
+                    .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
+        }
         // keyword vs package
         if(ObjectUtils.isNotEmpty(keywordNew) && !keywordNew.equals(KEYWORD)){
             newPath = newPath.replaceAll(KEYWORD.toUpperCase(), keywordNew.toUpperCase())
                     .replaceAll(KEYWORD.toLowerCase(), keywordNew.toLowerCase())
                     .replaceAll(StrUtil.upperFirst(KEYWORD), StrUtil.upperFirst(keywordNew));
-        }
-        newPath = newPath.replace(PACKAGE_NAME.replaceAll("\\.", Matcher.quoteReplacement(separator)),
-                        packageNameNew.replaceAll("\\.", Matcher.quoteReplacement(separator)));
-        if(ObjectUtils.isNotEmpty(keywordNew) && PACKAGE_NAME.contains(".")  && packageNameNew.contains(keywordNew)){
-            newPath = newPath.replace(PACKAGE_NAME.replaceAll("\\.", Matcher.quoteReplacement(separator).replace(KEYWORD,keywordNew)),
-                    packageNameNew.replaceAll("\\.", Matcher.quoteReplacement(separator)));
-        }
-        if(!artifactIdNew.contains("-")){
-            newPath = newPath.replace(ARTIFACT_ID, artifactIdNew) //
-                    .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
         }
         return newPath;
 
