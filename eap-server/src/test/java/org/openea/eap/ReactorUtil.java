@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,7 @@ public class ReactorUtil {
     private static String ARTIFACT_ID = "yudao";
     private static String PACKAGE_NAME = "cn.iocoder.yudao";
     private static String TITLE = "芋道管理系统";
+    private static String KEYWORD = "";
     /**
      * 白名单文件，不进行重写，避免出问题
      */
@@ -39,8 +41,8 @@ public class ReactorUtil {
      * 项目重写
      * @param projectBaseDir 项目跟目录（全路径）
      * @param newDir 新目录名（非全路径）
-     * @param newParams String[]{group, artifact, package, title}
-     * @param oldParams String[]{group, artifact, package, title}
+     * @param newParams String[]{group, artifact, package, title, keyword, others}
+     * @param oldParams String[]{group, artifact, package, title, keyword, others}
      */
     public static void projectReactor(String projectBaseDir, String newDir, String[] newParams, String[] oldParams) {
         long start = System.currentTimeMillis();
@@ -54,6 +56,9 @@ public class ReactorUtil {
             // 可选参数
             if(oldParams.length>=4){
                 TITLE = oldParams[3];
+            }
+            if(oldParams.length>=5){
+                KEYWORD = oldParams[4];
             }
         }
         // 新参数
@@ -71,6 +76,12 @@ public class ReactorUtil {
             titleNew = newParams[3];
         } else {
             titleNew = TITLE;
+        }
+        String keywordNew;
+        if(newParams.length>=5){
+            keywordNew = newParams[4];
+        } else {
+            keywordNew = KEYWORD;
         }
 
         String projectBaseDirNew = projectBaseDir.substring(0, projectBaseDir.lastIndexOf("/")) + "/" + newDir ; // 一键改名后，“新”项目所在的目录
@@ -95,12 +106,12 @@ public class ReactorUtil {
             // 如果是白名单的文件类型，不进行重写，直接拷贝
             String fileType = getFileType(file);
             if (WHITE_FILE_TYPES.contains(fileType)) {
-                copyFile(file, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew);
+                copyFile(file, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew, keywordNew);
                 return;
             }
             // 如果非白名单的文件类型，重写内容，在生成文件
-            String content = replaceFileContent(file, groupIdNew, artifactIdNew, packageNameNew, titleNew);
-            writeFile(file, content, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew);
+            String content = replaceFileContent(file, groupIdNew, artifactIdNew, packageNameNew, titleNew, keywordNew);
+            writeFile(file, content, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew, keywordNew);
         });
         log.info("[main][重写完成]共耗时：{} 秒", (System.currentTimeMillis() - start) / 1000);
     }
@@ -130,7 +141,7 @@ public class ReactorUtil {
 
     private static String replaceFileContent(File file, String groupIdNew,
                                              String artifactIdNew, String packageNameNew,
-                                             String titleNew) {
+                                             String titleNew, String keywordNew) {
         String content = FileUtil.readString(file, StandardCharsets.UTF_8);
         // 如果是白名单的文件类型，不进行重写
         String fileType = getFileType(file);
@@ -138,32 +149,69 @@ public class ReactorUtil {
             return content;
         }
         // 执行文件内容都重写
-        return content.replaceAll(GROUP_ID, groupIdNew)
-                .replaceAll(PACKAGE_NAME, packageNameNew)
-                .replaceAll(ARTIFACT_ID, artifactIdNew) // 必须放在最后替换，因为 ARTIFACT_ID 太短！
-                .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew))
-                .replaceAll(TITLE, titleNew);
+        content = content.replaceAll(GROUP_ID, groupIdNew);
+        if(ObjectUtils.isNotEmpty(artifactIdNew) && ARTIFACT_ID.contains("-")){
+            content = content.replaceAll(ARTIFACT_ID, artifactIdNew) // - 可区分package
+                    .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
+        }
+        if(ObjectUtils.isNotEmpty(packageNameNew) && !packageNameNew.equals(PACKAGE_NAME)){
+            content = content.replaceAll(PACKAGE_NAME, packageNameNew);
+            if(packageNameNew.contains(".")){
+                content = content.replaceAll(PACKAGE_NAME.replaceAll("\\.","/"), packageNameNew.replaceAll("\\.","/"));
+            }
+        }
+        content = content.replaceAll(TITLE, titleNew);
+        if(ObjectUtils.isNotEmpty(artifactIdNew) && !ARTIFACT_ID.contains("-")){
+            content = content.replaceAll(ARTIFACT_ID, artifactIdNew)
+                    .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
+        }
+        // replace keyword
+        if(ObjectUtils.isNotEmpty(keywordNew) && !keywordNew.equals(KEYWORD)){
+            content = content.replaceAll(KEYWORD.toUpperCase(), keywordNew.toUpperCase())
+                    .replaceAll(KEYWORD.toLowerCase(), keywordNew.toLowerCase())
+                    .replaceAll(StrUtil.upperFirst(KEYWORD), StrUtil.upperFirst(keywordNew));
+        }
+
+        return content;
     }
 
     private static void writeFile(File file, String fileContent, String projectBaseDir,
-                                  String projectBaseDirNew, String packageNameNew, String artifactIdNew) {
-        String newPath = buildNewFilePath(file, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew);
+                                  String projectBaseDirNew, String packageNameNew, String artifactIdNew, String keywordNew) {
+        String newPath = buildNewFilePath(file, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew, keywordNew);
         FileUtil.writeUtf8String(fileContent, newPath);
     }
 
     private static void copyFile(File file, String projectBaseDir,
-                                 String projectBaseDirNew, String packageNameNew, String artifactIdNew) {
-        String newPath = buildNewFilePath(file, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew);
+                                 String projectBaseDirNew, String packageNameNew, String artifactIdNew, String keywordNew) {
+        String newPath = buildNewFilePath(file, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew, keywordNew);
         FileUtil.copyFile(file, new File(newPath));
     }
 
     private static String buildNewFilePath(File file, String projectBaseDir,
-                                           String projectBaseDirNew, String packageNameNew, String artifactIdNew) {
-        return file.getPath().replace(projectBaseDir, projectBaseDirNew) // 新目录
-                .replace(PACKAGE_NAME.replaceAll("\\.", Matcher.quoteReplacement(separator)),
-                        packageNameNew.replaceAll("\\.", Matcher.quoteReplacement(separator)))
-                .replace(ARTIFACT_ID, artifactIdNew) //
-                .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
+                                           String projectBaseDirNew, String packageNameNew, String artifactIdNew, String keywordNew) {
+        String newPath = file.getPath().replace(projectBaseDir, projectBaseDirNew); // 新目录
+        if(artifactIdNew.contains("-")){
+            newPath = newPath.replace(ARTIFACT_ID, artifactIdNew) //
+                    .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
+        }
+        // keyword vs package
+        if(ObjectUtils.isNotEmpty(keywordNew) && !keywordNew.equals(KEYWORD)){
+            newPath = newPath.replaceAll(KEYWORD.toUpperCase(), keywordNew.toUpperCase())
+                    .replaceAll(KEYWORD.toLowerCase(), keywordNew.toLowerCase())
+                    .replaceAll(StrUtil.upperFirst(KEYWORD), StrUtil.upperFirst(keywordNew));
+        }
+        newPath = newPath.replace(PACKAGE_NAME.replaceAll("\\.", Matcher.quoteReplacement(separator)),
+                        packageNameNew.replaceAll("\\.", Matcher.quoteReplacement(separator)));
+        if(ObjectUtils.isNotEmpty(keywordNew) && PACKAGE_NAME.contains(".")  && packageNameNew.contains(keywordNew)){
+            newPath = newPath.replace(PACKAGE_NAME.replaceAll("\\.", Matcher.quoteReplacement(separator).replace(KEYWORD,keywordNew)),
+                    packageNameNew.replaceAll("\\.", Matcher.quoteReplacement(separator)));
+        }
+        if(!artifactIdNew.contains("-")){
+            newPath = newPath.replace(ARTIFACT_ID, artifactIdNew) //
+                    .replaceAll(StrUtil.upperFirst(ARTIFACT_ID), StrUtil.upperFirst(artifactIdNew));
+        }
+        return newPath;
+
     }
 
     private static String getFileType(File file) {
