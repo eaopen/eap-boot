@@ -14,7 +14,9 @@ public class ProjectReactor {
 
     public static void main(String[] args) {
         //reactorEap();
+        //reactoJeecg();
         //reactorExtn();
+        //reactorExtnUi();
     }
 
     public static void reactorEap(){
@@ -35,8 +37,15 @@ public class ProjectReactor {
     public static void reactorExtn(){
         String projectBaseDir = getProjectBaseDir();
         projectBaseDir = "/Users/dev/workspace/lowcode/jnpf-boot36";
-        ReactorUtil.projectReactor(projectBaseDir, "extn3c",
+        ReactorUtil.projectReactor(projectBaseDir, "extn36/extn-java",
                 new String[]{"openea.extn","extn-","org.openea.extn","OpenEAP-Extn","extn"},
+                new String[]{"com.jnpf","jnpf-","jnpf","JNPF快速开发平台","jnpf"});
+    }
+    public static void reactorExtnUi(){
+        String projectBaseDir = getProjectBaseDir();
+        projectBaseDir = "/Users/dev/workspace/lowcode/jnpf-ui36";
+        ReactorUtil.projectReactor(projectBaseDir, "extn36/extn-ui",
+                new String[]{"openea.extn","extn-","extn","OpenEAP-Extn","extn"},
                 new String[]{"com.jnpf","jnpf-","jnpf","JNPF快速开发平台","jnpf"});
     }
 

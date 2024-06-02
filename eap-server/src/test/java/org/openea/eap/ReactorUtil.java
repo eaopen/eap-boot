@@ -104,6 +104,7 @@ public class ReactorUtil {
         int filesSize = files.size();
         log.info("[main][需要重写的文件数量：{}，预计需要 {}-{} 秒]", filesSize, filesSize/100, filesSize/30);
         // 写入文件
+        final long startTime = System.currentTimeMillis();
         AtomicInteger index = new AtomicInteger(0);
         files.forEach(file -> {
             int currentIndex = index.getAndIncrement();
@@ -116,8 +117,8 @@ public class ReactorUtil {
             // 如果非白名单的文件类型，重写内容，在生成文件
             String content = replaceFileContent(file, groupIdNew, artifactIdNew, packageNameNew, titleNew, keywordNew);
             writeFile(file, content, projectBaseDir, projectBaseDirNew, packageNameNew, artifactIdNew, keywordNew);
-            if(currentIndex%100 == 0){
-                log.info("index="+currentIndex);
+            if(currentIndex%100 == 0 || (System.currentTimeMillis()-startTime)%30000==0 ){
+                log.info("index="+currentIndex+" cost="+ (System.currentTimeMillis()-startTime)%1000+"(s) file="+file.getPath());
             }
         });
         log.info("[main][重写完成]共耗时：{} 秒", (System.currentTimeMillis() - start) / 1000);
@@ -186,6 +187,9 @@ public class ReactorUtil {
             content = content.replaceAll(KEYWORD.toUpperCase(), keywordNew.toUpperCase())
                     .replaceAll(KEYWORD.toLowerCase(), keywordNew.toLowerCase())
                     .replaceAll(StrUtil.upperFirst(KEYWORD), StrUtil.upperFirst(keywordNew));
+            if("extn".equals(keywordNew)){
+                content = content.replace("extn-java-","extn-");
+            }
         }
         // replace 注释
         content = removeContentCust(content);
@@ -242,6 +246,9 @@ public class ReactorUtil {
             newPath = newPath.replaceAll(KEYWORD.toUpperCase(), keywordNew.toUpperCase())
                     .replaceAll(KEYWORD.toLowerCase(), keywordNew.toLowerCase())
                     .replaceAll(StrUtil.upperFirst(KEYWORD), StrUtil.upperFirst(keywordNew));
+            if("extn".equals(keywordNew)){
+                newPath = newPath.replace("extn-java-","extn-");
+            }
         }
         return newPath;
 
