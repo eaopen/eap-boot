@@ -168,7 +168,7 @@ public class ReactorUtil {
                     .replaceAll(StrUtil.upperFirst(KEYWORD)+"Key", StrUtil.upperFirst(keywordNew)+"Key");
         }
         if(ObjectUtils.isNotEmpty(packageNameNew) && !packageNameNew.equals(PACKAGE_NAME)){
-            if(PACKAGE_NAME.contains(".")){
+            if(PACKAGE_NAME.contains(".") || !PACKAGE_NAME.contains(KEYWORD)){
                 content = content.replaceAll(PACKAGE_NAME, packageNameNew);
                 content = content.replaceAll(PACKAGE_NAME.replaceAll("\\.","/"), packageNameNew.replaceAll("\\.","/"));
             }else{
