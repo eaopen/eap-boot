@@ -174,8 +174,13 @@ public class ReactorUtil {
             }else{
                 content = content.replaceAll(PACKAGE_NAME+"\\.", packageNameNew+".");
                 content = content.replaceAll(PACKAGE_NAME+"/", packageNameNew+"/");
-                //content = content.replaceAll(PACKAGE_NAME, packageNameNew);
+                content = content.replaceAll("package "+PACKAGE_NAME, "package "+packageNameNew);
             }
+            // scan
+            // scanBasePackages = {"extn"}
+            // @ComponentScan("extn")
+            content = content.replace("@ComponentScan(\""+PACKAGE_NAME+"\")","@ComponentScan(\""+packageNameNew+"\")");
+            content = content.replace("scanBasePackages = {\"\"+PACKAGE_NAME+\"\"}","scanBasePackages = {\""+packageNameNew+"\"}");
         }
         content = content.replaceAll(TITLE, titleNew);
         if(ObjectUtils.isNotEmpty(artifactIdNew) && !ARTIFACT_ID.contains("-")){
