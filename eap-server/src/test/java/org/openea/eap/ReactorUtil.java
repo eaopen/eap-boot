@@ -135,6 +135,7 @@ public class ReactorUtil {
     private static Collection<File> listFiles(String projectBaseDir) {
         Collection<File> files = FileUtil.loopFiles(projectBaseDir);
         // 移除 IDEA、Git 自身的文件、Node 编译出来的文件
+        // 排除file-preview(kk-fileview)
         files = files.stream()
                 .filter(file -> !file.getPath().contains(separator + "target" + separator)
                         && !file.getPath().contains(separator + "node_modules" + separator)
@@ -142,7 +143,10 @@ public class ReactorUtil {
                         && !file.getPath().contains(separator + ".git" + separator)
                         && !file.getPath().contains(separator + "dist" + separator)
                         && !file.getPath().contains(".iml")
-                        && !file.getPath().contains(".html.gz"))
+                        && !file.getPath().contains(".html.gz")
+                        && !file.getPath().contains("file-preview")
+                        && !file.getPath().contains("LibreOfficePortable")
+                )
                 .collect(Collectors.toList());
         return files;
     }
