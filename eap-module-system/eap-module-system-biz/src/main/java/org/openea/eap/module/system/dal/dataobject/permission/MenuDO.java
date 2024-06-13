@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * 菜单 DO
- *
+ * todo 增加子系统 systemId
  * @author ruoyi
  */
 @TableName("system_menu")
@@ -42,6 +42,12 @@ public class MenuDO extends BaseDO {
      * 菜单名称
      */
     private String name;
+
+    /**
+     * 所属系统，默认为0-主系统
+     */
+    private Long systemId;
+
     /**
      * 权限标识
      *
