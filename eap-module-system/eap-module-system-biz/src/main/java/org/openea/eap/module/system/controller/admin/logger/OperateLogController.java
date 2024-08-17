@@ -1,5 +1,7 @@
 package org.openea.eap.module.system.controller.admin.logger;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageParam;
@@ -11,9 +13,6 @@ import org.openea.eap.module.system.controller.admin.logger.vo.operatelog.Operat
 import org.openea.eap.module.system.controller.admin.logger.vo.operatelog.OperateLogRespVO;
 import org.openea.eap.module.system.dal.dataobject.logger.OperateLogDO;
 import org.openea.eap.module.system.service.logger.OperateLogService;
-import org.openea.eap.module.system.service.user.AdminUserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +36,6 @@ public class OperateLogController {
 
     @Resource
     private OperateLogService operateLogService;
-    @Resource
-    private AdminUserService userService;
 
     @GetMapping("/page")
     @Operation(summary = "查看操作日志分页列表")

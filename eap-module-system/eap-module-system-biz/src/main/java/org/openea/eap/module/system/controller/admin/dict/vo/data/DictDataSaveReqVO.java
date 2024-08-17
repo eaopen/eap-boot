@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.controller.admin.dict.vo.data;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.common.validation.InEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.common.validation.InEnum;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ public class DictDataSaveReqVO {
     @NotNull(message = "显示顺序不能为空")
     private Integer sort;
 
-    @Schema(description = "字典标签", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
+    @Schema(description = "字典标签", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
     @NotBlank(message = "字典标签不能为空")
     @Size(max = 100, message = "字典标签长度不能超过100个字符")
     private String label;

@@ -52,7 +52,6 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
                 userSessionsMap = userSessions.get(user.getUserType());
             }
         }
-        // todo 多端登录待扩展
         CopyOnWriteArrayList<WebSocketSession> sessions = userSessionsMap.get(user.getId());
         if (sessions == null) {
             sessions = new CopyOnWriteArrayList<>();
@@ -66,7 +65,7 @@ public class WebSocketSessionManagerImpl implements WebSocketSessionManager {
     @Override
     public void removeSession(WebSocketSession session) {
         // 移除从 idSessions 中
-        idSessions.remove(session.getId(), session);
+        idSessions.remove(session.getId());
         // 移除从 idSessions 中
         LoginUser user = WebSocketFrameworkUtils.getLoginUser(session);
         if (user == null) {

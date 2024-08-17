@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.dal.mysql.permission;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.module.system.controller.admin.permission.vo.role.RolePageReqVO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.lang.Nullable;
 
 import java.util.Collection;

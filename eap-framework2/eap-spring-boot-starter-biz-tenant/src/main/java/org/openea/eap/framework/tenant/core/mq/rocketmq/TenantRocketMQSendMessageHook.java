@@ -1,8 +1,8 @@
 package org.openea.eap.framework.tenant.core.mq.rocketmq;
 
-import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.apache.rocketmq.client.hook.SendMessageContext;
 import org.apache.rocketmq.client.hook.SendMessageHook;
+import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 
 import static org.openea.eap.framework.web.core.util.WebFrameworkUtils.HEADER_TENANT_ID;
 

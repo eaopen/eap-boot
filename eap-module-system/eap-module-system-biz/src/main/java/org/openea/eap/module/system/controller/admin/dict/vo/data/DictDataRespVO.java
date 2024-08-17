@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.controller.admin.dict.vo.data;
 
-import org.openea.eap.framework.excel.core.annotations.DictFormat;
-import org.openea.eap.framework.excel.core.convert.DictConvert;
-import org.openea.eap.module.system.enums.DictTypeConstants;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.openea.eap.framework.excel.core.annotations.DictFormat;
+import org.openea.eap.framework.excel.core.convert.DictConvert;
+import org.openea.eap.module.system.enums.DictTypeConstants;
 
 import java.time.LocalDateTime;
 
@@ -19,11 +19,11 @@ public class DictDataRespVO {
     @ExcelProperty("字典编码")
     private Long id;
 
-    @Schema(description = "显示顺序不能为空", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
+    @Schema(description = "显示顺序", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     @ExcelProperty("字典排序")
     private Integer sort;
 
-    @Schema(description = "字典标签", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
+    @Schema(description = "字典标签", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
     @ExcelProperty("字典标签")
     private String label;
 

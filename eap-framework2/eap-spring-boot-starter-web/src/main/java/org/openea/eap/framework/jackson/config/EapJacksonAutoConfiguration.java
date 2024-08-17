@@ -1,10 +1,6 @@
 package org.openea.eap.framework.jackson.config;
 
 import cn.hutool.core.collection.CollUtil;
-import org.openea.eap.framework.common.util.json.JsonUtils;
-import org.openea.eap.framework.jackson.core.databind.LocalDateTimeDeserializer;
-import org.openea.eap.framework.jackson.core.databind.LocalDateTimeSerializer;
-import org.openea.eap.framework.jackson.core.databind.NumberSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -12,6 +8,10 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
+import org.openea.eap.framework.common.util.json.JsonUtils;
+import org.openea.eap.framework.common.util.json.databind.NumberSerializer;
+import org.openea.eap.framework.common.util.json.databind.TimestampLocalDateTimeDeserializer;
+import org.openea.eap.framework.common.util.json.databind.TimestampLocalDateTimeSerializer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -37,13 +37,13 @@ public class EapJacksonAutoConfiguration {
                 .addDeserializer(LocalDate.class, LocalDateDeserializer.INSTANCE)
                 .addSerializer(LocalTime.class, LocalTimeSerializer.INSTANCE)
                 .addDeserializer(LocalTime.class, LocalTimeDeserializer.INSTANCE)
-                // 新增 LocalDateTime 序列化、反序列化规则
-                .addSerializer(LocalDateTime.class, LocalDateTimeSerializer.INSTANCE)
-                .addDeserializer(LocalDateTime.class, LocalDateTimeDeserializer.INSTANCE);
+                // 新增 LocalDateTime 序列化、反序列化规则，使用 Long 时间戳
+                .addSerializer(LocalDateTime.class, TimestampLocalDateTimeSerializer.INSTANCE)
+                .addDeserializer(LocalDateTime.class, TimestampLocalDateTimeDeserializer.INSTANCE);
         // 1.2 注册到 objectMapper
         objectMappers.forEach(objectMapper -> objectMapper.registerModule(simpleModule));
 
-        // 2. 设置 objectMapper 到 JsonUtils {
+        // 2. 设置 objectMapper 到 JsonUtils
         JsonUtils.init(CollUtil.getFirst(objectMappers));
         log.info("[init][初始化 JsonUtils 成功]");
         return new JsonUtils();

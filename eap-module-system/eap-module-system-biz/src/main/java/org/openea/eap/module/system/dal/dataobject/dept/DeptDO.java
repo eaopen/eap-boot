@@ -1,17 +1,18 @@
 package org.openea.eap.module.system.dal.dataobject.dept;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
-import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
+import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 
 /**
  * 部门表
  *
+ * @author ruoyi
  */
 @TableName("system_dept")
 @KeySequence("system_dept_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
@@ -20,9 +21,6 @@ import lombok.EqualsAndHashCode;
 public class DeptDO extends TenantBaseDO {
 
     public static final Long PARENT_ID_ROOT = 0L;
-
-    public static final String CATEGORY_COMPANY = "company";
-    public static final String CATEGORY_DEPARTMENT = "department";
 
     /**
      * 部门ID
@@ -39,12 +37,6 @@ public class DeptDO extends TenantBaseDO {
      * 关联 {@link #id}
      */
     private Long parentId;
-
-    /**
-     * 分类
-     * 公司company/部门department
-     */
-    private String category;
     /**
      * 显示顺序
      */

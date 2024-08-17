@@ -1,7 +1,7 @@
 package org.openea.eap.framework.tenant.core.mq.rabbitmq;
 
-import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.apache.kafka.clients.producer.ProducerInterceptor;
+import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;

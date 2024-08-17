@@ -37,7 +37,7 @@ public class EapWebAutoConfiguration implements WebMvcConfigurer {
     /**
      * 应用名
      */
-    @Value("${spring.application.name:eap-server}")
+    @Value("${spring.application.name}")
     private String applicationName;
 
     @Override
@@ -59,9 +59,8 @@ public class EapWebAutoConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public GlobalExceptionHandler globalExceptionHandler(ApiErrorLogFrameworkService apiErrorLogFrameworkService) {
-        String strAppName = applicationName;
-        return new GlobalExceptionHandler(strAppName, apiErrorLogFrameworkService);
+    public GlobalExceptionHandler globalExceptionHandler(ApiErrorLogFrameworkService ApiErrorLogFrameworkService) {
+        return new GlobalExceptionHandler(applicationName, ApiErrorLogFrameworkService);
     }
 
     @Bean
@@ -124,8 +123,9 @@ public class EapWebAutoConfiguration implements WebMvcConfigurer {
      * @param restTemplateBuilder {@link RestTemplateAutoConfiguration#restTemplateBuilder}
      */
     @Bean
-    @ConditionalOnMissingBean(RestTemplate.class)
+    @ConditionalOnMissingBean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder.build();
     }
+
 }

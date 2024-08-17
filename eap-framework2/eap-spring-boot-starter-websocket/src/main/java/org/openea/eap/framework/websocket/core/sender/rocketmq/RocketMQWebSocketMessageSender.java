@@ -1,10 +1,10 @@
 package org.openea.eap.framework.websocket.core.sender.rocketmq;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.openea.eap.framework.websocket.core.sender.AbstractWebSocketMessageSender;
 import org.openea.eap.framework.websocket.core.sender.WebSocketMessageSender;
 import org.openea.eap.framework.websocket.core.session.WebSocketSessionManager;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 
 /**
  * 基于 RocketMQ 的 {@link WebSocketMessageSender} 实现类

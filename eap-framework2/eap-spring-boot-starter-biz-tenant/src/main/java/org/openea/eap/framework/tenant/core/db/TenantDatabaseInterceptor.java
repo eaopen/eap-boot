@@ -1,11 +1,11 @@
 package org.openea.eap.framework.tenant.core.db;
 
 import cn.hutool.core.collection.CollUtil;
-import org.openea.eap.framework.tenant.config.TenantProperties;
-import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
+import org.openea.eap.framework.tenant.config.TenantProperties;
+import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +17,7 @@ import java.util.Set;
 public class TenantDatabaseInterceptor implements TenantLineHandler {
 
     private final Set<String> ignoreTables = new HashSet<>();
+
     public TenantDatabaseInterceptor(TenantProperties properties) {
         // 不同 DB 下，大小写的习惯不同，所以需要都添加进去
         properties.getIgnoreTables().forEach(table -> {

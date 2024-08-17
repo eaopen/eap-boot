@@ -1,13 +1,13 @@
 package org.openea.eap.module.system.controller.admin.auth.vo;
 
-import org.openea.eap.framework.common.validation.InEnum;
-import org.openea.eap.framework.common.validation.Mobile;
-import org.openea.eap.module.system.enums.sms.SmsSceneEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openea.eap.framework.common.validation.InEnum;
+import org.openea.eap.framework.common.validation.Mobile;
+import org.openea.eap.module.system.enums.sms.SmsSceneEnum;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

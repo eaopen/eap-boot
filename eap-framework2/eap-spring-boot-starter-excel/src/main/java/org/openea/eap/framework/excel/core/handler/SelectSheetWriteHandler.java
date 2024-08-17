@@ -2,15 +2,10 @@ package org.openea.eap.framework.excel.core.handler;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.poi.excel.ExcelUtil;
-import org.openea.eap.framework.common.core.KeyValue;
-import org.openea.eap.framework.dict.core.DictFrameworkUtils;
-import org.openea.eap.framework.excel.core.annotations.ExcelColumnSelect;
-import org.openea.eap.framework.excel.core.function.ExcelColumnSelectFunction;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
@@ -19,6 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.openea.eap.framework.common.core.KeyValue;
+import org.openea.eap.framework.dict.core.DictFrameworkUtils;
+import org.openea.eap.framework.excel.core.annotations.ExcelColumnSelect;
+import org.openea.eap.framework.excel.core.function.ExcelColumnSelectFunction;
 
 import java.lang.reflect.Field;
 import java.util.Comparator;
@@ -55,12 +54,6 @@ public class SelectSheetWriteHandler implements SheetWriteHandler {
     private final Map<Integer, List<String>> selectMap = new HashMap<>();
 
     public SelectSheetWriteHandler(Class<?> head) {
-        // 加载下拉数据获取接口
-        Map<String, ExcelColumnSelectFunction> beansMap = SpringUtil.getBeanFactory().getBeansOfType(ExcelColumnSelectFunction.class);
-        if (MapUtil.isEmpty(beansMap)) {
-            return;
-        }
-
         // 解析下拉数据
         int colIndex = 0;
         for (Field field : head.getDeclaredFields()) {

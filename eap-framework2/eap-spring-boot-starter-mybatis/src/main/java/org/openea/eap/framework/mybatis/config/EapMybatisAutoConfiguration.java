@@ -2,13 +2,12 @@ package org.openea.eap.framework.mybatis.config;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
 import com.baomidou.mybatisplus.extension.incrementer.*;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.github.pagehelper.PageInterceptor;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.openea.eap.framework.mybatis.core.handler.DefaultDBFieldHandler;
@@ -17,15 +16,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import java.util.Properties;
-
 /**
  * MyBaits 配置类
  *
  */
-@AutoConfiguration
-//value = "${eap.info.base-package}"
-@MapperScan(value = "org.openea.eap", annotationClass = Mapper.class,
+@AutoConfiguration(before = MybatisPlusAutoConfiguration.class) // 目的：先于 MyBatis Plus 自动配置，避免 @MapperScan 可能扫描不到 Mapper 打印 warn 日志
+@MapperScan(value = "${eap.info.base-package}", annotationClass = Mapper.class,
         lazyInitialization = "${mybatis.lazy-initialization:false}") // Mapper 懒加载，目前仅用于单元测试
 public class EapMybatisAutoConfiguration {
 
@@ -33,10 +29,6 @@ public class EapMybatisAutoConfiguration {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
         mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor()); // 分页插件
-
-        //乐观锁
-        mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-
         return mybatisPlusInterceptor;
     }
 
@@ -45,22 +37,6 @@ public class EapMybatisAutoConfiguration {
         return new DefaultDBFieldHandler(); // 自动填充参数类
     }
 
-    @Bean
-    public PageInterceptor pageHelper() {
-        PageInterceptor pageHelper = new PageInterceptor();
-        // 配置PageHelper参数
-        Properties properties = new Properties();
-        properties.setProperty("dialectAlias", "kingbase8=com.github.pagehelper.dialect.helper.MySqlDialect");
-        properties.setProperty("autoRuntimeDialect", "true");
-        properties.setProperty("offsetAsPageNum", "false");
-        properties.setProperty("rowBoundsWithCount", "false");
-        properties.setProperty("pageSizeZero", "true");
-        properties.setProperty("reasonable", "false");
-        properties.setProperty("supportMethodsArguments", "false");
-        properties.setProperty("returnPageInfo", "none");
-        pageHelper.setProperties(properties);
-        return pageHelper;
-    }
     @Bean
     @ConditionalOnProperty(prefix = "mybatis-plus.global-config.db-config", name = "id-type", havingValue = "INPUT")
     public IKeyGenerator keyGenerator(ConfigurableEnvironment environment) {

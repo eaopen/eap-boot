@@ -1,12 +1,12 @@
 package org.openea.eap.framework.mybatis.config;
 
 import cn.hutool.core.util.StrUtil;
-import org.openea.eap.framework.common.util.collection.SetUtils;
-import org.openea.eap.framework.mybatis.core.enums.SqlConstants;
-import org.openea.eap.framework.mybatis.core.util.JdbcUtils;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.IdType;
 import lombok.extern.slf4j.Slf4j;
+import org.openea.eap.framework.common.util.collection.SetUtils;
+import org.openea.eap.framework.mybatis.core.enums.SqlConstants;
+import org.openea.eap.framework.mybatis.core.util.JdbcUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -93,7 +93,6 @@ public class IdTypeEnvironmentPostProcessor implements EnvironmentPostProcessor 
     }
 
     public static DbType getDbType(ConfigurableEnvironment environment) {
-        DbType dbType = null;
         String primary = environment.getProperty(DATASOURCE_DYNAMIC_KEY + "." + "primary");
         if (StrUtil.isEmpty(primary)) {
             return null;
@@ -102,9 +101,7 @@ public class IdTypeEnvironmentPostProcessor implements EnvironmentPostProcessor 
         if (StrUtil.isEmpty(url)) {
             return null;
         }
-        dbType = JdbcUtils.getDbType(url);
-
-        return dbType;
+        return JdbcUtils.getDbType(url);
     }
 
 }

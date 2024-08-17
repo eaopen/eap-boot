@@ -1,16 +1,16 @@
 package org.openea.eap.framework.datapermission.core.aop;
 
-import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.aopalliance.aop.Advice;
+import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 
 /**
- * {@link org.openea.eap.framework.datapermission.core.annotation.DataPermission} 注解的 Advisor 实现类
+ * {@link DataPermission} 注解的 Advisor 实现类
  *
  */
 @Getter

@@ -1,11 +1,11 @@
 package org.openea.eap.framework.xss.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openea.eap.framework.common.enums.WebFilterOrderEnum;
 import org.openea.eap.framework.xss.core.clean.JsoupXssCleaner;
 import org.openea.eap.framework.xss.core.clean.XssCleaner;
 import org.openea.eap.framework.xss.core.filter.XssFilter;
 import org.openea.eap.framework.xss.core.json.XssStringJsonDeserializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -44,9 +44,11 @@ public class EapXssAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnMissingBean(name = "xssJacksonCustomizer")
     @ConditionalOnBean(ObjectMapper.class)
     @ConditionalOnProperty(value = "eap.xss.enable", havingValue = "true")
-    public Jackson2ObjectMapperBuilderCustomizer xssJacksonCustomizer(XssCleaner xssCleaner) {
+    public Jackson2ObjectMapperBuilderCustomizer xssJacksonCustomizer(XssProperties properties,
+                                                                      PathMatcher pathMatcher,
+                                                                      XssCleaner xssCleaner) {
         // 在反序列化时进行 xss 过滤，可以替换使用 XssStringJsonSerializer，在序列化时进行处理
-        return builder -> builder.deserializerByType(String.class, new XssStringJsonDeserializer(xssCleaner));
+        return builder -> builder.deserializerByType(String.class, new XssStringJsonDeserializer(properties, pathMatcher, xssCleaner));
     }
 
     /**

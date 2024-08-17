@@ -1,13 +1,13 @@
 package org.openea.eap.framework.idempotent.config;
 
 import org.openea.eap.framework.idempotent.core.aop.IdempotentAspect;
+import org.openea.eap.framework.idempotent.core.keyresolver.IdempotentKeyResolver;
 import org.openea.eap.framework.idempotent.core.keyresolver.impl.DefaultIdempotentKeyResolver;
 import org.openea.eap.framework.idempotent.core.keyresolver.impl.ExpressionIdempotentKeyResolver;
-import org.openea.eap.framework.idempotent.core.keyresolver.IdempotentKeyResolver;
 import org.openea.eap.framework.idempotent.core.keyresolver.impl.UserIdempotentKeyResolver;
 import org.openea.eap.framework.idempotent.core.redis.IdempotentRedisDAO;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.openea.eap.framework.redis.config.EapRedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.StringRedisTemplate;
 

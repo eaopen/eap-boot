@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.controller.admin.auth.vo;
 
-import org.openea.eap.framework.common.validation.Mobile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openea.eap.framework.common.validation.Mobile;
 
 import javax.validation.constraints.NotEmpty;
 

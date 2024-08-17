@@ -1,8 +1,8 @@
 package org.openea.eap.framework.web.core.filter;
 
 import cn.hutool.core.util.StrUtil;
-import org.openea.eap.framework.web.config.WebProperties;
 import lombok.RequiredArgsConstructor;
+import org.openea.eap.framework.web.config.WebProperties;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.http.HttpServletRequest;

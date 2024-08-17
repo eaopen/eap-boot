@@ -1,7 +1,7 @@
 package org.openea.eap.framework.websocket.core.sender.redis;
 
-import org.openea.eap.framework.mq.redis.core.pubsub.AbstractRedisChannelMessage;
 import lombok.Data;
+import org.openea.eap.framework.mq.redis.core.pubsub.AbstractRedisChannelMessage;
 
 /**
  * Redis 广播 WebSocket 的消息

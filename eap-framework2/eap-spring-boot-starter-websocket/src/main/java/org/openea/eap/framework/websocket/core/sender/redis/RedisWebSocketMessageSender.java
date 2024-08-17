@@ -1,10 +1,10 @@
 package org.openea.eap.framework.websocket.core.sender.redis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.mq.redis.core.RedisMQTemplate;
 import org.openea.eap.framework.websocket.core.sender.AbstractWebSocketMessageSender;
 import org.openea.eap.framework.websocket.core.sender.WebSocketMessageSender;
 import org.openea.eap.framework.websocket.core.session.WebSocketSessionManager;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基于 Redis 的 {@link WebSocketMessageSender} 实现类

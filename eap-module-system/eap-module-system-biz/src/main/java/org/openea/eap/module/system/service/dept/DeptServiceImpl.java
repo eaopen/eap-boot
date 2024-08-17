@@ -2,6 +2,8 @@ package org.openea.eap.module.system.service.dept;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
@@ -10,8 +12,6 @@ import org.openea.eap.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.dal.mysql.dept.DeptMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

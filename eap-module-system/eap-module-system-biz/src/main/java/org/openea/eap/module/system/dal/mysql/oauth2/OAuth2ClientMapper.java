@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.dal.mysql.oauth2;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
-import org.apache.ibatis.annotations.Mapper;
 
 
 /**

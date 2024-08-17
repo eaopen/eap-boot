@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.controller.admin.dict.vo.data;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.common.pojo.PageParam;
-import org.openea.eap.framework.common.validation.InEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.common.pojo.PageParam;
+import org.openea.eap.framework.common.validation.InEnum;
 
 import javax.validation.constraints.Size;
 
@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true)
 public class DictDataPageReqVO extends PageParam {
 
-    @Schema(description = "字典标签", example = "芋道")
+    @Schema(description = "字典标签", example = "eap")
     @Size(max = 100, message = "字典标签长度不能超过100个字符")
     private String label;
 

@@ -1,14 +1,14 @@
 package org.openea.eap.module.system.dal.dataobject.permission;
 
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.type.JsonLongSetTypeHandler;
-import org.openea.eap.module.system.enums.permission.DataScopeEnum;
 import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
+import org.openea.eap.module.system.enums.permission.DataScopeEnum;
 import org.openea.eap.module.system.enums.permission.RoleTypeEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -72,7 +72,7 @@ public class RoleDO extends TenantBaseDO {
      *
      * 适用于 {@link #dataScope} 的值为 {@link DataScopeEnum#DEPT_CUSTOM} 时
      */
-    @TableField(typeHandler = JsonLongSetTypeHandler.class)
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private Set<Long> dataScopeDeptIds;
 
 }

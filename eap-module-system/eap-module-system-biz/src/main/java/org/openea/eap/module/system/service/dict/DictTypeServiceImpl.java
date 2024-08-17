@@ -1,6 +1,7 @@
 package org.openea.eap.module.system.service.dict;
 
 import cn.hutool.core.util.StrUtil;
+import com.google.common.annotations.VisibleForTesting;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.LocalDateTimeUtils;
 import org.openea.eap.framework.common.util.object.BeanUtils;
@@ -8,7 +9,6 @@ import org.openea.eap.module.system.controller.admin.dict.vo.type.DictTypePageRe
 import org.openea.eap.module.system.controller.admin.dict.vo.type.DictTypeSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictTypeDO;
 import org.openea.eap.module.system.dal.mysql.dict.DictTypeMapper;
-import com.google.common.annotations.VisibleForTesting;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

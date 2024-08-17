@@ -1,6 +1,5 @@
 package org.openea.eap.module.system.controller.admin.logger.vo.operatelog;
 
-import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.fhs.core.trans.anno.Trans;
@@ -8,6 +7,7 @@ import com.fhs.core.trans.constant.TransType;
 import com.fhs.core.trans.vo.VO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;

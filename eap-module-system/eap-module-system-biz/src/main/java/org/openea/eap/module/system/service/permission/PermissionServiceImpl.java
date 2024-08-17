@@ -4,6 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Suppliers;
+import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
@@ -18,11 +23,6 @@ import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
 import org.openea.eap.module.system.enums.permission.DataScopeEnum;
 import org.openea.eap.module.system.service.dept.DeptService;
 import org.openea.eap.module.system.service.user.AdminUserService;
-import com.baomidou.dynamic.datasource.annotation.DSTransactional;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -52,11 +52,11 @@ public class PermissionServiceImpl implements PermissionService {
     @Resource
     private RoleService roleService;
     @Resource
-    protected MenuService menuService;
+    private MenuService menuService;
     @Resource
     private DeptService deptService;
     @Resource
-    protected AdminUserService userService;
+    private AdminUserService userService;
 
     @Override
     public boolean hasAnyPermissions(Long userId, String... permissions) {

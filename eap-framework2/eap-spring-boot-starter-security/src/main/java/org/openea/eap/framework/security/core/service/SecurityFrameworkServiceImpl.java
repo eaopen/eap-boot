@@ -1,10 +1,10 @@
 package org.openea.eap.framework.security.core.service;
 
 import cn.hutool.core.collection.CollUtil;
+import lombok.AllArgsConstructor;
 import org.openea.eap.framework.security.core.LoginUser;
 import org.openea.eap.framework.security.core.util.SecurityFrameworkUtils;
 import org.openea.eap.module.system.api.permission.PermissionApi;
-import lombok.AllArgsConstructor;
 
 import java.util.Arrays;
 

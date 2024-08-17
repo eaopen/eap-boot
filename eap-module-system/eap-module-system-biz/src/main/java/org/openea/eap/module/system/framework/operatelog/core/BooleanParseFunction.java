@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.framework.operatelog.core;
 
 import cn.hutool.core.util.StrUtil;
-import org.openea.eap.framework.dict.core.DictFrameworkUtils;
-import org.openea.eap.module.infra.enums.DictTypeConstants;
 import com.mzt.logapi.service.IParseFunction;
 import lombok.extern.slf4j.Slf4j;
+import org.openea.eap.framework.dict.core.DictFrameworkUtils;
+import org.openea.eap.module.infra.enums.DictTypeConstants;
 import org.springframework.stereotype.Component;
 
 /**

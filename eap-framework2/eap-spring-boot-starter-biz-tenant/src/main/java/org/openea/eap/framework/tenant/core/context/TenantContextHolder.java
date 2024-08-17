@@ -1,7 +1,7 @@
 package org.openea.eap.framework.tenant.core.context;
 
-import org.openea.eap.framework.common.enums.DocumentEnum;
 import com.alibaba.ttl.TransmittableThreadLocal;
+import org.openea.eap.framework.common.enums.DocumentEnum;
 
 /**
  * 多租户上下文 Holder
@@ -20,7 +20,7 @@ public class TenantContextHolder {
     private static final ThreadLocal<Boolean> IGNORE = new TransmittableThreadLocal<>();
 
     /**
-     * 获得租户编号。
+     * 获得租户编号
      *
      * @return 租户编号
      */

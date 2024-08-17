@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.framework.sms.core.client.dto;
 
-import org.openea.eap.module.system.framework.sms.core.enums.SmsTemplateAuditStatusEnum;
 import lombok.Data;
+import org.openea.eap.module.system.framework.sms.core.enums.SmsTemplateAuditStatusEnum;
 
 /**
  * 短信模板 Response DTO

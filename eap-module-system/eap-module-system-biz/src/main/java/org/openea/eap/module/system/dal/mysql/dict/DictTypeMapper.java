@@ -1,13 +1,13 @@
 package org.openea.eap.module.system.dal.mysql.dict;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.module.system.controller.admin.dict.vo.type.DictTypePageReqVO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictTypeDO;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
 

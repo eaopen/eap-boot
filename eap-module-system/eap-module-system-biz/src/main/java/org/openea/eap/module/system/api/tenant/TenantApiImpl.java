@@ -1,7 +1,5 @@
 package org.openea.eap.module.system.api.tenant;
 
-
-import org.openea.eap.module.system.api.tenant.TenantApi;
 import org.openea.eap.module.system.service.tenant.TenantService;
 import org.springframework.stereotype.Service;
 

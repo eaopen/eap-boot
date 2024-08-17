@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.dal.mysql.social;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.module.system.dal.dataobject.social.SocialUserBindDO;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 

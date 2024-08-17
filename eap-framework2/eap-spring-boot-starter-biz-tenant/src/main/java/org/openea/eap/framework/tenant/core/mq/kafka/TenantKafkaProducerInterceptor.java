@@ -1,11 +1,11 @@
 package org.openea.eap.framework.tenant.core.mq.kafka;
 
 import cn.hutool.core.util.ReflectUtil;
-import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
+import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 
 import java.util.Map;

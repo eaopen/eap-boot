@@ -9,10 +9,7 @@ import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 @EqualsAndHashCode(callSuper = true)
 public class SystemDO extends BaseDO {
 
-
     public static final Long ID_MAIN = 0L;
-    public static final Long ID_LOWCODE = 20L;
-    public static final Long ID_BUSINESS = 30L;
 
     /**
      * 编号
@@ -25,5 +22,15 @@ public class SystemDO extends BaseDO {
      */
     private String name;
 
+    /**
+     * 类型
+     * eap, extn, obpm
+     */
+    private String type;
+
+    // 是否需要配置菜单
+
+    // 扩展属性
+    private String configJson;
 
 }

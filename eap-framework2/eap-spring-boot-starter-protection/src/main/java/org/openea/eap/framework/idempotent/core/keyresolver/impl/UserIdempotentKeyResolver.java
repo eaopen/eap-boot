@@ -2,10 +2,10 @@ package org.openea.eap.framework.idempotent.core.keyresolver.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import org.aspectj.lang.JoinPoint;
 import org.openea.eap.framework.idempotent.core.annotation.Idempotent;
 import org.openea.eap.framework.idempotent.core.keyresolver.IdempotentKeyResolver;
 import org.openea.eap.framework.web.core.util.WebFrameworkUtils;
-import org.aspectj.lang.JoinPoint;
 
 /**
  * 用户级别的幂等 Key 解析器，使用方法名 + 方法参数 + userId + userType，组装成一个 Key

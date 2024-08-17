@@ -1,9 +1,9 @@
 package org.openea.eap.framework.websocket.core.sender.rabbitmq;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.websocket.core.sender.AbstractWebSocketMessageSender;
 import org.openea.eap.framework.websocket.core.sender.WebSocketMessageSender;
 import org.openea.eap.framework.websocket.core.session.WebSocketSessionManager;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 

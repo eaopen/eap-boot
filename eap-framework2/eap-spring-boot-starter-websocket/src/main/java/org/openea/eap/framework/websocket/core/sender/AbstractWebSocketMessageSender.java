@@ -2,11 +2,11 @@ package org.openea.eap.framework.websocket.core.sender;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.util.json.JsonUtils;
 import org.openea.eap.framework.websocket.core.message.JsonWebSocketMessage;
 import org.openea.eap.framework.websocket.core.session.WebSocketSessionManager;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -93,7 +93,7 @@ public abstract class AbstractWebSocketMessageSender implements WebSocketMessage
             // 2. 执行发送
             try {
                 session.sendMessage(new TextMessage(payload));
-                log.debug("[doSend][session({}) 发送消息成功，message({})]", session.getId(), message);
+                log.info("[doSend][session({}) 发送消息成功，message({})]", session.getId(), message);
             } catch (IOException ex) {
                 log.error("[doSend][session({}) 发送消息失败，message({})]", session.getId(), message, ex);
             }

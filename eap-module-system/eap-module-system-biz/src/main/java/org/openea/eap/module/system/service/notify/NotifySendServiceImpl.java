@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.service.notify;
 
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.module.system.dal.dataobject.notify.NotifyTemplateDO;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
+import static org.openea.eap.module.system.enums.ErrorCodeConstants.NOTICE_NOT_FOUND;
+import static org.openea.eap.module.system.enums.ErrorCodeConstants.NOTIFY_SEND_TEMPLATE_PARAM_MISS;
 
 /**
  * 站内信发送 Service 实现类

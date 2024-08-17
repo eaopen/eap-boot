@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.api.user.dto;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import lombok.Data;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
 
 import java.util.Set;
 
@@ -39,5 +39,9 @@ public class AdminUserRespDTO {
      * 手机号码
      */
     private String mobile;
+    /**
+     * 用户头像
+     */
+    private String avatar;
 
 }

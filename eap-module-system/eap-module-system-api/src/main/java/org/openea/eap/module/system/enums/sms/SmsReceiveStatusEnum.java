@@ -6,6 +6,7 @@ import lombok.Getter;
 /**
  * 短信的接收状态枚举
  *
+ * @date 2021/2/1 13:39
  */
 @Getter
 @AllArgsConstructor

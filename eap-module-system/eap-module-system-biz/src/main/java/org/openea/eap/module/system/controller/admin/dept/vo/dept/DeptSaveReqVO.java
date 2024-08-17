@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.controller.admin.dept.vo.dept;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.common.validation.InEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.common.validation.InEnum;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -17,7 +17,7 @@ public class DeptSaveReqVO {
     @Schema(description = "部门编号", example = "1024")
     private Long id;
 
-    @Schema(description = "部门名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
+    @Schema(description = "部门名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
     @NotBlank(message = "部门名称不能为空")
     @Size(max = 30, message = "部门名称长度不能超过 30 个字符")
     private String name;

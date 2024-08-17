@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.convert.social;
 
-import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
-import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserBindReqVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
+import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserBindReqVO;
 
 @Mapper
 public interface SocialUserConvert {

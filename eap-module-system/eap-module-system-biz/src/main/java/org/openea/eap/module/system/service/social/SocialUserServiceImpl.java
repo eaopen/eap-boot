@@ -2,6 +2,8 @@ package org.openea.eap.module.system.service.social;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
+import com.xingyuv.jushauth.model.AuthUser;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.exception.ServiceException;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
@@ -12,8 +14,6 @@ import org.openea.eap.module.system.dal.dataobject.social.SocialUserDO;
 import org.openea.eap.module.system.dal.mysql.social.SocialUserBindMapper;
 import org.openea.eap.module.system.dal.mysql.social.SocialUserMapper;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
-import com.xingyuv.jushauth.model.AuthUser;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;

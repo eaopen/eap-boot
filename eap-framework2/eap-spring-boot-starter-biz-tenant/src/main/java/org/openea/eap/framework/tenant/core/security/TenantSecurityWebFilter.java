@@ -1,6 +1,7 @@
 package org.openea.eap.framework.tenant.core.security;
 
 import cn.hutool.core.collection.CollUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
@@ -12,7 +13,6 @@ import org.openea.eap.framework.tenant.core.service.TenantFrameworkService;
 import org.openea.eap.framework.web.config.WebProperties;
 import org.openea.eap.framework.web.core.filter.ApiRequestFilter;
 import org.openea.eap.framework.web.core.handler.GlobalExceptionHandler;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
 
 import javax.servlet.FilterChain;
@@ -77,7 +77,7 @@ public class TenantSecurityWebFilter extends ApiRequestFilter {
             // 2. 如果请求未带租户的编号，不允许访问。
             if (tenantId == null) {
                 log.error("[doFilterInternal][URL({}/{}) 未传递租户编号]", request.getRequestURI(), request.getMethod());
-                ServletUtils.writeJSON(response, CommonResult.error(GlobalErrorCodeConstants.LOST_TENANTID.getCode(),
+                ServletUtils.writeJSON(response, CommonResult.error(GlobalErrorCodeConstants.BAD_REQUEST.getCode(),
                         "请求的租户标识未传递，请进行排查"));
                 return;
             }

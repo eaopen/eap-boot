@@ -2,9 +2,9 @@ package org.openea.eap.framework.ratelimiter.core.keyresolver.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import org.aspectj.lang.JoinPoint;
 import org.openea.eap.framework.ratelimiter.core.annotation.RateLimiter;
 import org.openea.eap.framework.ratelimiter.core.keyresolver.RateLimiterKeyResolver;
-import org.aspectj.lang.JoinPoint;
 
 /**
  * 默认（全局级别）限流 Key 解析器，使用方法名 + 方法参数，组装成一个 Key

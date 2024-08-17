@@ -4,6 +4,11 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.http.HttpUtils;
@@ -21,11 +26,6 @@ import org.openea.eap.module.system.service.oauth2.OAuth2ClientService;
 import org.openea.eap.module.system.service.oauth2.OAuth2GrantService;
 import org.openea.eap.module.system.service.oauth2.OAuth2TokenService;
 import org.openea.eap.module.system.util.oauth2.OAuth2Utils;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +40,6 @@ import static org.openea.eap.framework.common.exception.enums.GlobalErrorCodeCon
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception0;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
-import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUser;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
 /**
@@ -105,7 +104,7 @@ public class OAuth2OpenController {
                                                                      @RequestParam(value = "refresh_token", required = false) String refreshToken) { // 刷新模式
         List<String> scopes = OAuth2Utils.buildScopes(scope);
         // 1.1 校验授权类型
-        OAuth2GrantTypeEnum grantTypeEnum = OAuth2GrantTypeEnum.getByGranType(grantType);
+        OAuth2GrantTypeEnum grantTypeEnum = OAuth2GrantTypeEnum.getByGrantType(grantType);
         if (grantTypeEnum == null) {
             throw exception0(BAD_REQUEST.getCode(), StrUtil.format("未知授权类型({})", grantType));
         }
@@ -265,7 +264,7 @@ public class OAuth2OpenController {
     private String getImplicitGrantRedirect(Long userId, OAuth2ClientDO client,
                                             List<String> scopes, String redirectUri, String state) {
         // 1. 创建 access token 访问令牌
-        OAuth2AccessTokenDO accessTokenDO = oauth2GrantService.grantImplicit(userId, getLoginUser().getUserKey(), getUserType(), client.getClientId(), scopes);
+        OAuth2AccessTokenDO accessTokenDO = oauth2GrantService.grantImplicit(userId, getUserType(), client.getClientId(), scopes);
         Assert.notNull(accessTokenDO, "访问令牌不能为空"); // 防御性检查
         // 2. 拼接重定向的 URL
         // noinspection unchecked

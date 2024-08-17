@@ -1,9 +1,9 @@
 package org.openea.eap.framework.apilog.core.service;
 
-import cn.hutool.core.bean.BeanUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.module.infra.api.logger.ApiErrorLogApi;
 import org.openea.eap.module.infra.api.logger.dto.ApiErrorLogCreateReqDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 
 /**
@@ -13,15 +13,20 @@ import org.springframework.scheduling.annotation.Async;
  *
  */
 @RequiredArgsConstructor
+@Slf4j
 public class ApiErrorLogFrameworkServiceImpl implements ApiErrorLogFrameworkService {
 
     private final ApiErrorLogApi apiErrorLogApi;
 
     @Override
     @Async
-    public void createApiErrorLog(ApiErrorLog apiErrorLog) {
-        ApiErrorLogCreateReqDTO reqDTO = BeanUtil.copyProperties(apiErrorLog, ApiErrorLogCreateReqDTO.class);
-        apiErrorLogApi.createApiErrorLog(reqDTO);
+    public void createApiErrorLog(ApiErrorLogCreateReqDTO reqDTO) {
+        try {
+            apiErrorLogApi.createApiErrorLog(reqDTO);
+        } catch (Throwable ex) {
+            // 由于 @Async 异步调用，这里打印下日志，更容易跟进
+            log.error("[createApiErrorLog][url({}) log({}) 发生异常]", reqDTO.getRequestUrl(), reqDTO, ex);
+        }
     }
 
 }

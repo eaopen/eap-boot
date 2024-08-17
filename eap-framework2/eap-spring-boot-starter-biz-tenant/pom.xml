@@ -71,6 +71,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-system-api</artifactId>
+            <version>2.6.20240507-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

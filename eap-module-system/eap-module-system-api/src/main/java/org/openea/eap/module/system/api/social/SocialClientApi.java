@@ -2,7 +2,10 @@ package org.openea.eap.module.system.api.social;
 
 import org.openea.eap.module.system.api.social.dto.SocialWxJsapiSignatureRespDTO;
 import org.openea.eap.module.system.api.social.dto.SocialWxPhoneNumberInfoRespDTO;
+import org.openea.eap.module.system.api.social.dto.SocialWxQrcodeReqDTO;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
+
+import javax.validation.Valid;
 
 /**
  * 社交应用的 API 接口
@@ -37,5 +40,13 @@ public interface SocialClientApi {
      * @return 手机信息
      */
     SocialWxPhoneNumberInfoRespDTO getWxMaPhoneNumberInfo(Integer userType, String phoneCode);
+
+    /**
+     * 获得小程序二维码
+     *
+     * @param reqVO 请求信息
+     * @return 小程序二维码
+     */
+    byte[] getWxaQrcode(@Valid SocialWxQrcodeReqDTO reqVO);
 
 }

@@ -7,13 +7,13 @@ import org.openea.eap.framework.security.core.handler.AccessDeniedHandlerImpl;
 import org.openea.eap.framework.security.core.handler.AuthenticationEntryPointImpl;
 import org.openea.eap.framework.security.core.service.SecurityFrameworkService;
 import org.openea.eap.framework.security.core.service.SecurityFrameworkServiceImpl;
-import org.openea.eap.framework.security.core.util.PwdEncoderUtil;
 import org.openea.eap.framework.web.core.handler.GlobalExceptionHandler;
 import org.openea.eap.module.system.api.oauth2.OAuth2TokenApi;
 import org.openea.eap.module.system.api.permission.PermissionApi;
 import org.openea.eap.module.system.api.user.AdminUserApi;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,6 +32,7 @@ import javax.annotation.Resource;
  *
  */
 @AutoConfiguration
+@AutoConfigureOrder(-1) // 目的：先于 Spring Security 自动配置，避免一键改包后，org.* 基础包无法生效
 @EnableConfigurationProperties(SecurityProperties.class)
 public class EapSecurityAutoConfiguration {
 
@@ -70,10 +71,7 @@ public class EapSecurityAutoConfiguration {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder(securityProperties.getPasswordEncoderLength());
-        String encodingId = "bcrypt";
-        PwdEncoderUtil.addPasswordEncoder(encodingId, new BCryptPasswordEncoder(securityProperties.getPasswordEncoderLength()));
-        return PwdEncoderUtil.getDelegatingPasswordEncoder(encodingId);
+        return new BCryptPasswordEncoder(securityProperties.getPasswordEncoderLength());
     }
 
     /**

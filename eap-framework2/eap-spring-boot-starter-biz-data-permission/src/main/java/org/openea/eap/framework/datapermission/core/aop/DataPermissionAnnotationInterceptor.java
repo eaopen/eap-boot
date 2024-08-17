@@ -1,9 +1,9 @@
 package org.openea.eap.framework.datapermission.core.aop;
 
-import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 import lombok.Getter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 import org.springframework.core.MethodClassKey;
 import org.springframework.core.annotation.AnnotationUtils;
 

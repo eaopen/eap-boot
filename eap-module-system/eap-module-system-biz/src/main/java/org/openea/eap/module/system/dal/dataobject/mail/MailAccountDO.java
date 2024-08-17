@@ -1,16 +1,18 @@
 package org.openea.eap.module.system.dal.dataobject.mail;
 
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 
 /**
  * 邮箱账号 DO
  *
  * 用途：配置发送邮箱的账号
  *
+ * @author wangjingyi
+ * @since 2022-03-21
  */
 @TableName(value = "system_mail_account", autoResultMap = true)
 @Data

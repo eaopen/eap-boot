@@ -2,10 +2,10 @@ package org.openea.eap.framework.tenant.core.mq.rocketmq;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
-import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.apache.rocketmq.client.hook.ConsumeMessageContext;
 import org.apache.rocketmq.client.hook.ConsumeMessageHook;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 
 import java.util.List;

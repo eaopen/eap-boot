@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.dal.mysql.user;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Collection;
 import java.util.List;

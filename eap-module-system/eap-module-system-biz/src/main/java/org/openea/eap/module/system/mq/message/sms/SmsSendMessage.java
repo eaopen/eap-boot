@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.mq.message.sms;
 
-import org.openea.eap.framework.common.core.KeyValue;
 import lombok.Data;
+import org.openea.eap.framework.common.core.KeyValue;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

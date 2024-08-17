@@ -1,10 +1,11 @@
 package org.openea.eap.framework.security.core;
 
 import cn.hutool.core.map.MapUtil;
-import org.openea.eap.framework.common.enums.UserTypeEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.openea.eap.framework.common.enums.UserTypeEnum;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,7 @@ public class LoginUser {
      */
     private Long id;
 
-    /**
-     * 用户key(username)
-     */
     private String userKey;
-
     /**
      * 用户类型
      *
@@ -47,14 +44,10 @@ public class LoginUser {
      * 授权范围
      */
     private List<String> scopes;
-
-    public String getNickname() {
-        return info.get(INFO_KEY_NICKNAME);
-    }
-
-    public Long getDeptId() {
-        return MapUtil.getLong(info, INFO_KEY_DEPT_ID);
-    }
+    /**
+     * 过期时间
+     */
+    private LocalDateTime expiresTime;
 
     // ========== 上下文 ==========
     /**

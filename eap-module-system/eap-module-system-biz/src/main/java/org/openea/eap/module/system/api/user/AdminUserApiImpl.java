@@ -11,7 +11,10 @@ import org.openea.eap.module.system.service.user.AdminUserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertSet;
 
@@ -37,24 +40,6 @@ public class AdminUserApiImpl implements AdminUserApi {
     public AdminUserRespDTO getUserByAccount(String account) {
         AdminUserDO user = userService.getUserByUsername(account);
         return BeanUtils.toBean(user, AdminUserRespDTO.class);
-    }
-
-    @Override
-    public Set<Long> getSubordinateIds(Long id) {
-        AdminUserDO user = userService.getUser(id);
-        if (user == null) {
-            return null;
-        }
-
-        Set<Long> subordinateIds = null; // 下属用户编号
-        DeptDO dept = deptService.getDept(user.getDeptId());
-        // TODO @puhui999：需要递归查询到子部门；并且要排除到自己噢。
-        // TODO @puhui999：保持 if return 原则，这里其实要判断不等于，则返回 null；最好返回 空集合，上面也是
-        if (ObjUtil.equal(dept.getLeaderUserId(), id)) { // 校验是否是该部门的负责人
-            List<AdminUserDO> users = userService.getUserListByDeptIds(Collections.singletonList(dept.getId()));
-            subordinateIds = convertSet(users, AdminUserDO::getId);
-        }
-        return subordinateIds;
     }
 
     @Override

@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.controller.admin.user.vo.profile;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 import org.openea.eap.module.system.controller.admin.dept.vo.dept.DeptSimpleRespVO;
 import org.openea.eap.module.system.controller.admin.dept.vo.post.PostSimpleRespVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.role.RoleSimpleRespVO;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +25,7 @@ public class UserProfileRespVO {
     @Schema(description = "用户邮箱", example = "eap@iocoder.cn")
     private String email;
 
-    @Schema(description = "手机号码", example = "18911009900")
+    @Schema(description = "手机号码", example = "15601691300")
     private String mobile;
 
     @Schema(description = "用户性别，参见 SexEnum 枚举类", example = "1")

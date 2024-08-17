@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.controller.admin.oauth2.vo.open;
 
-import org.openea.eap.framework.common.core.KeyValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openea.eap.framework.common.core.KeyValue;
 
 import java.util.List;
 

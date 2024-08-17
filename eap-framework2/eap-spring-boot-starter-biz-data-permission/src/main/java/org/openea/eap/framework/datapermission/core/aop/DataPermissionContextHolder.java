@@ -1,7 +1,7 @@
 package org.openea.eap.framework.datapermission.core.aop;
 
-import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 import com.alibaba.ttl.TransmittableThreadLocal;
+import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 
 import java.util.LinkedList;
 import java.util.List;

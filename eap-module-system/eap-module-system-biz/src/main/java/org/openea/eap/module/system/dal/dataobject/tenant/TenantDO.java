@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.dal.dataobject.tenant;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 
 import java.time.LocalDateTime;
 
@@ -75,12 +75,5 @@ public class TenantDO extends BaseDO {
      * 账号数量
      */
     private Integer accountCount;
-
-
-
-    /**
-     * 交付部门 ID
-     */
-    private Long deptId;
 
 }

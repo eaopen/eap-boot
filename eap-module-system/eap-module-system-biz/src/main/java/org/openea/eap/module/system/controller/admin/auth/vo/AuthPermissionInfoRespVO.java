@@ -56,13 +56,13 @@ public class AuthPermissionInfoRespVO {
     @Builder
     public static class MenuVO {
 
-        @Schema(description = "菜单名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
+        @Schema(description = "菜单名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
         private Long id;
 
         @Schema(description = "父菜单 ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
         private Long parentId;
 
-        @Schema(description = "菜单名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
+        @Schema(description = "菜单名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
         private String name;
 
         @Schema(description = "路由地址,仅菜单类型为菜单或者目录时，才需要传", example = "post")

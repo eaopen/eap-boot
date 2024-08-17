@@ -3,7 +3,10 @@ package org.openea.eap.module.system.api.user;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Admin 用户 API 接口
@@ -20,14 +23,12 @@ public interface AdminUserApi {
     AdminUserRespDTO getUser(Long id);
 
     AdminUserRespDTO getUserByAccount(String account);
-
     /**
      * 通过用户 ID 查询用户下属
      *
      * @param id 用户编号
      * @return 用户下属用户列表
      */
-    Set<Long> getSubordinateIds(Long id);
     List<AdminUserRespDTO> getUserListBySubordinate(Long id);
 
     /**

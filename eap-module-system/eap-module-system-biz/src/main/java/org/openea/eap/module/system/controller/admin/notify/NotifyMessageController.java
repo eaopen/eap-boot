@@ -1,5 +1,8 @@
 package org.openea.eap.module.system.controller.admin.notify;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.apilog.core.annotation.ApiAccessLog;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
@@ -10,9 +13,6 @@ import org.openea.eap.module.system.controller.admin.notify.vo.message.NotifyMes
 import org.openea.eap.module.system.controller.admin.notify.vo.message.NotifyMessageRespVO;
 import org.openea.eap.module.system.dal.dataobject.notify.NotifyMessageDO;
 import org.openea.eap.module.system.service.notify.NotifyMessageService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,10 @@
 package org.openea.eap.framework.mybatis.core.query;
 
 import cn.hutool.core.lang.Assert;
-import org.openea.eap.framework.mybatis.core.enums.SqlConstants;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import org.openea.eap.framework.mybatis.core.enums.SqlConstants;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
@@ -151,7 +151,7 @@ public class QueryWrapperX<T> extends QueryWrapper<T> {
         switch (SqlConstants.DB_TYPE) {
             case ORACLE:
             case ORACLE_12C:
-                super.eq("ROWNUM", n);
+                super.le("ROWNUM", n);
                 break;
             case SQL_SERVER:
             case SQL_SERVER2005:

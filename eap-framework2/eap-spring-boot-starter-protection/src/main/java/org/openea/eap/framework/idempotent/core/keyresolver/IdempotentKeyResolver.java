@@ -1,7 +1,7 @@
 package org.openea.eap.framework.idempotent.core.keyresolver;
 
-import org.openea.eap.framework.idempotent.core.annotation.Idempotent;
 import org.aspectj.lang.JoinPoint;
+import org.openea.eap.framework.idempotent.core.annotation.Idempotent;
 
 /**
  * 幂等 Key 解析器接口

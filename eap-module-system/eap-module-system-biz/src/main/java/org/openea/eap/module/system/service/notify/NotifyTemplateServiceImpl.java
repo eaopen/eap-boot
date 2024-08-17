@@ -2,6 +2,8 @@ package org.openea.eap.module.system.service.notify;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.notify.vo.template.NotifyTemplatePageReqVO;
@@ -9,8 +11,6 @@ import org.openea.eap.module.system.controller.admin.notify.vo.template.NotifyTe
 import org.openea.eap.module.system.dal.dataobject.notify.NotifyTemplateDO;
 import org.openea.eap.module.system.dal.mysql.notify.NotifyTemplateMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package org.openea.eap.framework.xss.core.filter;
 
+import lombok.AllArgsConstructor;
 import org.openea.eap.framework.xss.config.XssProperties;
 import org.openea.eap.framework.xss.core.clean.XssCleaner;
-import lombok.AllArgsConstructor;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 

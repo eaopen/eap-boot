@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.controller.admin.user.vo.user;
 
-import org.openea.eap.framework.excel.core.annotations.DictFormat;
-import org.openea.eap.framework.excel.core.convert.DictConvert;
-import org.openea.eap.module.system.enums.DictTypeConstants;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.openea.eap.framework.excel.core.annotations.DictFormat;
+import org.openea.eap.framework.excel.core.convert.DictConvert;
+import org.openea.eap.module.system.enums.DictTypeConstants;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -44,7 +44,7 @@ public class UserRespVO{
     @ExcelProperty("用户邮箱")
     private String email;
 
-    @Schema(description = "手机号码", example = "18911009900")
+    @Schema(description = "手机号码", example = "15601691300")
     @ExcelProperty("手机号码")
     private String mobile;
 

@@ -1,7 +1,7 @@
 package org.openea.eap.framework.translate.config;
 
-import org.openea.eap.framework.translate.core.TranslateUtils;
 import com.fhs.trans.service.impl.TransService;
+import org.openea.eap.framework.translate.core.TranslateUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 

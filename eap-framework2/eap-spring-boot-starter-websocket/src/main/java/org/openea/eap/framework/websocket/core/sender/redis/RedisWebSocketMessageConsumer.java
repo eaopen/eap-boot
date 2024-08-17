@@ -1,7 +1,7 @@
 package org.openea.eap.framework.websocket.core.sender.redis;
 
-import org.openea.eap.framework.mq.redis.core.pubsub.AbstractRedisChannelMessageListener;
 import lombok.RequiredArgsConstructor;
+import org.openea.eap.framework.mq.redis.core.pubsub.AbstractRedisChannelMessageListener;
 
 /**
  * {@link RedisWebSocketMessage} 广播消息的消费者，真正把消息发送出去

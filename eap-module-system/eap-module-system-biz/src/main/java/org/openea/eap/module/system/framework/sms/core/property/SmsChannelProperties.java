@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.framework.sms.core.property;
 
-import org.openea.eap.module.system.framework.sms.core.enums.SmsChannelEnum;
 import lombok.Data;
+import org.openea.eap.module.system.framework.sms.core.enums.SmsChannelEnum;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;

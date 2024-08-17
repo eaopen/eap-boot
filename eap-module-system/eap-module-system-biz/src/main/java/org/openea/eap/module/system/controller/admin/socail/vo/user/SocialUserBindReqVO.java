@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.controller.admin.socail.vo.user;
 
-import org.openea.eap.module.system.enums.social.SocialTypeEnum;
-import org.openea.eap.framework.common.validation.InEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openea.eap.framework.common.validation.InEnum;
+import org.openea.eap.module.system.enums.social.SocialTypeEnum;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

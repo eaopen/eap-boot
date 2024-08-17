@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.controller.admin.user.vo.user;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.common.validation.InEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.common.validation.InEnum;
 
 import javax.validation.constraints.NotNull;
 

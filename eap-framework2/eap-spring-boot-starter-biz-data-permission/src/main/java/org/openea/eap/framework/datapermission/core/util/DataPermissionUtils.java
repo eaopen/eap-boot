@@ -1,8 +1,8 @@
 package org.openea.eap.framework.datapermission.core.util;
 
+import lombok.SneakyThrows;
 import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 import org.openea.eap.framework.datapermission.core.aop.DataPermissionContextHolder;
-import lombok.SneakyThrows;
 
 import java.util.concurrent.Callable;
 

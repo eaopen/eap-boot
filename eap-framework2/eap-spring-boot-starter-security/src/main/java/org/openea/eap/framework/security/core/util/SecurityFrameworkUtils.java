@@ -1,5 +1,6 @@
 package org.openea.eap.framework.security.core.util;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.security.core.LoginUser;
 import org.openea.eap.framework.web.core.util.WebFrameworkUtils;
@@ -86,6 +87,28 @@ public class SecurityFrameworkUtils {
     public static Long getLoginUserId() {
         LoginUser loginUser = getLoginUser();
         return loginUser != null ? loginUser.getId() : null;
+    }
+
+    /**
+     * 获得当前用户的昵称，从上下文中
+     *
+     * @return 昵称
+     */
+    @Nullable
+    public static String getLoginUserNickname() {
+        LoginUser loginUser = getLoginUser();
+        return loginUser != null ? MapUtil.getStr(loginUser.getInfo(), LoginUser.INFO_KEY_NICKNAME) : null;
+    }
+
+    /**
+     * 获得当前用户的部门编号，从上下文中
+     *
+     * @return 部门编号
+     */
+    @Nullable
+    public static Long getLoginUserDeptId() {
+        LoginUser loginUser = getLoginUser();
+        return loginUser != null ? MapUtil.getLong(loginUser.getInfo(), LoginUser.INFO_KEY_DEPT_ID) : null;
     }
 
     /**

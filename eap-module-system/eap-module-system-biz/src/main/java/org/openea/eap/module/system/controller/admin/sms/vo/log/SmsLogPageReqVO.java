@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.controller.admin.sms.vo.log;
 
-import org.openea.eap.framework.common.pojo.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.openea.eap.framework.common.pojo.PageParam;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class SmsLogPageReqVO extends PageParam {
     @Schema(description = "模板编号", example = "20")
     private Long templateId;
 
-    @Schema(description = "手机号", example = "18911009900")
+    @Schema(description = "手机号", example = "15601691300")
     private String mobile;
 
     @Schema(description = "发送状态，参见 SmsSendStatusEnum 枚举类", example = "1")

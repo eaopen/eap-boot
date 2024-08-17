@@ -1,14 +1,14 @@
 package org.openea.eap.module.system.dal.dataobject.user;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.type.JsonLongSetTypeHandler;
-import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
-import org.openea.eap.module.system.enums.common.SexEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.*;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
+import org.openea.eap.module.system.enums.common.SexEnum;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ import java.util.Set;
  *
  */
 @TableName(value = "system_users", autoResultMap = true) // 由于 SQL Server 的 system_user 是关键字，所以使用 system_users
-@KeySequence("system_user_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
+@KeySequence("system_users_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
@@ -57,7 +57,7 @@ public class AdminUserDO extends TenantBaseDO {
     /**
      * 岗位编号数组
      */
-    @TableField(typeHandler = JsonLongSetTypeHandler.class)
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private Set<Long> postIds;
     /**
      * 用户邮箱

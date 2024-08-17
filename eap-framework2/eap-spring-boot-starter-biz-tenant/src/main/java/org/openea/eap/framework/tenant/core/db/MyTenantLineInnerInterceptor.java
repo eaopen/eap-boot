@@ -108,11 +108,17 @@ public class MyTenantLineInnerInterceptor extends TenantLineInnerInterceptor {
         } else if (fromItem instanceof SubSelect) {
             SubSelect subSelect = (SubSelect)fromItem;
             // will fix check table?
-            this.appendSelectItem(plainSelect.getSelectItems());
+            this.appendSelectItem2(plainSelect.getSelectItems());
             this.processInsertSelect(subSelect.getSelectBody(), whereSegment);
         }
     }
 
+    protected void appendSelectItem2(List<SelectItem> selectItems) {
+        if (!CollectionUtils.isEmpty(selectItems)) {
+           // todo
+            throw new UnsupportedOperationException("appendSelectItem2");
+        }
+    }
     protected void appendSelectItem(List<SelectItem> selectItems, String tableName) {
         if (!CollectionUtils.isEmpty(selectItems)) {
             if (selectItems.size() == 1) {
@@ -126,6 +132,7 @@ public class MyTenantLineInnerInterceptor extends TenantLineInnerInterceptor {
         }
     }
 
+    @Override
     protected Column getAliasColumn(Table table) {
         StringBuilder column = new StringBuilder();
         if (table.getAlias() != null) {

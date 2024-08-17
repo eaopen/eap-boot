@@ -5,8 +5,6 @@ import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
-import org.openea.eap.framework.desensitize.core.base.annotation.DesensitizeBy;
-import org.openea.eap.framework.desensitize.core.base.handler.DesensitizationHandler;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -15,6 +13,8 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import lombok.Getter;
 import lombok.Setter;
+import org.openea.eap.framework.desensitize.core.base.annotation.DesensitizeBy;
+import org.openea.eap.framework.desensitize.core.base.handler.DesensitizationHandler;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;

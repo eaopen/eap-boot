@@ -2,9 +2,9 @@ package org.openea.eap.framework.apilog.core.interceptor;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
 import org.openea.eap.framework.common.util.spring.SpringUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StopWatch;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -42,7 +42,7 @@ public class ApiAccessLogInterceptor implements HandlerInterceptor {
                 log.info("[preHandle][开始请求 URL({}) 无参数]", request.getRequestURI());
             } else {
                 log.info("[preHandle][开始请求 URL({}) 参数({})]", request.getRequestURI(),
-                        StrUtil.nullToDefault(requestBody, queryString.toString()));
+                        StrUtil.blankToDefault(requestBody, queryString.toString()));
             }
             // 计时
             StopWatch stopWatch = new StopWatch();

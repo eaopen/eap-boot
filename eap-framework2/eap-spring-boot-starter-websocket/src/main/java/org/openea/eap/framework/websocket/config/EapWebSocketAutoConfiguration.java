@@ -1,5 +1,6 @@
 package org.openea.eap.framework.websocket.config;
 
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.openea.eap.framework.mq.redis.config.EapRedisMQConsumerAutoConfiguration;
 import org.openea.eap.framework.mq.redis.core.RedisMQTemplate;
 import org.openea.eap.framework.websocket.core.handler.JsonWebSocketMessageHandler;
@@ -17,7 +18,6 @@ import org.openea.eap.framework.websocket.core.sender.rocketmq.RocketMQWebSocket
 import org.openea.eap.framework.websocket.core.session.WebSocketSessionHandlerDecorator;
 import org.openea.eap.framework.websocket.core.session.WebSocketSessionManager;
 import org.openea.eap.framework.websocket.core.session.WebSocketSessionManagerImpl;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;

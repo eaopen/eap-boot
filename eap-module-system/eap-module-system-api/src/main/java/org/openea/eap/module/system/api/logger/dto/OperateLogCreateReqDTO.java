@@ -7,7 +7,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
- * 操作日志创建 Request DTO
+ * 系统操作日志 Create Request DTO
+ *
+ * @author HUIHUI
  */
 @Data
 public class OperateLogCreateReqDTO {

@@ -2,9 +2,9 @@ package org.openea.eap.framework.datapermission.core.rule;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
+import lombok.RequiredArgsConstructor;
 import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 import org.openea.eap.framework.datapermission.core.aop.DataPermissionContextHolder;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;

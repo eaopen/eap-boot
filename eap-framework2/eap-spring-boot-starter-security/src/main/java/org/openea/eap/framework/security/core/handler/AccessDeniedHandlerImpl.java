@@ -1,14 +1,13 @@
 package org.openea.eap.framework.security.core.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.CommonResult;
-import org.openea.eap.framework.security.core.util.SecurityFrameworkUtils;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
-import lombok.extern.slf4j.Slf4j;
+import org.openea.eap.framework.security.core.util.SecurityFrameworkUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants.FORBIDDEN;
-import static org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants.UNAUTHORIZED;
 
 /**
  * 访问一个需要认证的 URL 资源，已经认证（登录）但是没有权限的情况下，返回 {@link GlobalErrorCodeConstants#FORBIDDEN} 错误码。

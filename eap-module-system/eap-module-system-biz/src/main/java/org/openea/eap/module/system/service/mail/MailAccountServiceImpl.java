@@ -1,5 +1,6 @@
 package org.openea.eap.module.system.service.mail;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccountPageReqVO;
@@ -7,7 +8,6 @@ import org.openea.eap.module.system.controller.admin.mail.vo.account.MailAccount
 import org.openea.eap.module.system.dal.dataobject.mail.MailAccountDO;
 import org.openea.eap.module.system.dal.mysql.mail.MailAccountMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

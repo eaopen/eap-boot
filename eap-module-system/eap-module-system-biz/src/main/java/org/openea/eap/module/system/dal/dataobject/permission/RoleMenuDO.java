@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.dal.dataobject.permission;
 
-import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
 
 /**
  * 角色和菜单关联

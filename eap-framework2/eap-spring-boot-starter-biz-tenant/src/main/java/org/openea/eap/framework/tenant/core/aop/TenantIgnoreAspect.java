@@ -1,11 +1,11 @@
 package org.openea.eap.framework.tenant.core.aop;
 
-import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
-import org.openea.eap.framework.tenant.core.util.TenantUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
+import org.openea.eap.framework.tenant.core.util.TenantUtils;
 
 /**
  * 忽略多租户的 Aspect，基于 {@link TenantIgnore} 注解实现，用于一些全局的逻辑。

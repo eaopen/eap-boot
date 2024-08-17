@@ -57,12 +57,6 @@
             <artifactId>bizlog-sdk</artifactId>
         </dependency>
 
-        <!-- 业务组件 -->
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-module-system-api</artifactId> <!-- 需要使用它，进行 Token 的校验 -->
-            <version>${revision}</version>
-        </dependency>
     </dependencies>
 
 </project>

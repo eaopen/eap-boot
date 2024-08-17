@@ -28,7 +28,7 @@ public class WebFrameworkUtils {
     /**
      * 终端的 Header
      *
-     * @see org.openea.eap.framework.common.enums.TerminalEnum
+     * @see TerminalEnum
      */
     public static final String HEADER_TERMINAL = "terminal";
 

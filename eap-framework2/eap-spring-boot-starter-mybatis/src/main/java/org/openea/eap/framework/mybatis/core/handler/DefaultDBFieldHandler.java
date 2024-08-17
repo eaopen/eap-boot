@@ -1,9 +1,9 @@
 package org.openea.eap.framework.mybatis.core.handler;
 
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.framework.web.core.util.WebFrameworkUtils;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.web.core.util.WebFrameworkUtils;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

@@ -1,7 +1,7 @@
 package org.openea.eap.framework.websocket.core.message;
 
-import org.openea.eap.framework.websocket.core.listener.WebSocketMessageListener;
 import lombok.Data;
+import org.openea.eap.framework.websocket.core.listener.WebSocketMessageListener;
 
 import java.io.Serializable;
 

@@ -1,8 +1,8 @@
 package org.openea.eap.framework.tenant.core.redis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.redis.core.TimeoutRedisCacheManager;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;

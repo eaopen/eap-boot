@@ -2,12 +2,12 @@ package org.openea.eap.framework.websocket.core.handler;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.TypeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.util.json.JsonUtils;
 import org.openea.eap.framework.tenant.core.util.TenantUtils;
 import org.openea.eap.framework.websocket.core.listener.WebSocketMessageListener;
 import org.openea.eap.framework.websocket.core.message.JsonWebSocketMessage;
 import org.openea.eap.framework.websocket.core.util.WebSocketFrameworkUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
@@ -70,16 +70,10 @@ public class JsonWebSocketMessageHandler extends TextWebSocketHandler {
                 return;
             }
             // 2.3 处理消息
-            Long tenantId = WebSocketFrameworkUtils.getTenantId(session);
             Type type = TypeUtil.getTypeArgument(messageListener.getClass(), 0);
-            if(String.class.getTypeName().equals(type.getTypeName())){
-                String messageObj = jsonMessage.getContent();
-                TenantUtils.execute(tenantId, () -> messageListener.onMessage(session, messageObj));
-            }else{
-                Object messageObj = JsonUtils.parseObject(jsonMessage.getContent(), type);
-                TenantUtils.execute(tenantId, () -> messageListener.onMessage(session, messageObj));
-            }
-
+            Object messageObj = JsonUtils.parseObject(jsonMessage.getContent(), type);
+            Long tenantId = WebSocketFrameworkUtils.getTenantId(session);
+            TenantUtils.execute(tenantId, () -> messageListener.onMessage(session, messageObj));
         } catch (Throwable ex) {
             log.error("[handleTextMessage][session({}) message({}) 处理异常]", session.getId(), message.getPayload());
         }

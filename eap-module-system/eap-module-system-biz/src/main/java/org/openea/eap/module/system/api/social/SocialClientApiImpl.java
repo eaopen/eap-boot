@@ -1,11 +1,12 @@
 package org.openea.eap.module.system.api.social;
 
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
+import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.social.dto.SocialWxJsapiSignatureRespDTO;
 import org.openea.eap.module.system.api.social.dto.SocialWxPhoneNumberInfoRespDTO;
+import org.openea.eap.module.system.api.social.dto.SocialWxQrcodeReqDTO;
 import org.openea.eap.module.system.service.social.SocialClientService;
-import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -37,6 +38,11 @@ public class SocialClientApiImpl implements SocialClientApi {
     public SocialWxPhoneNumberInfoRespDTO getWxMaPhoneNumberInfo(Integer userType, String phoneCode) {
         WxMaPhoneNumberInfo info = socialClientService.getWxMaPhoneNumberInfo(userType, phoneCode);
         return BeanUtils.toBean(info, SocialWxPhoneNumberInfoRespDTO.class);
+    }
+
+    @Override
+    public byte[] getWxaQrcode(SocialWxQrcodeReqDTO reqVO) {
+        return socialClientService.getWxaQrcode(reqVO);
     }
 
 }

@@ -6,6 +6,7 @@ import com.mzt.logapi.starter.annotation.DiffLogField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.openea.eap.framework.common.validation.Mobile;
 import org.openea.eap.module.system.framework.operatelog.core.DeptParseFunction;
 import org.openea.eap.module.system.framework.operatelog.core.PostParseFunction;
 import org.openea.eap.module.system.framework.operatelog.core.SexParseFunction;
@@ -50,8 +51,8 @@ public class UserSaveReqVO {
     @DiffLogField(name = "用户邮箱")
     private String email;
 
-    @Schema(description = "手机号码", example = "18911009900")
-    //@Mobile
+    @Schema(description = "手机号码", example = "15601691300")
+    @Mobile
     @DiffLogField(name = "手机号码")
     private String mobile;
 
@@ -66,7 +67,7 @@ public class UserSaveReqVO {
     // ========== 仅【创建】时，需要传递的字段 ==========
 
     @Schema(description = "密码", requiredMode = Schema.RequiredMode.REQUIRED, example = "123456")
-    //@Length(min = 4, max = 16, message = "密码长度为 4-16 位")
+    @Length(min = 4, max = 16, message = "密码长度为 4-16 位")
     private String password;
 
     @AssertTrue(message = "密码不能为空")

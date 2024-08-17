@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.dal.dataobject.social;
 
-import org.openea.eap.framework.common.enums.UserTypeEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import org.openea.eap.framework.common.enums.UserTypeEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 
 /**
  * 社交用户的绑定

@@ -1,14 +1,14 @@
 package org.openea.eap.module.system.controller.admin.user.vo.user;
 
-import org.openea.eap.framework.excel.core.annotations.DictFormat;
-import org.openea.eap.framework.excel.core.convert.DictConvert;
-import org.openea.eap.module.system.enums.DictTypeConstants;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.openea.eap.framework.excel.core.annotations.DictFormat;
+import org.openea.eap.framework.excel.core.convert.DictConvert;
+import org.openea.eap.module.system.enums.DictTypeConstants;
 
 /**
  * 用户 Excel 导入 VO

@@ -1,9 +1,14 @@
 package org.openea.eap.module.system.service.permission;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.i18n.core.I18nUtil;
 import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuListReqVO;
@@ -15,9 +20,6 @@ import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 import org.openea.eap.module.system.service.language.I18nDataService;
 import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.openea.eap.module.system.service.tenant.TenantService;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.Lists;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
@@ -31,6 +33,7 @@ import java.util.*;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
+import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertMap;
 import static org.openea.eap.module.system.dal.dataobject.permission.MenuDO.ID_ROOT;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 
@@ -124,10 +127,55 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuDO> getMenuListByTenant(MenuListReqVO reqVO) {
+        // 查询所有菜单，并过滤掉关闭的节点
         List<MenuDO> menus = getMenuList(reqVO);
         // 开启多租户的情况下，需要过滤掉未开通的菜单
         tenantService.handleTenantMenu(menuIds -> menus.removeIf(menu -> !CollUtil.contains(menuIds, menu.getId())));
         return menus;
+    }
+
+    @Override
+    public List<MenuDO> filterDisableMenus(List<MenuDO> menuList) {
+        if (CollUtil.isEmpty(menuList)){
+            return Collections.emptyList();
+        }
+        Map<Long, MenuDO> menuMap = convertMap(menuList, MenuDO::getId);
+
+        // 遍历 menu 菜单，查找不是禁用的菜单，添加到 enabledMenus 结果
+        List<MenuDO> enabledMenus = new ArrayList<>();
+        Set<Long> disabledMenuCache = new HashSet<>(); // 存下递归搜索过被禁用的菜单，防止重复的搜索
+        for (MenuDO menu : menuList) {
+            if (isMenuDisabled(menu, menuMap, disabledMenuCache)) {
+                continue;
+            }
+            enabledMenus.add(menu);
+        }
+        return enabledMenus;
+    }
+
+    private boolean isMenuDisabled(MenuDO node, Map<Long, MenuDO> menuMap, Set<Long> disabledMenuCache) {
+        // 如果已经判定是禁用的节点，直接结束
+        if (disabledMenuCache.contains(node.getId())) {
+            return true;
+        }
+
+        // 1. 遍历到 parentId 为根节点，则无需判断
+        Long parentId = node.getParentId();
+        if (ObjUtil.equal(parentId, ID_ROOT)) {
+            if (CommonStatusEnum.isDisable(node.getStatus())) {
+                disabledMenuCache.add(node.getId());
+                return true;
+            }
+            return false;
+        }
+
+        // 2. 继续遍历 parent 节点
+        MenuDO parent = menuMap.get(parentId);
+        if (parent == null || isMenuDisabled(parent, menuMap, disabledMenuCache)) {
+            disabledMenuCache.add(node.getId());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -158,7 +206,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuDO> getMenuList(Collection<Long> ids) {
-        // 当ids为空时，返回一个空的实例对象
+        // 当 ids 为空时，返回一个空的实例对象
         if (CollUtil.isEmpty(ids)) {
             return Lists.newArrayList();
         }

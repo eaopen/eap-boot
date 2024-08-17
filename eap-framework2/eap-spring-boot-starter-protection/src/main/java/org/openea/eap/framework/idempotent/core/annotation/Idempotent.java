@@ -1,7 +1,7 @@
 package org.openea.eap.framework.idempotent.core.annotation;
 
-import org.openea.eap.framework.idempotent.core.keyresolver.impl.DefaultIdempotentKeyResolver;
 import org.openea.eap.framework.idempotent.core.keyresolver.IdempotentKeyResolver;
+import org.openea.eap.framework.idempotent.core.keyresolver.impl.DefaultIdempotentKeyResolver;
 import org.openea.eap.framework.idempotent.core.keyresolver.impl.ExpressionIdempotentKeyResolver;
 import org.openea.eap.framework.idempotent.core.keyresolver.impl.UserIdempotentKeyResolver;
 
