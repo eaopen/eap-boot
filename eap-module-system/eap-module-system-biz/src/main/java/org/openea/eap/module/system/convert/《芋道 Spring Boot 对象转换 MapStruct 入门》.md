@@ -1,1 +1,1 @@
-<https://yu0doc.openea.site/Spring-Boot/MapStruct/?eap>
+<http://www.iocoder.cn/Spring-Boot/MapStruct/?eap>
