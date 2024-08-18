@@ -24,6 +24,18 @@ public class DictTypeSaveReqVO {
     @Size(max = 100, message = "字典类型类型长度不能超过 100 个字符")
     private String type;
 
+    @Schema(description = "数据类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "data/json/sql/api")
+    private String dataType;
+
+    @Schema(description = "json数据", requiredMode = Schema.RequiredMode.REQUIRED, example = "{}")
+    private String dataJson;
+
+    @Schema(description = "查询sql", requiredMode = Schema.RequiredMode.REQUIRED, example = "select value, label from table")
+    private String dataSql;
+
+    @Schema(description = "数据源", requiredMode = Schema.RequiredMode.REQUIRED, example = "dataSourceName")
+    private String dataDs;
+
     @Schema(description = "状态，参见 CommonStatusEnum 枚举类", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @NotNull(message = "状态不能为空")
     private Integer status;

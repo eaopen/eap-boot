@@ -25,6 +25,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DictTypeDO extends BaseDO {
 
+    public static final String DATA_TYPE_DATA = "data";
+    public static final String DATA_TYPE_SQL = "sql";
+    public static final String DATA_TYPE_JSON = "json";
+
     /**
      * 字典主键
      */
@@ -53,5 +57,35 @@ public class DictTypeDO extends BaseDO {
      * 删除时间
      */
     private LocalDateTime deletedTime;
+
+    // 扩展字段
+    /**
+     * 树形 isTree
+     */
+    private Integer isTree;
+    /**
+     * 上级 parentId
+     */
+    private Long parentId;
+
+    /**
+     * 数据类型 data/json/sql/api
+     * 默认为data
+     */
+    private String dataType;
+    /**
+     * json数据
+     * 需要符合格式要求
+     */
+    private String dataJson;
+    /**
+     * 查询sql
+     */
+    private String dataSql;
+    /**
+     * 查询sql所需数据源
+     * 默认为当前数据源
+     */
+    private String dataDs;
 
 }

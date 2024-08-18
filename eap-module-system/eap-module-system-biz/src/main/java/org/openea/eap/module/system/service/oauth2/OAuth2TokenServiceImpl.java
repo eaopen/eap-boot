@@ -5,11 +5,16 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.jwt.JWTUtil;
+import cn.hutool.jwt.signers.JWTSigner;
+import com.xingyuv.captcha.util.StringUtils;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.DateUtils;
+import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.security.core.LoginUser;
+import org.openea.eap.framework.security.core.util.JwtUtil;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.token.OAuth2AccessTokenPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
@@ -49,17 +54,27 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     private OAuth2AccessTokenRedisDAO oauth2AccessTokenRedisDAO;
 
     @Resource
-    private OAuth2ClientService oauth2ClientService;
+    protected OAuth2ClientService oauth2ClientService;
     @Resource
     @Lazy // 懒加载，避免循环依赖
-    private AdminUserService adminUserService;
+    protected AdminUserService adminUserService;
+
+
+    @Resource
+    private SecurityProperties securityProperties;
 
     @Override
     @Transactional
     public OAuth2AccessTokenDO createAccessToken(Long userId, Integer userType, String clientId, List<String> scopes) {
+       return createAccessToken(userId, null, userType, clientId, scopes);
+    }
+
+    @Override
+    @Transactional
+    public OAuth2AccessTokenDO createAccessToken(Long userId, String userKey, Integer userType, String clientId, List<String> scopes) {
         OAuth2ClientDO clientDO = oauth2ClientService.validOAuthClientFromCache(clientId);
         // 创建刷新令牌
-        OAuth2RefreshTokenDO refreshTokenDO = createOAuth2RefreshToken(userId, userType, clientDO, scopes);
+        OAuth2RefreshTokenDO refreshTokenDO = createOAuth2RefreshToken(userId, userKey, userType, clientDO, scopes);
         // 创建访问令牌
         return createOAuth2AccessToken(refreshTokenDO, clientDO);
     }
@@ -109,6 +124,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         if (accessTokenDO != null && !DateUtils.isExpired(accessTokenDO.getExpiresTime())) {
             oauth2AccessTokenRedisDAO.set(accessTokenDO);
         }
+
         return accessTokenDO;
     }
 
@@ -143,9 +159,23 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         return oauth2AccessTokenMapper.selectPage(reqVO);
     }
 
+
+    protected String generateAccessToken(OAuth2RefreshTokenDO refreshTokenDO, OAuth2ClientDO clientDO){
+        String accessToken = null;
+        if(securityProperties.getJwtEnable()) {
+            accessToken = JwtUtil.generateJwtToken(refreshTokenDO.getUserKey(), clientDO.getName(), clientDO.getAccessTokenValiditySeconds());
+        }
+        if(StringUtils.isEmpty(accessToken)){
+            accessToken = generateAccessToken();
+        }
+        return accessToken;
+    }
+
     private OAuth2AccessTokenDO createOAuth2AccessToken(OAuth2RefreshTokenDO refreshTokenDO, OAuth2ClientDO clientDO) {
-        OAuth2AccessTokenDO accessTokenDO = new OAuth2AccessTokenDO().setAccessToken(generateAccessToken())
+        String accessToken = generateAccessToken(refreshTokenDO, clientDO);
+        OAuth2AccessTokenDO accessTokenDO = new OAuth2AccessTokenDO().setAccessToken(accessToken)
                 .setUserId(refreshTokenDO.getUserId()).setUserType(refreshTokenDO.getUserType())
+                .setUserKey(refreshTokenDO.getUserKey())
                 .setUserInfo(buildUserInfo(refreshTokenDO.getUserId(), refreshTokenDO.getUserType()))
                 .setClientId(clientDO.getClientId()).setScopes(refreshTokenDO.getScopes())
                 .setRefreshToken(refreshTokenDO.getRefreshToken())
@@ -157,9 +187,9 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         return accessTokenDO;
     }
 
-    private OAuth2RefreshTokenDO createOAuth2RefreshToken(Long userId, Integer userType, OAuth2ClientDO clientDO, List<String> scopes) {
+    private OAuth2RefreshTokenDO createOAuth2RefreshToken(Long userId, String userKey, Integer userType, OAuth2ClientDO clientDO, List<String> scopes) {
         OAuth2RefreshTokenDO refreshToken = new OAuth2RefreshTokenDO().setRefreshToken(generateRefreshToken())
-                .setUserId(userId).setUserType(userType)
+                .setUserId(userId).setUserKey(userKey).setUserType(userType)
                 .setClientId(clientDO.getClientId()).setScopes(scopes)
                 .setExpiresTime(LocalDateTime.now().plusSeconds(clientDO.getRefreshTokenValiditySeconds()));
         oauth2RefreshTokenMapper.insert(refreshToken);
@@ -186,6 +216,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     }
 
     private static String generateAccessToken() {
+        // todo uuid or jwtToken
         return IdUtil.fastSimpleUUID();
     }
 

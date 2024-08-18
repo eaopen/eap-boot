@@ -26,4 +26,7 @@ public class DictDataPageReqVO extends PageParam {
     @InEnum(value = CommonStatusEnum.class, message = "修改状态必须是 {value}")
     private Integer status;
 
+    @Schema(description = "数据类型 data/json/sql, 默认为data")
+    private String dataType;
+
 }

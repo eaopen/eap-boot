@@ -20,6 +20,11 @@ public class OAuth2AccessTokenCreateReqDTO implements Serializable {
      */
     @NotNull(message = "用户编号不能为空")
     private Long userId;
+
+    /**
+     * 用户key(account/username)
+     */
+    private String userKey;
     /**
      * 用户类型
      */

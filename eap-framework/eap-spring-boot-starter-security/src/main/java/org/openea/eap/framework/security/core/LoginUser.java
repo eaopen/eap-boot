@@ -24,6 +24,8 @@ public class LoginUser {
      * 用户编号
      */
     private Long id;
+
+    private String userKey;
     /**
      * 用户类型
      *

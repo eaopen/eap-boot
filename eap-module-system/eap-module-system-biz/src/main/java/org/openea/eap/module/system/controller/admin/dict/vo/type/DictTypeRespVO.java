@@ -27,6 +27,19 @@ public class DictTypeRespVO {
     @ExcelProperty("字典类型")
     private String type;
 
+    @Schema(description = "数据类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "data/json/sql/api")
+    @ExcelProperty("数据类型")
+    private String dataType;
+
+    @Schema(description = "json数据", requiredMode = Schema.RequiredMode.REQUIRED, example = "{}")
+    private String dataJson;
+
+    @Schema(description = "查询sql", requiredMode = Schema.RequiredMode.REQUIRED, example = "select value, label from table")
+    private String dataSql;
+
+    @Schema(description = "数据源", requiredMode = Schema.RequiredMode.REQUIRED, example = "dataSourceName")
+    private String dataDs;
+
     @Schema(description = "状态，参见 CommonStatusEnum 枚举类", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @ExcelProperty(value = "状态", converter = DictConvert.class)
     @DictFormat(DictTypeConstants.COMMON_STATUS)
