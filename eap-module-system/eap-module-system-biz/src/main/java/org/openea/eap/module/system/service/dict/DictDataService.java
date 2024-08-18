@@ -1,7 +1,6 @@
 package org.openea.eap.module.system.service.dict;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataExportReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataPageReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
@@ -9,7 +8,6 @@ import org.springframework.lang.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 字典数据 Service 接口
@@ -56,13 +54,6 @@ public interface DictDataService {
      * @return 字典数据分页列表
      */
     PageResult<DictDataDO> getDictDataPage(DictDataPageReqVO pageReqVO);
-
-    /**
-     * 获得字典数据列表
-     *
-     * @return 字典数据全列表
-     */
-    List<DictDataDO> getDictDataList();
 
     /**
      * 获得字典数据详情
@@ -115,31 +106,5 @@ public interface DictDataService {
      * @return 字典数据列表
      */
     List<DictDataDO> getDictDataListByDictType(String dictType);
-
-    /**
-     * 获得字典数据列表
-     *
-     * @param reqVO 列表请求
-     * @return 字典数据列表
-     */
-    List<DictDataDO> getDictDataList(DictDataExportReqVO reqVO);
-
-
-
-    /**
-     * 根据字典类型获得指定的字典数据
-     *
-     * @param dictType 字典类型
-     * @return 字典数据
-     */
-    List<DictDataDO> getDictData(String dictType);
-
-
-    /**
-     * 获取字典表map数据
-     * @param dictType
-     * @return
-     */
-    Map<String, String> getMapDictData(String dictType);
 
 }

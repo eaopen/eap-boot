@@ -1,8 +1,5 @@
 package org.openea.eap.module.system.controller.admin.mail;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
@@ -10,6 +7,9 @@ import org.openea.eap.module.system.controller.admin.mail.vo.template.*;
 import org.openea.eap.module.system.dal.dataobject.mail.MailTemplateDO;
 import org.openea.eap.module.system.service.mail.MailSendService;
 import org.openea.eap.module.system.service.mail.MailTemplateService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

@@ -33,13 +33,7 @@ public class OAuth2GrantServiceImpl implements OAuth2GrantService {
     @Override
     public OAuth2AccessTokenDO grantImplicit(Long userId, Integer userType,
                                              String clientId, List<String> scopes) {
-        return grantImplicit(userId, null, userType, clientId, scopes);
-    }
-
-    @Override
-    public OAuth2AccessTokenDO grantImplicit(Long userId, String userKey, Integer userType,
-                                             String clientId, List<String> scopes) {
-        return oauth2TokenService.createAccessToken(userId,userKey, userType, clientId, scopes);
+        return oauth2TokenService.createAccessToken(userId, userType, clientId, scopes);
     }
 
     @Override

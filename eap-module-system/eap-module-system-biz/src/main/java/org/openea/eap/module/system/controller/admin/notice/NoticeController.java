@@ -1,9 +1,6 @@
 package org.openea.eap.module.system.controller.admin.notice;
 
 import cn.hutool.core.lang.Assert;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -14,6 +11,9 @@ import org.openea.eap.module.system.controller.admin.notice.vo.NoticeRespVO;
 import org.openea.eap.module.system.controller.admin.notice.vo.NoticeSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.notice.NoticeDO;
 import org.openea.eap.module.system.service.notice.NoticeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

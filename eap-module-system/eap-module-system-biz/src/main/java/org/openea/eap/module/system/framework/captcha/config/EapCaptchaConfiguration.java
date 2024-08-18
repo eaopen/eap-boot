@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.framework.captcha.config;
 
+import org.openea.eap.module.system.framework.captcha.core.RedisCaptchaServiceImpl;
 import com.xingyuv.captcha.properties.AjCaptchaProperties;
 import com.xingyuv.captcha.service.CaptchaCacheService;
 import com.xingyuv.captcha.service.impl.CaptchaServiceFactory;
-import org.openea.eap.module.system.framework.captcha.core.RedisCaptchaServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;

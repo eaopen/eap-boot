@@ -34,11 +34,6 @@ public class OAuth2CodeDO extends BaseDO {
      * 用户编号
      */
     private Long userId;
-
-    /**
-     * 用户标识 account/username
-     */
-    private String userKey;
     /**
      * 用户类型
      *

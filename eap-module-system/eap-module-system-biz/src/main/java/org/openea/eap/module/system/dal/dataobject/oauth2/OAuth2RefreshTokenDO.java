@@ -1,5 +1,7 @@
 package org.openea.eap.module.system.dal.dataobject.oauth2;
 
+import org.openea.eap.framework.common.enums.UserTypeEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -7,8 +9,6 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.openea.eap.framework.common.enums.UserTypeEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,11 +37,6 @@ public class OAuth2RefreshTokenDO extends BaseDO {
      * 用户编号
      */
     private Long userId;
-
-    /**
-     * 用户账号 account/username
-     */
-    private String userKey;
     /**
      * 用户类型
      *

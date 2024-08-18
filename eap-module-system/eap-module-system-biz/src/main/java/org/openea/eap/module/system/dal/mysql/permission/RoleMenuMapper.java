@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.dal.mysql.permission;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleMenuDO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Collection;
 import java.util.List;

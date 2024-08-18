@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.controller.admin.dict.vo.type;
 
+import org.openea.eap.framework.common.pojo.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.openea.eap.framework.common.pojo.PageParam;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Size;
@@ -29,9 +29,5 @@ public class DictTypePageReqVO extends PageParam {
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     @Schema(description = "创建时间")
     private LocalDateTime[] createTime;
-
-
-    @Schema(description = "数据类型 data/json/sql, 默认为data")
-    private String dataType;
 
 }

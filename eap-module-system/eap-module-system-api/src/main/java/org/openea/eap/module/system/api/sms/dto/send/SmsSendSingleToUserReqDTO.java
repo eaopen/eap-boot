@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.api.sms.dto.send;
 
-import lombok.Data;
 import org.openea.eap.framework.common.validation.Mobile;
+import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Map;

@@ -2,11 +2,9 @@ package org.openea.eap.module.system.controller.admin.tenant.vo.tenant;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mzt.logapi.starter.annotation.DiffLogField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import org.openea.eap.module.system.framework.operatelog.core.DeptParseFunction;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
@@ -25,11 +23,11 @@ public class TenantSaveReqVO {
     @NotNull(message = "租户名不能为空")
     private String name;
 
-    @Schema(description = "联系人", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
+    @Schema(description = "联系人", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋艿")
     @NotNull(message = "联系人不能为空")
     private String contactName;
 
-    @Schema(description = "联系手机", example = "18911009900")
+    @Schema(description = "联系手机", example = "15601691300")
     private String contactMobile;
 
     @Schema(description = "租户状态", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
@@ -50,10 +48,6 @@ public class TenantSaveReqVO {
     @Schema(description = "账号数量", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     @NotNull(message = "账号数量不能为空")
     private Integer accountCount;
-
-    @Schema(description = "部门编号", example = "我是一个用户")
-    @DiffLogField(name = "交付部门", function = DeptParseFunction.NAME)
-    private Long deptId;
 
     // ========== 仅【创建】时，需要传递的字段 ==========
 

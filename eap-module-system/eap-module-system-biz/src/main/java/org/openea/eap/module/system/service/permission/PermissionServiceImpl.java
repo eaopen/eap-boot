@@ -4,11 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.baomidou.dynamic.datasource.annotation.DSTransactional;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
@@ -23,6 +18,11 @@ import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
 import org.openea.eap.module.system.enums.permission.DataScopeEnum;
 import org.openea.eap.module.system.service.dept.DeptService;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Suppliers;
+import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -193,28 +193,6 @@ public class PermissionServiceImpl implements PermissionService {
     @Cacheable(value = RedisKeyConstants.MENU_ROLE_ID_LIST, key = "#menuId")
     public Set<Long> getMenuRoleIdListByMenuIdFromCache(Long menuId) {
         return convertSet(roleMenuMapper.selectListByMenuId(menuId), RoleMenuDO::getRoleId);
-    }
-
-    @Override
-    public List<MenuDO> getUserMenuListByUser(Long userId, String userKey){
-        List<MenuDO> menuList = null;
-        // 获得角色列表
-        Set<Long> roleIds = getUserRoleIdListByUserId(userId);
-        if(CollectionUtils.isAnyEmpty(roleIds)){
-            return menuList;
-        }
-        List<RoleDO> roleList = roleService.getRoleListFromCache(roleIds);
-        roleList.removeIf(role -> !CommonStatusEnum.ENABLE.getStatus().equals(role.getStatus())); // 移除禁用的角色
-
-        // 获得菜单列表
-        Set<Long> menuIds = getRoleMenuListByRoleId(convertSet(roleList, RoleDO::getId));
-        if(CollectionUtils.isAnyEmpty()){
-            return menuList;
-        }
-        menuList = menuService.getMenuList(menuIds);
-        menuList.removeIf(menu -> !CommonStatusEnum.ENABLE.getStatus().equals(menu.getStatus()));
-
-        return menuList;
     }
 
     // ========== 用户-角色的相关方法  ==========

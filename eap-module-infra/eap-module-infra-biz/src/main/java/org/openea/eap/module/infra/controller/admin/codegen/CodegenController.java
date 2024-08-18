@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.common.util.servlet.ServletUtils.writeAttachment;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
+import static org.openea.eap.module.infra.framework.file.core.utils.FileTypeUtils.writeAttachment;
 
 @Tag(name = "管理后台 - 代码生成器")
 @RestController
@@ -51,7 +51,7 @@ public class CodegenController {
     @Parameters({
             @Parameter(name = "dataSourceConfigId", description = "数据源配置的编号", required = true, example = "1"),
             @Parameter(name = "name", description = "表名，模糊匹配", example = "eap"),
-            @Parameter(name = "comment", description = "描述，模糊匹配", example = "芋道")
+            @Parameter(name = "comment", description = "描述，模糊匹配", example = "eap")
     })
     @PreAuthorize("@ss.hasPermission('infra:codegen:query')")
     public CommonResult<List<DatabaseTableRespVO>> getDatabaseTableList(

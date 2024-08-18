@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.controller.admin.dict.vo.type;
 
+import org.openea.eap.framework.excel.core.annotations.DictFormat;
+import org.openea.eap.framework.excel.core.convert.DictConvert;
+import org.openea.eap.module.system.enums.DictTypeConstants;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.openea.eap.framework.excel.core.annotations.DictFormat;
-import org.openea.eap.framework.excel.core.convert.DictConvert;
-import org.openea.eap.module.system.enums.DictTypeConstants;
 
 import java.time.LocalDateTime;
 
@@ -26,19 +26,6 @@ public class DictTypeRespVO {
     @Schema(description = "字典类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "sys_common_sex")
     @ExcelProperty("字典类型")
     private String type;
-
-    @Schema(description = "数据类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "data/json/sql/api")
-    @ExcelProperty("数据类型")
-    private String dataType;
-
-    @Schema(description = "json数据", requiredMode = Schema.RequiredMode.REQUIRED, example = "{}")
-    private String dataJson;
-
-    @Schema(description = "查询sql", requiredMode = Schema.RequiredMode.REQUIRED, example = "select value, label from table")
-    private String dataSql;
-
-    @Schema(description = "数据源", requiredMode = Schema.RequiredMode.REQUIRED, example = "dataSourceName")
-    private String dataDs;
 
     @Schema(description = "状态，参见 CommonStatusEnum 枚举类", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @ExcelProperty(value = "状态", converter = DictConvert.class)

@@ -1,8 +1,8 @@
 package org.openea.eap.module.system.api.oauth2.dto;
 
-import lombok.Data;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.validation.InEnum;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;

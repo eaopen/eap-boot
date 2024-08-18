@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.controller.admin.socail.vo.client;
 
+import org.openea.eap.framework.common.pojo.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.openea.eap.framework.common.pojo.PageParam;
 
 @Schema(description = "管理后台 - 社交客户端分页 Request VO")
 @Data

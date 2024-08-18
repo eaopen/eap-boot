@@ -1,14 +1,13 @@
 package org.openea.eap.module.system.dal.dataobject.permission;
 
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 
 /**
  * 菜单 DO
@@ -31,13 +30,6 @@ public class MenuDO extends BaseDO {
      */
     @TableId
     private Long id;
-
-    /**
-     * 别名/key
-     * 用于i18n翻译时做标识
-     */
-    private String alias;
-
     /**
      * 菜单名称
      */
@@ -111,13 +103,5 @@ public class MenuDO extends BaseDO {
      * 如果为 false 时，当该菜单只有一个子菜单时，不展示自己，直接展示子菜单
      */
     private Boolean alwaysShow;
-
-
-    /**
-     * 国际化翻译json
-     */
-    @TableField(exist = false)
-    private String i18nJson;
-
 
 }

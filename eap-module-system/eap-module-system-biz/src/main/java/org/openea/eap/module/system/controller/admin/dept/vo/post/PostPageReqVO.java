@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.controller.admin.dept.vo.post;
 
+import org.openea.eap.framework.common.pojo.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.openea.eap.framework.common.pojo.PageParam;
 
 @Schema(description = "管理后台 - 岗位分页 Request VO")
 @Data

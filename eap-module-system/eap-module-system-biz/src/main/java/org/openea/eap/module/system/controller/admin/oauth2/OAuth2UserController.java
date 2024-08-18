@@ -1,9 +1,6 @@
 package org.openea.eap.module.system.controller.admin.oauth2;
 
 import cn.hutool.core.collection.CollUtil;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.user.OAuth2UserInfoRespVO;
@@ -15,6 +12,9 @@ import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.service.dept.DeptService;
 import org.openea.eap.module.system.service.dept.PostService;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

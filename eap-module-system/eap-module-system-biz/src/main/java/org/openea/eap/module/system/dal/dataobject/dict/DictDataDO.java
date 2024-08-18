@@ -1,11 +1,10 @@
 package org.openea.eap.module.system.dal.dataobject.dict;
 
-import com.alibaba.fastjson.JSONObject;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 
 /**
  * 字典数据表
@@ -62,19 +61,5 @@ public class DictDataDO extends BaseDO {
      * 备注
      */
     private String remark;
-
-    // 扩展字段
-    /**
-     * 上级 parentId
-     * 用于树形结构
-     */
-    private Long parentId;
-
-    /**
-     * 扩展属性
-     * 用于显示json/sql/api返回的扩展字段
-     */
-    @TableField(exist = false)
-    private JSONObject extendProps;
 
 }

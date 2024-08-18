@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.dal.dataobject.tenant;
 
-import com.baomidou.mybatisplus.annotation.KeySequence;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
+import com.baomidou.mybatisplus.annotation.KeySequence;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
 
 import java.time.LocalDateTime;
 

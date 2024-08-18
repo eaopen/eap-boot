@@ -4,6 +4,7 @@ import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.dept.dto.DeptRespDTO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.service.dept.DeptService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

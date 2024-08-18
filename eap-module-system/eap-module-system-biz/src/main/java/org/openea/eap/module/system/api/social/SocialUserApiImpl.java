@@ -3,6 +3,7 @@ package org.openea.eap.module.system.api.social;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserRespDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserUnbindReqDTO;
+import org.openea.eap.module.system.api.social.dto.SocialWxQrcodeReqDTO;
 import org.openea.eap.module.system.service.social.SocialUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;

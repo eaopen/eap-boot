@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.controller.admin.dict.vo.data;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.validation.InEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -34,9 +34,6 @@ public class DictDataSaveReqVO {
     @NotBlank(message = "字典类型不能为空")
     @Size(max = 100, message = "字典类型长度不能超过100个字符")
     private String dictType;
-
-    @Schema(description = "数据类型 data/json/sql, 默认为data")
-    private String dataType;
 
     @Schema(description = "状态,见 CommonStatusEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @NotNull(message = "状态不能为空")

@@ -1,6 +1,5 @@
 package org.openea.eap.module.system.api.logger;
 
-import com.fhs.core.trans.anno.TransMethodResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.logger.dto.OperateLogCreateReqDTO;
@@ -8,6 +7,7 @@ import org.openea.eap.module.system.api.logger.dto.OperateLogPageReqDTO;
 import org.openea.eap.module.system.api.logger.dto.OperateLogRespDTO;
 import org.openea.eap.module.system.dal.dataobject.logger.OperateLogDO;
 import org.openea.eap.module.system.service.logger.OperateLogService;
+import com.fhs.core.trans.anno.TransMethodResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;

@@ -19,7 +19,7 @@ public class TenantRespVO {
     @ExcelProperty("租户编号")
     private Long id;
 
-    @Schema(description = "租户名", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋道")
+    @Schema(description = "租户名", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
     @ExcelProperty("租户名")
     private String name;
 
@@ -27,7 +27,7 @@ public class TenantRespVO {
     @ExcelProperty("联系人")
     private String contactName;
 
-    @Schema(description = "联系手机", example = "18911009900")
+    @Schema(description = "联系手机", example = "15601691300")
     @ExcelProperty("联系手机")
     private String contactMobile;
 
@@ -47,13 +47,6 @@ public class TenantRespVO {
 
     @Schema(description = "账号数量", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     private Integer accountCount;
-
-    @Schema(description = "交付部门编号，同时筛选子部门", example = "1024")
-    private Long deptId;
-
-    @Schema(description = "交付部门名称", example = "IT 部")
-    @ExcelProperty("交付部门")
-    private String deptName;
 
     @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
     @ExcelProperty("创建时间")

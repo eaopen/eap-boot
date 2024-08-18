@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.controller.admin.dict.vo.data;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageParam;
 import org.openea.eap.framework.common.validation.InEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Size;
 
@@ -25,8 +25,5 @@ public class DictDataPageReqVO extends PageParam {
     @Schema(description = "展示状态，参见 CommonStatusEnum 枚举类", example = "1")
     @InEnum(value = CommonStatusEnum.class, message = "修改状态必须是 {value}")
     private Integer status;
-
-    @Schema(description = "数据类型 data/json/sql, 默认为data")
-    private String dataType;
 
 }

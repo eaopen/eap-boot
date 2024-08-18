@@ -1,14 +1,14 @@
 package org.openea.eap.module.system.dal.dataobject.logger;
 
+import org.openea.eap.framework.common.enums.UserTypeEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.module.system.enums.logger.LoginLogTypeEnum;
+import org.openea.eap.module.system.enums.logger.LoginResultEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.openea.eap.framework.common.enums.UserTypeEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.module.system.enums.logger.LoginLogTypeEnum;
-import org.openea.eap.module.system.enums.logger.LoginResultEnum;
 
 /**
  * 登录日志表

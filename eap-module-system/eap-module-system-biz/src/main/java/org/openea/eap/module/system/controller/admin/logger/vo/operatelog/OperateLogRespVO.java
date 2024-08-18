@@ -1,5 +1,6 @@
 package org.openea.eap.module.system.controller.admin.logger.vo.operatelog;
 
+import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.fhs.core.trans.anno.Trans;
@@ -7,7 +8,6 @@ import com.fhs.core.trans.constant.TransType;
 import com.fhs.core.trans.vo.VO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
@@ -43,7 +43,7 @@ public class OperateLogRespVO implements VO {
     @ExcelProperty("操作模块业务编号")
     private Long bizId;
 
-    @Schema(description = "操作明细", example = "修改编号为 1 的用户信息，将性别从男改成女，将姓名从芋道改成源码。")
+    @Schema(description = "操作明细", example = "修改编号为 1 的用户信息，将性别从男改成女，将姓名从EAP改成源码。")
     private String action;
 
     @Schema(description = "拓展字段", example = "{'orderId': 1}")

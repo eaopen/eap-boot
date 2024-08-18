@@ -1,8 +1,6 @@
 package org.openea.eap.module.system.convert.auth;
 
 import cn.hutool.core.collection.CollUtil;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeSendReqDTO;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeUseReqDTO;
@@ -13,6 +11,8 @@ import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;

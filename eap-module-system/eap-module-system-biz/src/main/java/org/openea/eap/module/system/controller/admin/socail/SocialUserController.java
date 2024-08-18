@@ -1,19 +1,19 @@
 package org.openea.eap.module.system.controller.admin.socail;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserBindReqVO;
+import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserUnbindReqVO;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserPageReqVO;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserRespVO;
-import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserUnbindReqVO;
 import org.openea.eap.module.system.convert.social.SocialUserConvert;
 import org.openea.eap.module.system.dal.dataobject.social.SocialUserDO;
 import org.openea.eap.module.system.service.social.SocialUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

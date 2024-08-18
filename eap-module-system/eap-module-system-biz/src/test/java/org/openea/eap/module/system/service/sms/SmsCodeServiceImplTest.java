@@ -58,7 +58,7 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
     public void sendSmsCode_success() {
         // 准备参数
         SmsCodeSendReqDTO reqDTO = randomPojo(SmsCodeSendReqDTO.class, o -> {
-            o.setMobile("18911009900");
+            o.setMobile("15601691300");
             o.setScene(SmsSceneEnum.MEMBER_LOGIN.getScene());
         });
         // mock 方法
@@ -81,11 +81,11 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
     public void sendSmsCode_tooFast() {
         // mock 数据
         SmsCodeDO smsCodeDO = randomPojo(SmsCodeDO.class,
-                o -> o.setMobile("18911009900").setTodayIndex(1));
+                o -> o.setMobile("15601691300").setTodayIndex(1));
         smsCodeMapper.insert(smsCodeDO);
         // 准备参数
         SmsCodeSendReqDTO reqDTO = randomPojo(SmsCodeSendReqDTO.class, o -> {
-            o.setMobile("18911009900");
+            o.setMobile("15601691300");
             o.setScene(SmsSceneEnum.MEMBER_LOGIN.getScene());
         });
         // mock 方法
@@ -100,11 +100,11 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
     public void sendSmsCode_exceedDay() {
         // mock 数据
         SmsCodeDO smsCodeDO = randomPojo(SmsCodeDO.class,
-                o -> o.setMobile("18911009900").setTodayIndex(10).setCreateTime(LocalDateTime.now()));
+                o -> o.setMobile("15601691300").setTodayIndex(10).setCreateTime(LocalDateTime.now()));
         smsCodeMapper.insert(smsCodeDO);
         // 准备参数
         SmsCodeSendReqDTO reqDTO = randomPojo(SmsCodeSendReqDTO.class, o -> {
-            o.setMobile("18911009900");
+            o.setMobile("15601691300");
             o.setScene(SmsSceneEnum.MEMBER_LOGIN.getScene());
         });
         // mock 方法
@@ -120,7 +120,7 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
     public void testUseSmsCode_success() {
         // 准备参数
         SmsCodeUseReqDTO reqDTO = randomPojo(SmsCodeUseReqDTO.class, o -> {
-            o.setMobile("18911009900");
+            o.setMobile("15601691300");
             o.setScene(randomEle(SmsSceneEnum.values()).getScene());
         });
         // mock 数据
@@ -143,7 +143,7 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
     public void validateSmsCode_success() {
         // 准备参数
         SmsCodeValidateReqDTO reqDTO = randomPojo(SmsCodeValidateReqDTO.class, o -> {
-            o.setMobile("18911009900");
+            o.setMobile("15601691300");
             o.setScene(randomEle(SmsSceneEnum.values()).getScene());
         });
         // mock 数据
@@ -159,7 +159,7 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
     public void validateSmsCode_notFound() {
         // 准备参数
         SmsCodeValidateReqDTO reqDTO = randomPojo(SmsCodeValidateReqDTO.class, o -> {
-            o.setMobile("18911009900");
+            o.setMobile("15601691300");
             o.setScene(randomEle(SmsSceneEnum.values()).getScene());
         });
         // mock 数据
@@ -174,7 +174,7 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
     public void validateSmsCode_expired() {
         // 准备参数
         SmsCodeValidateReqDTO reqDTO = randomPojo(SmsCodeValidateReqDTO.class, o -> {
-            o.setMobile("18911009900");
+            o.setMobile("15601691300");
             o.setScene(randomEle(SmsSceneEnum.values()).getScene());
         });
         // mock 数据
@@ -192,7 +192,7 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
     public void validateSmsCode_used() {
         // 准备参数
         SmsCodeValidateReqDTO reqDTO = randomPojo(SmsCodeValidateReqDTO.class, o -> {
-            o.setMobile("18911009900");
+            o.setMobile("15601691300");
             o.setScene(randomEle(SmsSceneEnum.values()).getScene());
         });
         // mock 数据

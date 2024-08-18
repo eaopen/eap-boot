@@ -4,8 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.dynamic.datasource.annotation.DSTransactional;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
@@ -31,6 +29,8 @@ import org.openea.eap.module.system.service.permission.RoleService;
 import org.openea.eap.module.system.service.tenant.handler.TenantInfoHandler;
 import org.openea.eap.module.system.service.tenant.handler.TenantMenuHandler;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -41,9 +41,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static java.util.Collections.singleton;
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
+import static java.util.Collections.singleton;
 
 /**
  * 租户 Service 实现类

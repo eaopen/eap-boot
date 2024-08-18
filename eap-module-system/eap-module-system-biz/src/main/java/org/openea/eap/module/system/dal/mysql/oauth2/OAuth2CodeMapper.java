@@ -1,8 +1,8 @@
 package org.openea.eap.module.system.dal.mysql.oauth2;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2CodeDO;
+import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface OAuth2CodeMapper extends BaseMapperX<OAuth2CodeDO> {

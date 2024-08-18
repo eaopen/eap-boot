@@ -3,8 +3,6 @@ package org.openea.eap.module.system.service.mail;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.module.system.dal.dataobject.mail.MailAccountDO;
@@ -14,6 +12,8 @@ import org.openea.eap.module.system.mq.message.mail.MailSendMessage;
 import org.openea.eap.module.system.mq.producer.mail.MailProducer;
 import org.openea.eap.module.system.service.member.MemberService;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 

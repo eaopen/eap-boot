@@ -7,44 +7,36 @@
     <artifactId>eap-boot-pom</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+    <modules>
+        <module>eap-framework</module>
+        <!-- Server 主项目 -->
+        <module>eap-server</module>
+        <!-- 各种 module 拓展 -->
+        <module>eap-module-system</module>
+        <module>eap-module-infra</module>
+<!--        <module>eap-module-bpm</module>-->
+<!--        <module>eap-module-ai</module>-->
+    </modules>
 
     <name>${project.artifactId}</name>
-    <description>openEAP spring boot with multi module
-        String Boot 多模块框架，包含系统框架、工作流和低代码工具
-    </description>
-    <url>https://github.com/eaopen/openea-eap</url>
+    <description>EAP项目基础脚手架</description>
+    <url>https://github.com/YunaiV/ruoyi-vue-pro</url>
 
     <properties>
-        <revision>2.6.3-SNAPSHOT</revision>
+        <revision>2.7.0</revision>
         <!-- Maven 相关 -->
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
         <!-- 看看咋放到 bom 里 -->
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <spring.boot.version>2.7.18</spring.boot.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <modules>
-        <module>eap-framework2</module>
-
-        <!-- 各种 module 拓展 -->
-        <module>eap-module-system</module>
-        <module>eap-module-infra</module>
-
-        <!-- Server 主项目, demo -->
-        <module>eap-server</module>
-        <!-- eap-boot starter -->
-        <module>eap-boot-starter</module>
-
-        <!-- 示例项目 -->
-        <!--        <module>eap-example</module>-->
-    </modules>
 
     <licenses>
         <license>
@@ -280,6 +272,5 @@
             </build>
         </profile>
     </profiles>
-
 
 </project>

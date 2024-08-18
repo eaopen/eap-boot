@@ -45,7 +45,7 @@ public class SmsLogServiceImplTest extends BaseDbUnitTest {
        SmsLogDO dbSmsLog = randomSmsLogDO(o -> { // 等会查询到
            o.setChannelId(1L);
            o.setTemplateId(10L);
-           o.setMobile("18911009900");
+           o.setMobile("15601691300");
            o.setSendStatus(SmsSendStatusEnum.INIT.getStatus());
            o.setSendTime(buildTime(2020, 11, 11));
            o.setReceiveStatus(SmsReceiveStatusEnum.INIT.getStatus());

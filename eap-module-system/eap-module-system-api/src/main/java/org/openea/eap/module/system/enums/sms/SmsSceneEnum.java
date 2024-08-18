@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.enums.sms;
 
 import cn.hutool.core.util.ArrayUtil;
+import org.openea.eap.framework.common.core.IntArrayValuable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.openea.eap.framework.common.core.IntArrayValuable;
 
 import java.util.Arrays;
 
