@@ -37,6 +37,11 @@ public class DictTypeServiceImpl implements DictTypeService {
     }
 
     @Override
+    public DictTypeDO getDictTypeById(Long id) {
+        return dictTypeMapper.selectById(id);
+    }
+
+    @Override
     public DictTypeDO getDictType(Long id) {
         return dictTypeMapper.selectById(id);
     }

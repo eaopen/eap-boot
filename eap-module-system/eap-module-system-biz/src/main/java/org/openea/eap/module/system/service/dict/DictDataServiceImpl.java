@@ -5,6 +5,7 @@ import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataExportReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataPageReqVO;
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
@@ -15,10 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
@@ -28,7 +26,7 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
  *
  * @author ruoyi
  */
-@Service
+//@Service
 @Slf4j
 public class DictDataServiceImpl implements DictDataService {
 
@@ -40,21 +38,56 @@ public class DictDataServiceImpl implements DictDataService {
             .thenComparingInt(DictDataDO::getSort);
 
     @Resource
-    private DictTypeService dictTypeService;
+    protected DictTypeService dictTypeService;
 
     @Resource
-    private DictDataMapper dictDataMapper;
+    protected DictDataMapper dictDataMapper;
 
     @Override
     public List<DictDataDO> getDictDataList(Integer status, String dictType) {
-        List<DictDataDO> list = dictDataMapper.selectListByStatusAndDictType(status, dictType);
+        try{
+            List<DictDataDO> list = dictDataMapper.selectListByStatusAndDictType(status, dictType);
+            list.sort(COMPARATOR_TYPE_AND_SORT);
+            return list;
+        } catch (Exception e) {
+            log.warn("getDictDataList fail dictType={}, error={}", dictType, e.getMessage());
+        }
+       return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, String> getMapDictData(String dictType) {
+        List<DictDataDO> list = dictDataMapper.selectByDictType(dictType);
         list.sort(COMPARATOR_TYPE_AND_SORT);
-        return list;
+        Map<String, String> map = new HashMap<>();
+        list.forEach(dictDataDO -> {
+            map.put(dictDataDO.getValue(), dictDataDO.getLabel());
+        });
+        return map;
     }
 
     @Override
     public PageResult<DictDataDO> getDictDataPage(DictDataPageReqVO pageReqVO) {
         return dictDataMapper.selectPage(pageReqVO);
+    }
+
+    @Override
+    public List<DictDataDO> getDictDataList(DictDataExportReqVO reqVO) {
+        List<DictDataDO> list = dictDataMapper.selectList(reqVO);
+        list.sort(COMPARATOR_TYPE_AND_SORT);
+        return list;
+    }
+
+    /**
+     * 获得字典数据列表
+     *
+     * @return 字典数据全列表
+     */
+    @Override
+    public List<DictDataDO> getDictDataList() {
+        List<DictDataDO> list = dictDataMapper.selectList();
+        list.sort(COMPARATOR_TYPE_AND_SORT);
+        return list;
     }
 
     @Override
@@ -167,6 +200,11 @@ public class DictDataServiceImpl implements DictDataService {
     @Override
     public DictDataDO parseDictData(String dictType, String label) {
         return dictDataMapper.selectByDictTypeAndLabel(dictType, label);
+    }
+
+    @Override
+    public List<DictDataDO> getDictData(String dictType) {
+        return dictDataMapper.selectByDictType(dictType);
     }
 
     @Override

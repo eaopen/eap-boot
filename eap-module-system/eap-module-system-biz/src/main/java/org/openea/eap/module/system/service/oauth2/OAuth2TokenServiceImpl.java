@@ -73,6 +73,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     @Transactional
     public OAuth2AccessTokenDO createAccessToken(Long userId, String userKey, Integer userType, String clientId, List<String> scopes) {
         OAuth2ClientDO clientDO = oauth2ClientService.validOAuthClientFromCache(clientId);
+        // todo 判断是否需要创建刷新令牌
         // 创建刷新令牌
         OAuth2RefreshTokenDO refreshTokenDO = createOAuth2RefreshToken(userId, userKey, userType, clientDO, scopes);
         // 创建访问令牌

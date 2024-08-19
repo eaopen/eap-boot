@@ -49,6 +49,7 @@ public interface DictTypeService {
      * @param id 字典类型编号
      * @return 字典类型
      */
+    DictTypeDO getDictTypeById(Long id);
     DictTypeDO getDictType(Long id);
 
     /**

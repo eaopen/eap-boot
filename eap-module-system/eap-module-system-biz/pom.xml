@@ -42,6 +42,10 @@
             <groupId>io.github.eaopen</groupId>
             <artifactId>eap-spring-boot-starter-biz-ip</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-boot-starter-biz-i18n</artifactId>
+        </dependency>
 
         <!-- Web 相关 -->
         <dependency>

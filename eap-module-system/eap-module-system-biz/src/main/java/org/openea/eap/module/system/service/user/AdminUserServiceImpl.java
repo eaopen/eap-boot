@@ -61,7 +61,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     static final String USER_INIT_PASSWORD_KEY = "system.user.init-password";
 
     @Resource
-    private AdminUserMapper userMapper;
+    protected AdminUserMapper userMapper;
 
     @Resource
     private DeptService deptService;

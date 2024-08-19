@@ -91,4 +91,14 @@ public interface MenuService {
      */
     List<MenuDO> getMenuList(Collection<Long> ids);
 
+
+    /**
+     * 菜单国际化
+     * @param menus
+     * @return
+     */
+    List<MenuDO> toI18n(List<MenuDO> menus);
+
+    Integer updateMenuI18n();
+
 }
