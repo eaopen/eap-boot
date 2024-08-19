@@ -54,7 +54,7 @@ springdoc:
     enabled: false
     path: /v3/api-docs
   swagger-ui:
-    enabled: false
+    enabled: true
     path: /swagger-ui
   default-flat-param-object: true # 参见 https://doc.xiaominfo.com/docs/faq/v4/knife4j-parameterobject-flat-param 文档
 
@@ -206,7 +206,7 @@ eap:
 
 eap:
   info:
-    version: 1.0.0
+    version: 2.7.0
     base-package: org.openea.eap
   web:
     admin-ui:
