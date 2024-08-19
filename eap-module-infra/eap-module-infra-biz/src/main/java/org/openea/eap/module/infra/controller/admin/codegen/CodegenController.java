@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
+import static org.openea.eap.framework.common.util.servlet.ServletUtils.writeAttachment;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
-import static org.openea.eap.module.infra.framework.file.core.utils.FileTypeUtils.writeAttachment;
 
 @Tag(name = "管理后台 - 代码生成器")
 @RestController
