@@ -22,7 +22,7 @@
 
     <name>${project.artifactId}</name>
     <description>EAP项目基础脚手架</description>
-    <url>https://github.com/YunaiV/ruoyi-vue-pro</url>
+    <url>https://github.com/eaopen/openea-eap</url>
 
     <properties>
         <revision>2.7.0</revision>
