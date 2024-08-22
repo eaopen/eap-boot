@@ -10,18 +10,16 @@
     </parent>
     <packaging>pom</packaging>
     <modules>
-        <module>eap-spring-boot-starter-mybatis</module>
-        <module>eap-spring-boot-starter-web</module>
-        <module>eap-spring-boot-starter-security</module>
-        <module>eap-spring-boot-starter-websocket</module>
-
-        <module>eap-spring-boot-starter-protection</module>
-
-        <module>eap-spring-boot-starter-excel</module>
-        <module>eap-spring-boot-starter-test</module>
-
-        <module>eap-spring-boot-starter-biz-tenant</module>
-        <module>eap-spring-boot-starter-biz-data-permission</module>
+        <!-- 迁移到 eap-common/eap-boot-framework -->
+<!--        <module>eap-spring-boot-starter-mybatis</module>-->
+<!--        <module>eap-spring-boot-starter-web</module>-->
+<!--        <module>eap-spring-boot-starter-security</module>-->
+<!--        <module>eap-spring-boot-starter-websocket</module>-->
+<!--        <module>eap-spring-boot-starter-protection</module>-->
+<!--        <module>eap-spring-boot-starter-excel</module>-->
+<!--        <module>eap-spring-boot-starter-test</module>-->
+<!--        <module>eap-spring-boot-starter-biz-tenant</module>-->
+<!--        <module>eap-spring-boot-starter-biz-data-permission</module>-->
     </modules>
 
     <artifactId>eap-framework</artifactId>

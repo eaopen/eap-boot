@@ -43,6 +43,12 @@ public class SystemDO extends BaseDO {
      * 是否主系统
      */
     private Integer isMain;
+
+    /**
+     * 依赖系统编号
+     * (多个逗号分隔)
+     */
+    private String depSysCodes;
     /**
      * 扩展属性
      */

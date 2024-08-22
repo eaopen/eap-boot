@@ -24,6 +24,9 @@ public class SystemSaveReqVO {
     @Schema(description = "是否主系统")
     private Integer isMain;
 
+    @Schema(description = "依赖系统编号")
+    private String depSysCodes;
+
     @Schema(description = "扩展属性")
     private String propertyJson;
 

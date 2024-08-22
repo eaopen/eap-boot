@@ -1,5 +1,6 @@
 package org.openea.eap.module.system.controller.admin.sys.vo;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.*;
 import java.util.*;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,6 +27,9 @@ public class SystemPageReqVO extends PageParam {
 
     @Schema(description = "是否主系统")
     private Integer isMain;
+
+    @Schema(description = "依赖系统编号")
+    private String depSysCodes;
 
     @Schema(description = "扩展属性")
     private String propertyJson;
