@@ -8,7 +8,7 @@
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>eap-module-infra-rest</artifactId>
+    <artifactId>eap-module-infra-api-impl</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -21,21 +21,20 @@
     <dependencies>
         <dependency>
             <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-infra-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-system-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
             <artifactId>eap-module-infra-biz</artifactId>
             <version>${revision}</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-module-infra-api-impl</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-file-biz</artifactId>
-            <version>${revision}</version>
-        </dependency>
     </dependencies>
 
 </project>

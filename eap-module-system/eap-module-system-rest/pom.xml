@@ -25,6 +25,12 @@
             <version>${revision}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-system-api-impl</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
 
         <!-- 集成平台内IM消息 -->
 <!--        <dependency>-->
