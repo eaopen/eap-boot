@@ -2,11 +2,11 @@ package org.openea.eap.module.system.service.social;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
+import groovy.lang.Lazy;
 import org.openea.eap.framework.common.exception.ServiceException;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserRespDTO;
-import org.openea.eap.module.system.api.social.dto.SocialWxQrcodeReqDTO;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.social.SocialUserBindDO;
 import org.openea.eap.module.system.dal.dataobject.social.SocialUserDO;
@@ -44,6 +44,7 @@ public class SocialUserServiceImpl implements SocialUserService {
     private SocialUserMapper socialUserMapper;
 
     @Resource
+    @Lazy
     private SocialClientService socialClientService;
 
     @Override

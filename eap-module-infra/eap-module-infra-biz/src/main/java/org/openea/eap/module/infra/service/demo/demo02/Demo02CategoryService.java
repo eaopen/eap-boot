@@ -1,11 +1,11 @@
 package org.openea.eap.module.infra.service.demo.demo02;
 
-import java.util.*;
-import javax.validation.*;
-
 import org.openea.eap.module.infra.controller.admin.demo.demo02.vo.Demo02CategoryListReqVO;
 import org.openea.eap.module.infra.controller.admin.demo.demo02.vo.Demo02CategorySaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.demo.demo02.Demo02CategoryDO;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 示例分类 Service 接口

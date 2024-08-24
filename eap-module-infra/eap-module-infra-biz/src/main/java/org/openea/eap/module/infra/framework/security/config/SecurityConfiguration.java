@@ -1,6 +1,7 @@
 package org.openea.eap.module.infra.framework.security.config;
 
 import org.openea.eap.framework.security.config.AuthorizeRequestsCustomizer;
+import org.openea.eap.module.infra.enums.ApiConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.Expression
  * Infra 模块的 Security 配置
  */
 @Configuration(proxyBeanMethods = false, value = "infraSecurityConfiguration")
-public class SecurityConfiguration {
+public class    SecurityConfiguration {
 
     @Value("${spring.boot.admin.context-path:''}")
     private String adminSeverContextPath;
@@ -25,7 +26,7 @@ public class SecurityConfiguration {
                 // Swagger 接口文档
                 registry.antMatchers("/v3/api-docs/**").permitAll()
                         .antMatchers("/webjars/**").permitAll()
-                        .antMatchers("/swagger-ui.html").permitAll()
+                        .antMatchers("/swagger-ui").permitAll()
                         .antMatchers("/swagger-ui/**").permitAll();
                 // Spring Boot Actuator 的安全配置
                 registry.antMatchers("/actuator").anonymous()
@@ -37,6 +38,10 @@ public class SecurityConfiguration {
                         .antMatchers(adminSeverContextPath + "/**").anonymous();
                 // 文件读取
                 registry.antMatchers(buildAdminApi("/infra/file/*/get/**")).permitAll();
+
+                // TODO 芋艿：这个每个项目都需要重复配置，得捉摸有没通用的方案
+                // RPC 服务的安全配置
+                registry.antMatchers(ApiConstants.PREFIX + "/**").permitAll();
             }
 
         };

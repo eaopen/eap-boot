@@ -1,20 +1,18 @@
 package org.openea.eap.module.system.api.social;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserRespDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserUnbindReqDTO;
-import org.openea.eap.module.system.api.social.dto.SocialWxQrcodeReqDTO;
 import org.openea.eap.module.system.service.social.SocialUserService;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-/**
- * 社交用户的 API 实现类
- *
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
 @Validated
 public class SocialUserApiImpl implements SocialUserApi {
 
@@ -22,24 +20,25 @@ public class SocialUserApiImpl implements SocialUserApi {
     private SocialUserService socialUserService;
 
     @Override
-    public String bindSocialUser(SocialUserBindReqDTO reqDTO) {
-        return socialUserService.bindSocialUser(reqDTO);
+    public CommonResult<String> bindSocialUser(SocialUserBindReqDTO reqDTO) {
+        return success(socialUserService.bindSocialUser(reqDTO));
     }
 
     @Override
-    public void unbindSocialUser(SocialUserUnbindReqDTO reqDTO) {
+    public CommonResult<Boolean> unbindSocialUser(SocialUserUnbindReqDTO reqDTO) {
         socialUserService.unbindSocialUser(reqDTO.getUserId(), reqDTO.getUserType(),
                 reqDTO.getSocialType(), reqDTO.getOpenid());
+        return success(true);
     }
 
     @Override
-    public SocialUserRespDTO getSocialUserByUserId(Integer userType, Long userId, Integer socialType) {
-        return socialUserService.getSocialUserByUserId(userType, userId, socialType);
+    public CommonResult<SocialUserRespDTO> getSocialUserByUserId(Integer userType, Long userId, Integer socialType) {
+        return success(socialUserService.getSocialUserByUserId(userType, userId, socialType));
     }
 
     @Override
-    public SocialUserRespDTO getSocialUserByCode(Integer userType, Integer socialType, String code, String state) {
-       return socialUserService.getSocialUserByCode(userType, socialType, code, state);
+    public CommonResult<SocialUserRespDTO> getSocialUserByCode(Integer userType, Integer socialType, String code, String state) {
+        return success(socialUserService.getSocialUserByCode(userType, socialType, code, state));
     }
 
 }

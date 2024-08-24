@@ -1,17 +1,16 @@
 package org.openea.eap.module.system.api.sms;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.api.sms.dto.send.SmsSendSingleToUserReqDTO;
 import org.openea.eap.module.system.service.sms.SmsSendService;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-/**
- * 短信发送 API 接口
- *
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
 @Validated
 public class SmsSendApiImpl implements SmsSendApi {
 
@@ -19,15 +18,15 @@ public class SmsSendApiImpl implements SmsSendApi {
     private SmsSendService smsSendService;
 
     @Override
-    public Long sendSingleSmsToAdmin(SmsSendSingleToUserReqDTO reqDTO) {
-        return smsSendService.sendSingleSmsToAdmin(reqDTO.getMobile(), reqDTO.getUserId(),
-                reqDTO.getTemplateCode(), reqDTO.getTemplateParams());
+    public CommonResult<Long> sendSingleSmsToAdmin(SmsSendSingleToUserReqDTO reqDTO) {
+        return success(smsSendService.sendSingleSmsToAdmin(reqDTO.getMobile(), reqDTO.getUserId(),
+                reqDTO.getTemplateCode(), reqDTO.getTemplateParams()));
     }
 
     @Override
-    public Long sendSingleSmsToMember(SmsSendSingleToUserReqDTO reqDTO) {
-        return smsSendService.sendSingleSmsToMember(reqDTO.getMobile(), reqDTO.getUserId(),
-                reqDTO.getTemplateCode(), reqDTO.getTemplateParams());
+    public CommonResult<Long> sendSingleSmsToMember(SmsSendSingleToUserReqDTO reqDTO) {
+        return success(smsSendService.sendSingleSmsToMember(reqDTO.getMobile(), reqDTO.getUserId(),
+                reqDTO.getTemplateCode(), reqDTO.getTemplateParams()));
     }
 
 }

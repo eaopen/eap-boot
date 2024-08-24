@@ -2,13 +2,15 @@ package org.openea.eap.module.system.api.user;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.service.dept.DeptService;
 import org.openea.eap.module.system.service.user.AdminUserService;
-import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -16,13 +18,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertSet;
 
-/**
- * Admin 用户 API 实现类
- *
- */
-@Service
+@RestController // 提供 RESTful API 接口，给 Feign 调用
+@Validated
 public class AdminUserApiImpl implements AdminUserApi {
 
     @Resource
@@ -31,25 +31,25 @@ public class AdminUserApiImpl implements AdminUserApi {
     private DeptService deptService;
 
     @Override
-    public AdminUserRespDTO getUser(Long id) {
+    public CommonResult<AdminUserRespDTO> getUser(Long id) {
         AdminUserDO user = userService.getUser(id);
-        return BeanUtils.toBean(user, AdminUserRespDTO.class);
+        return success(BeanUtils.toBean(user, AdminUserRespDTO.class));
     }
 
     @Override
-    public List<AdminUserRespDTO> getUserListBySubordinate(Long id) {
+    public CommonResult<List<AdminUserRespDTO>> getUserListBySubordinate(Long id) {
         // 1.1 获取用户负责的部门
         AdminUserDO user = userService.getUser(id);
         if (user == null) {
-            return Collections.emptyList();
+            return success(Collections.emptyList());
         }
         ArrayList<Long> deptIds = new ArrayList<>();
         DeptDO dept = deptService.getDept(user.getDeptId());
         if (dept == null) {
-            return Collections.emptyList();
+            return success(Collections.emptyList());
         }
         if (ObjUtil.notEqual(dept.getLeaderUserId(), id)) { // 校验为负责人
-            return Collections.emptyList();
+            return success(Collections.emptyList());
         }
         deptIds.add(dept.getId());
         // 1.2 获取所有子部门
@@ -61,30 +61,31 @@ public class AdminUserApiImpl implements AdminUserApi {
         // 2. 获取部门对应的用户信息
         List<AdminUserDO> users = userService.getUserListByDeptIds(deptIds);
         users.removeIf(item -> ObjUtil.equal(item.getId(), id)); // 排除自己
-        return BeanUtils.toBean(users, AdminUserRespDTO.class);
+        return success(BeanUtils.toBean(users, AdminUserRespDTO.class));
     }
 
     @Override
-    public List<AdminUserRespDTO> getUserList(Collection<Long> ids) {
+    public CommonResult<List<AdminUserRespDTO>> getUserList(Collection<Long> ids) {
         List<AdminUserDO> users = userService.getUserList(ids);
-        return BeanUtils.toBean(users, AdminUserRespDTO.class);
+        return success(BeanUtils.toBean(users, AdminUserRespDTO.class));
     }
 
     @Override
-    public List<AdminUserRespDTO> getUserListByDeptIds(Collection<Long> deptIds) {
+    public CommonResult<List<AdminUserRespDTO>> getUserListByDeptIds(Collection<Long> deptIds) {
         List<AdminUserDO> users = userService.getUserListByDeptIds(deptIds);
-        return BeanUtils.toBean(users, AdminUserRespDTO.class);
+        return success(BeanUtils.toBean(users, AdminUserRespDTO.class));
     }
 
     @Override
-    public List<AdminUserRespDTO> getUserListByPostIds(Collection<Long> postIds) {
+    public CommonResult<List<AdminUserRespDTO>> getUserListByPostIds(Collection<Long> postIds) {
         List<AdminUserDO> users = userService.getUserListByPostIds(postIds);
-        return BeanUtils.toBean(users, AdminUserRespDTO.class);
+        return success(BeanUtils.toBean(users, AdminUserRespDTO.class));
     }
 
     @Override
-    public void validateUserList(Collection<Long> ids) {
+    public CommonResult<Boolean> validateUserList(Collection<Long> ids) {
         userService.validateUserList(ids);
+        return success(true);
     }
 
 }

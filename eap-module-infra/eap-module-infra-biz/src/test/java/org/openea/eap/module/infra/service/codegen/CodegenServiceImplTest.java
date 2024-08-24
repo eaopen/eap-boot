@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildBetweenTime;
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildTime;
 import static org.openea.eap.framework.common.util.object.ObjectUtils.cloneIgnoreId;
@@ -99,7 +100,7 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
         when(codegenBuilder.buildTable(same(tableInfo))).thenReturn(table);
         // mock 方法（AdminUserRespDTO）
         AdminUserRespDTO user = randomPojo(AdminUserRespDTO.class, o -> o.setNickname("芋头"));
-        when(userApi.getUser(eq(userId))).thenReturn(user);
+        when(userApi.getUser(eq(userId))).thenReturn(success(user));
         // mock 方法（CodegenColumnDO）
         List<CodegenColumnDO> columns = randomPojoList(CodegenColumnDO.class);
         when(codegenBuilder.buildColumns(eq(table.getId()), same(fields)))

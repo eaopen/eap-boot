@@ -4,28 +4,30 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.bean.subscribemsg.TemplateInfo;
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.social.dto.*;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
 import org.openea.eap.module.system.service.social.SocialClientService;
 import org.openea.eap.module.system.service.social.SocialUserService;
-import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.bean.WxJsapiSignature;
-import me.chanjar.weixin.common.bean.subscribemsg.TemplateInfo;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 import static cn.hutool.core.collection.CollUtil.findOne;
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
 
 /**
  * 社交应用的 API 实现类
  *
  */
-@Service
+@RestController
 @Validated
 @Slf4j
 public class SocialClientApiImpl implements SocialClientApi {
@@ -36,49 +38,47 @@ public class SocialClientApiImpl implements SocialClientApi {
     private SocialUserService socialUserService;
 
     @Override
-    public String getAuthorizeUrl(Integer socialType, Integer userType, String redirectUri) {
-        return socialClientService.getAuthorizeUrl(socialType, userType, redirectUri);
+    public CommonResult<String> getAuthorizeUrl(Integer socialType, Integer userType, String redirectUri) {
+        return success(socialClientService.getAuthorizeUrl(socialType, userType, redirectUri));
     }
 
     @Override
-    public SocialWxJsapiSignatureRespDTO createWxMpJsapiSignature(Integer userType, String url) {
+    public CommonResult<SocialWxJsapiSignatureRespDTO> createWxMpJsapiSignature(Integer userType, String url) {
         WxJsapiSignature signature = socialClientService.createWxMpJsapiSignature(userType, url);
-        return BeanUtils.toBean(signature, SocialWxJsapiSignatureRespDTO.class);
+        return success(BeanUtils.toBean(signature, SocialWxJsapiSignatureRespDTO.class));
     }
 
-    //======================= 微信小程序独有 =======================
-
     @Override
-    public SocialWxPhoneNumberInfoRespDTO getWxMaPhoneNumberInfo(Integer userType, String phoneCode) {
+    public CommonResult<SocialWxPhoneNumberInfoRespDTO> getWxMaPhoneNumberInfo(Integer userType, String phoneCode) {
         WxMaPhoneNumberInfo info = socialClientService.getWxMaPhoneNumberInfo(userType, phoneCode);
-        return BeanUtils.toBean(info, SocialWxPhoneNumberInfoRespDTO.class);
+        return success(BeanUtils.toBean(info, SocialWxPhoneNumberInfoRespDTO.class));
     }
 
     @Override
-    public byte[] getWxaQrcode(SocialWxQrcodeReqDTO reqVO) {
-        return socialClientService.getWxaQrcode(reqVO);
+    public CommonResult<byte[]> getWxaQrcode(SocialWxQrcodeReqDTO reqVO) {
+        return success(socialClientService.getWxaQrcode(reqVO));
     }
 
     @Override
-    public List<SocialWxaSubscribeTemplateRespDTO> getWxaSubscribeTemplateList(Integer userType) {
+    public CommonResult<List<SocialWxaSubscribeTemplateRespDTO>> getWxaSubscribeTemplateList(Integer userType) {
         List<TemplateInfo> list = socialClientService.getSubscribeTemplateList(userType);
-        return convertList(list, item -> BeanUtils.toBean(item, SocialWxaSubscribeTemplateRespDTO.class).setId(item.getPriTmplId()));
+        return success(convertList(list, item -> BeanUtils.toBean(item, SocialWxaSubscribeTemplateRespDTO.class).setId(item.getPriTmplId())));
     }
 
     @Override
-    public void sendWxaSubscribeMessage(SocialWxaSubscribeMessageSendReqDTO reqDTO) {
+    public CommonResult<Boolean> sendWxaSubscribeMessage(SocialWxaSubscribeMessageSendReqDTO reqDTO) {
         // 1.1 获得订阅模版列表
         List<TemplateInfo> templateList = socialClientService.getSubscribeTemplateList(reqDTO.getUserType());
         if (CollUtil.isEmpty(templateList)) {
             log.warn("[sendSubscribeMessage][reqDTO({}) 发送订阅消息失败，原因：没有找到订阅模板]", reqDTO);
-            return;
+            return success(false);
         }
         // 1.2 获得需要使用的模版
         TemplateInfo template = findOne(templateList, item ->
                 ObjUtil.equal(item.getTitle(), reqDTO.getTemplateTitle()));
         if (template == null) {
             log.warn("[sendWxaSubscribeMessage][reqDTO({}) 发送订阅消息失败，原因：没有找到订阅模板]", reqDTO);
-            return;
+            return success(false);
         }
 
         // 2. 获得社交用户
@@ -86,11 +86,12 @@ public class SocialClientApiImpl implements SocialClientApi {
                 SocialTypeEnum.WECHAT_MINI_APP.getType());
         if (StrUtil.isBlankIfStr(socialUser.getOpenid())) {
             log.warn("[sendWxaSubscribeMessage][reqDTO({}) 发送订阅消息失败，原因：会员 openid 缺失]", reqDTO);
-            return;
+            return success(false);
         }
 
         // 3. 发送订阅消息
         socialClientService.sendSubscribeMessage(reqDTO, template.getPriTmplId(), socialUser.getOpenid());
+        return success(true);
     }
 
 }

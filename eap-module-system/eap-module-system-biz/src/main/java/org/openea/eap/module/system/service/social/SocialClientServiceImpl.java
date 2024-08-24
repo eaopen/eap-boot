@@ -12,6 +12,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ReflectUtil;
+import groovy.lang.Lazy;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -120,6 +121,7 @@ public class SocialClientServiceImpl implements SocialClientService {
             });
 
     @Resource
+    @Lazy
     private WxMaService wxMaService;
     @Resource
     private WxMaProperties wxMaProperties;

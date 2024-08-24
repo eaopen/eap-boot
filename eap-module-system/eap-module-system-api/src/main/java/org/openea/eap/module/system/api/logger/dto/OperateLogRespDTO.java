@@ -3,81 +3,50 @@ package org.openea.eap.module.system.api.logger.dto;
 import com.fhs.core.trans.anno.Trans;
 import com.fhs.core.trans.constant.TransType;
 import com.fhs.core.trans.vo.VO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * 系统操作日志 Resp DTO
- *
- * @author HUIHUI
- */
+@Schema(name = "RPC 服务 - 系统操作日志 Response DTO")
 @Data
 public class OperateLogRespDTO implements VO {
 
-    /**
-     * 日志编号
-     */
+    @Schema(description = "日志编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     private Long id;
-    /**
-     * 链路追踪编号
-     */
+
+    @Schema(description = "链路追踪编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "89aca178-a370-411c-ae02-3f0d672be4ab")
     private String traceId;
-    /**
-     * 用户编号
-     */
-    @Trans(type = TransType.SIMPLE, targetClassName = "org.openea.eap.module.system.dal.dataobject.user.AdminUserDO",
+    @Schema(description = "用户编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "666")
+    @Trans(type = TransType.RPC, targetClassName = "org.openea.eap.module.system.dal.dataobject.user.AdminUserDO",
             fields = "nickname", ref = "userName")
     private Long userId;
-    /**
-     * 用户名称
-     */
+    @Schema(description = "用户名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
     private String userName;
-    /**
-     * 用户类型
-     */
+    @Schema(description = "用户类型，参见 UserTypeEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "2" )
     private Integer userType;
-    /**
-     * 操作模块类型
-     */
+    @Schema(description = "操作模块类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "订单")
     private String type;
-    /**
-     * 操作名
-     */
+    @Schema(description = "操作名", requiredMode = Schema.RequiredMode.REQUIRED, example = "创建订单")
     private String subType;
-    /**
-     * 操作模块业务编号
-     */
+    @Schema(description = "操作模块业务编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "188")
     private Long bizId;
-    /**
-     * 操作内容
-     */
+    @Schema(description = "操作内容", requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "修改编号为 1 的用户信息，将性别从男改成女，将姓名从EAP改成源码")
     private String action;
-    /**
-     * 拓展字段
-     */
+    @Schema(description = "拓展字段", example = "{\"orderId\": \"1\"}")
     private String extra;
 
-    /**
-     * 请求方法名
-     */
+    @Schema(description = "请求方法名", requiredMode = Schema.RequiredMode.REQUIRED, example = "GET")
     private String requestMethod;
-    /**
-     * 请求地址
-     */
+    @Schema(description = "请求地址", requiredMode = Schema.RequiredMode.REQUIRED, example = "/order/get")
     private String requestUrl;
-    /**
-     * 用户 IP
-     */
+    @Schema(description = "用户 IP", requiredMode = Schema.RequiredMode.REQUIRED, example = "127.0.0.1")
     private String userIp;
-    /**
-     * 浏览器 UA
-     */
+    @Schema(description = "浏览器 UserAgent", requiredMode = Schema.RequiredMode.REQUIRED, example = "Mozilla/5.0")
     private String userAgent;
 
-    /**
-     * 创建时间
-     */
+    @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime createTime;
 
 }

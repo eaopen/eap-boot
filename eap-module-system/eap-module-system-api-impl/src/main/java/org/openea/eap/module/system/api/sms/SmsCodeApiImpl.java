@@ -1,19 +1,18 @@
 package org.openea.eap.module.system.api.sms;
 
-import org.openea.eap.module.system.api.sms.dto.code.SmsCodeValidateReqDTO;
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeSendReqDTO;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeUseReqDTO;
+import org.openea.eap.module.system.api.sms.dto.code.SmsCodeValidateReqDTO;
 import org.openea.eap.module.system.service.sms.SmsCodeService;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-/**
- * 短信验证码 API 实现类
- *
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
 @Validated
 public class SmsCodeApiImpl implements SmsCodeApi {
 
@@ -21,18 +20,21 @@ public class SmsCodeApiImpl implements SmsCodeApi {
     private SmsCodeService smsCodeService;
 
     @Override
-    public void sendSmsCode(SmsCodeSendReqDTO reqDTO) {
+    public CommonResult<Boolean> sendSmsCode(SmsCodeSendReqDTO reqDTO) {
         smsCodeService.sendSmsCode(reqDTO);
+        return success(true);
     }
 
     @Override
-    public void useSmsCode(SmsCodeUseReqDTO reqDTO) {
+    public CommonResult<Boolean> useSmsCode(SmsCodeUseReqDTO reqDTO) {
         smsCodeService.useSmsCode(reqDTO);
+        return success(true);
     }
 
     @Override
-    public void validateSmsCode(SmsCodeValidateReqDTO reqDTO) {
+    public CommonResult<Boolean> validateSmsCode(SmsCodeValidateReqDTO reqDTO) {
         smsCodeService.validateSmsCode(reqDTO);
+        return success(true);
     }
 
 }
