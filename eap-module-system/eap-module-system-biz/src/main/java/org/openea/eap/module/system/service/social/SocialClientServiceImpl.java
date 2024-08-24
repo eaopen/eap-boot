@@ -48,6 +48,7 @@ import me.chanjar.weixin.common.redis.RedisTemplateWxRedisOps;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpRedisConfigImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -91,7 +92,9 @@ public class SocialClientServiceImpl implements SocialClientService {
     @Value("${eap.wxa-subscribe-message.miniprogram-state:formal}")
     public String miniprogramState;
 
-    @Resource
+    //@Resource
+    @Autowired(required = false)
+    @Lazy
     private AuthRequestFactory authRequestFactory;
 
     @Resource
