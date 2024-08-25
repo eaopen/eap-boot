@@ -10,12 +10,15 @@
     <modules>
         <!-- Server 主项目 -->
         <module>eap-server</module>
-        <module>eap-cloud</module>
+
+        <!-- cloud -->
+        <module>eap-gateway</module>
+        <module>eap-cloud-system-start</module>
+        <module>eap-cloud-infra-start</module>
 
         <!-- 各种 module 拓展 -->
         <module>eap-module-system</module>
         <module>eap-module-infra</module>
-
 
         <!-- 组件模块迁移到单独项目 -->
 <!--        <module>eap-module-bpm</module>-->

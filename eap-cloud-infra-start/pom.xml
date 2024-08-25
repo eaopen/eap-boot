@@ -2,54 +2,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.eaopen</groupId>
-        <artifactId>eap-cloud</artifactId>
+        <artifactId>eap-boot-pom</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>eap-gateway</artifactId>
-    <packaging>jar</packaging>
-
+    <artifactId>eap-cloud-infra-start</artifactId>
     <name>${project.artifactId}</name>
-    <description>API 服务网关，基于 Spring Cloud Gateway 实现</description>
-    <url>https://github.com/YunaiV/eap-cloud</url>
+    <description>
+        infra 模块，主要提供两块能力：
+        1. 我们放基础设施的运维与管理，支撑上层的通用与核心业务。 例如说：定时任务的管理、服务器的信息等等
+        2. 研发工具，提升研发效率与质量。 例如说：代码生成器、接口文档等等
+    </description>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <dependencies>
-        <!-- 业务组件 -->
+        <!-- Spring Cloud 基础 -->
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-module-system-api</artifactId>
+            <artifactId>eap-spring-boot-starter-env</artifactId>
+        </dependency>
+
+
+        <!-- 依赖服务 -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-infra-rest</artifactId>
             <version>${revision}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-webmvc-core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
-        <!-- Gateway 网关相关 -->
+        <!-- eap cloud 依赖组件 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId> <!-- 接口文档 -->
-            <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-cloud-starter-web1</artifactId>
         </dependency>
 
         <!-- RPC 远程调用相关 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-boot-starter-rpc</artifactId>
         </dependency>
 
         <!-- Registry 注册中心相关 -->
@@ -70,13 +65,24 @@
             <artifactId>eap-spring-boot-starter-monitor</artifactId>
         </dependency>
 
-        <!-- 工具类相关 -->
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-server</artifactId> <!-- 实现 Spring Boot Admin Server 服务端 -->
         </dependency>
+
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.eaopen</groupId>
+                <artifactId>eap-cloud-dependencies</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <!-- 设置构建的 jar 包名 -->
@@ -86,7 +92,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version> <!-- 如果 spring.boot.version 版本修改，则这里也要跟着修改 -->
+                <version>${spring.boot.version}</version>
                 <executions>
                     <execution>
                         <goals>

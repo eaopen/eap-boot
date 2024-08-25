@@ -34,11 +34,11 @@
 
 
         <!-- 工作流。默认注释，保证编译速度 -->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-bpm-rest</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-bpm-rest</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
 
         <!-- AI 大模型相关模块。默认注释，保证编译速度 -->
