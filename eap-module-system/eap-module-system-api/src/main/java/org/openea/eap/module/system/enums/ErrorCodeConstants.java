@@ -17,6 +17,9 @@ public interface ErrorCodeConstants {
     ErrorCode AUTH_TOKEN_EXPIRED = new ErrorCode(1_002_000_006, "Token 已经过期");
     ErrorCode AUTH_MOBILE_NOT_EXISTS = new ErrorCode(1_002_000_007, "手机号不存在");
 
+    // ========== 系统模块 1-002-100-000 ==========
+    ErrorCode SYSTEM_NOT_EXISTS = new ErrorCode(1_002_100_000, "系统应用不存在");
+
     ErrorCode AUTH_THIRD_LOGIN_FAIL = new ErrorCode(1_002_000_009, "访问外部账号失败");
     // ========== 菜单模块 1-002-001-000 ==========
     ErrorCode MENU_NAME_DUPLICATE = new ErrorCode(1_002_001_000, "已经存在该名字的菜单");
@@ -98,8 +101,11 @@ public interface ErrorCodeConstants {
     ErrorCode SMS_CODE_NOT_FOUND = new ErrorCode(1_002_014_000, "验证码不存在");
     ErrorCode SMS_CODE_EXPIRED = new ErrorCode(1_002_014_001, "验证码已过期");
     ErrorCode SMS_CODE_USED = new ErrorCode(1_002_014_002, "验证码已使用");
+    ErrorCode SMS_CODE_NOT_CORRECT = new ErrorCode(1_002_014_003, "验证码不正确");
     ErrorCode SMS_CODE_EXCEED_SEND_MAXIMUM_QUANTITY_PER_DAY = new ErrorCode(1_002_014_004, "超过每日短信发送数量");
     ErrorCode SMS_CODE_SEND_TOO_FAST = new ErrorCode(1_002_014_005, "短信发送过于频繁");
+    ErrorCode SMS_CODE_IS_EXISTS = new ErrorCode(1_002_014_006, "手机号已被使用");
+    ErrorCode SMS_CODE_IS_UNUSED = new ErrorCode(1_002_014_007, "验证码未被使用");
 
     // ========== 租户信息 1-002-015-000 ==========
     ErrorCode TENANT_NOT_EXISTS = new ErrorCode(1_002_015_000, "租户不存在");
@@ -114,14 +120,20 @@ public interface ErrorCodeConstants {
     ErrorCode TENANT_PACKAGE_USED = new ErrorCode(1_002_016_001, "租户正在使用该套餐，请给租户重新设置套餐后再尝试删除");
     ErrorCode TENANT_PACKAGE_DISABLE = new ErrorCode(1_002_016_002, "名字为【{}】的租户套餐已被禁用");
 
+    // ========== 错误码模块 1-002-017-000 ==========
+    ErrorCode ERROR_CODE_NOT_EXISTS = new ErrorCode(1_002_017_000, "错误码不存在");
+    ErrorCode ERROR_CODE_DUPLICATE = new ErrorCode(1_002_017_001, "已经存在编码为【{}】的错误码");
+
     // ========== 社交用户 1-002-018-000 ==========
     ErrorCode SOCIAL_USER_AUTH_FAILURE = new ErrorCode(1_002_018_000, "社交授权失败，原因是：{}");
     ErrorCode SOCIAL_USER_NOT_FOUND = new ErrorCode(1_002_018_001, "社交授权失败，找不到对应的用户");
 
     ErrorCode SOCIAL_CLIENT_WEIXIN_MINI_APP_PHONE_CODE_ERROR = new ErrorCode(1_002_018_200, "获得手机号失败");
     ErrorCode SOCIAL_CLIENT_WEIXIN_MINI_APP_QRCODE_ERROR = new ErrorCode(1_002_018_201, "获得小程序码失败");
-    ErrorCode SOCIAL_CLIENT_NOT_EXISTS = new ErrorCode(1_002_018_202, "社交客户端不存在");
-    ErrorCode SOCIAL_CLIENT_UNIQUE = new ErrorCode(1_002_018_203, "社交客户端已存在配置");
+    ErrorCode SOCIAL_CLIENT_WEIXIN_MINI_APP_SUBSCRIBE_TEMPLATE_ERROR = new ErrorCode(1_002_018_202, "获得小程序订阅消息模版失败");
+    ErrorCode SOCIAL_CLIENT_WEIXIN_MINI_APP_SUBSCRIBE_MESSAGE_ERROR = new ErrorCode(1_002_018_203, "发送小程序订阅消息失败");
+    ErrorCode SOCIAL_CLIENT_NOT_EXISTS = new ErrorCode(1_002_018_210, "社交客户端不存在");
+    ErrorCode SOCIAL_CLIENT_UNIQUE = new ErrorCode(1_002_018_211, "社交客户端已存在配置");
 
 
     // ========== OAuth2 客户端 1-002-020-000 =========
@@ -137,6 +149,7 @@ public interface ErrorCodeConstants {
     ErrorCode OAUTH2_GRANT_CLIENT_ID_MISMATCH = new ErrorCode(1_002_021_000, "client_id 不匹配");
     ErrorCode OAUTH2_GRANT_REDIRECT_URI_MISMATCH = new ErrorCode(1_002_021_001, "redirect_uri 不匹配");
     ErrorCode OAUTH2_GRANT_STATE_MISMATCH = new ErrorCode(1_002_021_002, "state 不匹配");
+    ErrorCode OAUTH2_GRANT_CODE_NOT_EXISTS = new ErrorCode(1_002_021_003, "code 不存在");
 
     // ========== OAuth2 授权 1-002-022-000 =========
     ErrorCode OAUTH2_CODE_NOT_EXISTS = new ErrorCode(1_002_022_000, "code 不存在");

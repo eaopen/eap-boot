@@ -1,13 +1,13 @@
 package org.openea.eap.module.system.controller.admin.socail.vo.client;
 
 import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.validation.InEnum;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;

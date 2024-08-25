@@ -1,5 +1,8 @@
 package org.openea.eap.module.system.dal.dataobject.sms;
 
+import org.openea.eap.module.system.enums.sms.SmsTemplateTypeEnum;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -7,9 +10,6 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.module.system.enums.sms.SmsTemplateTypeEnum;
 
 import java.util.List;
 

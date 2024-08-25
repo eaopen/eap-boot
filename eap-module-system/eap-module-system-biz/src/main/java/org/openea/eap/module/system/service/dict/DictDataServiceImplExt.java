@@ -15,7 +15,6 @@ import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataExport
 import org.openea.eap.module.system.controller.admin.dict.vo.data.DictDataPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictDataDO;
 import org.openea.eap.module.system.dal.dataobject.dict.DictTypeDO;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,6 @@ import java.util.*;
 
 @Service
 @Slf4j
-@Primary
 public class DictDataServiceImplExt extends DictDataServiceImpl implements DictDataService{
 
 

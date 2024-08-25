@@ -1,11 +1,6 @@
 package org.openea.eap.module.system.service.auth;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.google.common.annotations.VisibleForTesting;
-import com.xingyuv.captcha.model.common.ResponseModel;
-import com.xingyuv.captcha.model.vo.CaptchaVO;
-import com.xingyuv.captcha.service.CaptchaService;
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.util.monitor.TracerUtils;
@@ -28,6 +23,11 @@ import org.openea.eap.module.system.service.member.MemberService;
 import org.openea.eap.module.system.service.oauth2.OAuth2TokenService;
 import org.openea.eap.module.system.service.social.SocialUserService;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import com.google.common.annotations.VisibleForTesting;
+import com.xingyuv.captcha.model.common.ResponseModel;
+import com.xingyuv.captcha.model.vo.CaptchaVO;
+import com.xingyuv.captcha.service.CaptchaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -48,13 +48,13 @@ import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Resource
-    private AdminUserService userService;
+    protected AdminUserService userService;
     @Resource
     private LoginLogService loginLogService;
     @Resource
-    private OAuth2TokenService oauth2TokenService;
+    protected OAuth2TokenService oauth2TokenService;
     @Resource
-    private SocialUserService socialUserService;
+    protected SocialUserService socialUserService;
     @Resource
     private MemberService memberService;
     @Resource
@@ -133,7 +133,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return createTokenAfterLoginSuccess(user.getId(), reqVO.getMobile(), LoginLogTypeEnum.LOGIN_MOBILE);
     }
 
-    private void createLoginLog(Long userId, String username,
+    protected void createLoginLog(Long userId, String username,
                                 LoginLogTypeEnum logTypeEnum, LoginResultEnum loginResult) {
         // 插入登录日志
         LoginLogCreateReqDTO reqDTO = new LoginLogCreateReqDTO();
@@ -172,7 +172,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     }
 
     @VisibleForTesting
-    void validateCaptcha(AuthLoginReqVO reqVO) {
+    protected void validateCaptcha(AuthLoginReqVO reqVO) {
         // 如果验证码关闭，则不进行校验
         if (!captchaEnable) {
             return;
@@ -194,7 +194,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         // 插入登陆日志
         createLoginLog(userId, username, logType, LoginResultEnum.SUCCESS);
         // 创建访问令牌
-        OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(userId, getUserType().getValue(),
+        OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(userId, username, getUserType().getValue(),
                 OAuth2ClientConstants.CLIENT_ID_DEFAULT, null);
         // 构建返回结果
         return AuthConvert.INSTANCE.convert(accessTokenDO);
@@ -234,7 +234,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         loginLogService.createLoginLog(reqDTO);
     }
 
-    private String getUsername(Long userId) {
+    protected String getUsername(Long userId) {
         if (userId == null) {
             return null;
         }
@@ -242,7 +242,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return user != null ? user.getUsername() : null;
     }
 
-    private UserTypeEnum getUserType() {
+    protected UserTypeEnum getUserType() {
         return UserTypeEnum.ADMIN;
     }
 

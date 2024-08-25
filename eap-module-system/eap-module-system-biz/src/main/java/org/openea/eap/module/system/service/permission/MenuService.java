@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.service.permission;
 
-import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuListReqVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSaveVO;
+import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuListReqVO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 
 import java.util.Collection;
@@ -100,4 +100,5 @@ public interface MenuService {
     List<MenuDO> toI18n(List<MenuDO> menus);
 
     Integer updateMenuI18n();
+
 }

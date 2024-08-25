@@ -1,8 +1,6 @@
 package org.openea.eap.module.system.convert.oauth2;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.openea.eap.framework.common.core.KeyValue;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
@@ -15,6 +13,8 @@ import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ApproveDO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
 import org.openea.eap.module.system.util.oauth2.OAuth2Utils;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;

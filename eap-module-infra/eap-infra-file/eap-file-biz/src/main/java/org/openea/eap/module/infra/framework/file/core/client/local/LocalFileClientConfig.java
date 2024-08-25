@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 
 /**
  * 本地文件客户端的配置类
+ *
  */
 @Data
 public class LocalFileClientConfig implements FileClientConfig {

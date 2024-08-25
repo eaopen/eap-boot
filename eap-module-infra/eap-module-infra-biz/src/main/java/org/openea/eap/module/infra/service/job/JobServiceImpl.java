@@ -11,12 +11,15 @@ import org.openea.eap.module.infra.controller.admin.job.vo.job.JobSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.job.JobDO;
 import org.openea.eap.module.infra.dal.mysql.job.JobMapper;
 import org.openea.eap.module.infra.enums.job.JobStatusEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Objects;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.containsAny;
@@ -28,6 +31,7 @@ import static org.openea.eap.module.infra.enums.ErrorCodeConstants.*;
  */
 @Service
 @Validated
+@Slf4j
 public class JobServiceImpl implements JobService {
 
     @Resource
@@ -127,6 +131,26 @@ public class JobServiceImpl implements JobService {
 
         // 触发 Quartz 中的 Job
         schedulerManager.triggerJob(job.getId(), job.getHandlerName(), job.getHandlerParam());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void syncJob() throws SchedulerException {
+        // 1. 查询 Job 配置
+        List<JobDO> jobList = jobMapper.selectList();
+
+        // 2. 遍历处理
+        for (JobDO job : jobList) {
+            // 2.1 先删除，再创建
+            schedulerManager.deleteJob(job.getHandlerName());
+            schedulerManager.addJob(job.getId(), job.getHandlerName(), job.getHandlerParam(), job.getCronExpression(),
+                    job.getRetryCount(), job.getRetryInterval());
+            // 2.2 如果 status 为暂停，则需要暂停
+            if (Objects.equals(job.getStatus(), JobStatusEnum.STOP.getStatus())) {
+                schedulerManager.pauseJob(job.getHandlerName());
+            }
+            log.info("[syncJob][id({}) handlerName({}) 同步完成]", job.getId(), job.getHandlerName());
+        }
     }
 
     @Override

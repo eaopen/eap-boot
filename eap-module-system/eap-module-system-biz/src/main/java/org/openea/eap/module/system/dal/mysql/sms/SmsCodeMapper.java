@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.dal.mysql.sms;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.QueryWrapperX;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsCodeDO;
+import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface SmsCodeMapper extends BaseMapperX<SmsCodeDO> {

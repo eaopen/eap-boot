@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Ftp 文件客户端的配置类
+ *
  */
 @Data
 public class FtpFileClientConfig implements FileClientConfig {

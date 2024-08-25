@@ -1,8 +1,8 @@
 package org.openea.eap.module.system.mq.producer.sms;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openea.eap.framework.common.core.KeyValue;
 import org.openea.eap.module.system.mq.message.sms.SmsSendMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 

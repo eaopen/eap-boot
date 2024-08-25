@@ -1,16 +1,18 @@
 package org.openea.eap.module.system.controller.admin.socail;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.module.system.api.social.SocialClientApi;
+import org.openea.eap.module.system.api.social.dto.SocialWxaSubscribeMessageSendReqDTO;
 import org.openea.eap.module.system.controller.admin.socail.vo.client.SocialClientPageReqVO;
 import org.openea.eap.module.system.controller.admin.socail.vo.client.SocialClientRespVO;
 import org.openea.eap.module.system.controller.admin.socail.vo.client.SocialClientSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.social.SocialClientDO;
 import org.openea.eap.module.system.service.social.SocialClientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,8 @@ public class SocialClientController {
 
     @Resource
     private SocialClientService socialClientService;
+    @Resource
+    private SocialClientApi socialClientApi;
 
     @PostMapping("/create")
     @Operation(summary = "创建社交客户端")
@@ -68,6 +72,13 @@ public class SocialClientController {
     public CommonResult<PageResult<SocialClientRespVO>> getSocialClientPage(@Valid SocialClientPageReqVO pageVO) {
         PageResult<SocialClientDO> pageResult = socialClientService.getSocialClientPage(pageVO);
         return success(BeanUtils.toBean(pageResult, SocialClientRespVO.class));
+    }
+
+    @PostMapping("/send-subscribe-message")
+    @Operation(summary = "发送订阅消息") // 用于测试
+    @PreAuthorize("@ss.hasPermission('system:social-client:query')")
+    public void sendSubscribeMessage(@RequestBody SocialWxaSubscribeMessageSendReqDTO reqDTO) {
+        socialClientApi.sendWxaSubscribeMessage(reqDTO);
     }
 
 }

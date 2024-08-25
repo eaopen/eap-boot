@@ -5,11 +5,17 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.jwt.JWTUtil;
+import cn.hutool.jwt.signers.JWTSigner;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.xingyuv.captcha.util.StringUtils;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.DateUtils;
+import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.security.core.LoginUser;
+import org.openea.eap.framework.security.core.util.JwtUtil;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.token.OAuth2AccessTokenPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
@@ -49,10 +55,14 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     private OAuth2AccessTokenRedisDAO oauth2AccessTokenRedisDAO;
 
     @Resource
-    private OAuth2ClientService oauth2ClientService;
+    protected OAuth2ClientService oauth2ClientService;
     @Resource
     @Lazy // 懒加载，避免循环依赖
-    private AdminUserService adminUserService;
+    protected AdminUserService adminUserService;
+
+
+    @Resource
+    private SecurityProperties securityProperties;
 
     @Override
     @Transactional
@@ -64,8 +74,8 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     @Transactional
     public OAuth2AccessTokenDO createAccessToken(Long userId, String userKey, Integer userType, String clientId, List<String> scopes) {
         OAuth2ClientDO clientDO = oauth2ClientService.validOAuthClientFromCache(clientId);
+        // todo 判断是否需要创建刷新令牌, 如果该用户指定时间内刚创建token则返回之前的值
         // 创建刷新令牌
-        // todo userKey is null
         OAuth2RefreshTokenDO refreshTokenDO = createOAuth2RefreshToken(userId, userKey, userType, clientDO, scopes);
         // 创建访问令牌
         return createOAuth2AccessToken(refreshTokenDO, clientDO);
@@ -84,6 +94,8 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         if (ObjectUtil.notEqual(clientId, refreshTokenDO.getClientId())) {
             throw exception0(GlobalErrorCodeConstants.BAD_REQUEST.getCode(), "刷新令牌的客户端编号不正确");
         }
+
+        // todo 检查不允许频繁刷新token
 
         // 移除相关的访问令牌
         List<OAuth2AccessTokenDO> accessTokenDOs = oauth2AccessTokenMapper.selectListByRefreshToken(refreshToken);
@@ -111,11 +123,18 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         }
 
         // 获取不到，从 MySQL 中获取
-        accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
+        // todo 需要保护避免acessToken多条记录的错误数据
+//        accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
+        List<OAuth2AccessTokenDO> accessTokenList = oauth2AccessTokenMapper.selectList(new QueryWrapper<OAuth2AccessTokenDO>().eq("access_token", accessTokenDO).orderByDesc("create_time"));
+        if(accessTokenList!=null && accessTokenList.size()>0){
+            accessTokenDO = accessTokenList.get(0);
+        }
+
         // 如果在 MySQL 存在，则往 Redis 中写入
         if (accessTokenDO != null && !DateUtils.isExpired(accessTokenDO.getExpiresTime())) {
             oauth2AccessTokenRedisDAO.set(accessTokenDO);
         }
+
         return accessTokenDO;
     }
 
@@ -134,6 +153,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     @Override
     public OAuth2AccessTokenDO removeAccessToken(String accessToken) {
         // 删除访问令牌
+        // todo 需要保护避免acessToken多条记录的错误数据
         OAuth2AccessTokenDO accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
         if (accessTokenDO == null) {
             return null;
@@ -141,6 +161,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         oauth2AccessTokenMapper.deleteById(accessTokenDO.getId());
         oauth2AccessTokenRedisDAO.delete(accessToken);
         // 删除刷新令牌
+        // todo 是否需要清理该刷新令牌的所有访问令牌
         oauth2RefreshTokenMapper.deleteByRefreshToken(accessTokenDO.getRefreshToken());
         return accessTokenDO;
     }
@@ -150,9 +171,23 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         return oauth2AccessTokenMapper.selectPage(reqVO);
     }
 
+
+    protected String generateAccessToken(OAuth2RefreshTokenDO refreshTokenDO, OAuth2ClientDO clientDO){
+        String accessToken = null;
+        if(securityProperties.getJwtEnable()) {
+            accessToken = JwtUtil.generateJwtToken(refreshTokenDO.getUserKey(), clientDO.getName(), clientDO.getAccessTokenValiditySeconds());
+        }
+        if(StringUtils.isEmpty(accessToken)){
+            accessToken = generateAccessToken();
+        }
+        return accessToken;
+    }
+
     private OAuth2AccessTokenDO createOAuth2AccessToken(OAuth2RefreshTokenDO refreshTokenDO, OAuth2ClientDO clientDO) {
-        OAuth2AccessTokenDO accessTokenDO = new OAuth2AccessTokenDO().setAccessToken(generateAccessToken())
+        String accessToken = generateAccessToken(refreshTokenDO, clientDO);
+        OAuth2AccessTokenDO accessTokenDO = new OAuth2AccessTokenDO().setAccessToken(accessToken)
                 .setUserId(refreshTokenDO.getUserId()).setUserType(refreshTokenDO.getUserType())
+                .setUserKey(refreshTokenDO.getUserKey())
                 .setUserInfo(buildUserInfo(refreshTokenDO.getUserId(), refreshTokenDO.getUserType()))
                 .setClientId(clientDO.getClientId()).setScopes(refreshTokenDO.getScopes())
                 .setRefreshToken(refreshTokenDO.getRefreshToken())
@@ -174,7 +209,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     }
 
     /**
-     * 加载用户信息，方便 {@link LoginUser} 获取到昵称、部门等信息
+     * 加载用户信息，方便 {@link org.openea.eap.framework.security.core.LoginUser} 获取到昵称、部门等信息
      *
      * @param userId 用户编号
      * @param userType 用户类型
@@ -193,6 +228,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     }
 
     private static String generateAccessToken() {
+        // todo uuid or jwtToken
         return IdUtil.fastSimpleUUID();
     }
 

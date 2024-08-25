@@ -1,7 +1,5 @@
 package org.openea.eap.module.infra.dal.dataobject.file;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -25,7 +23,6 @@ public class FileDO extends BaseDO {
     /**
      * 编号，数据库自增
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -45,11 +42,11 @@ public class FileDO extends BaseDO {
      *
      * 关联 {@link FileConfigDO#getId()}
      */
-    private Long configId;  //platform
+    private Long configId;
     /**
      * 原文件名
      */
-    private String name;  //fileName
+    private String name;
     /**
      * 路径，即文件名
      */

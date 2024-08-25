@@ -4,6 +4,7 @@ import org.openea.eap.module.infra.framework.file.core.client.s3.FilePresignedUr
 
 /**
  * 文件客户端
+ *
  */
 public interface FileClient {
 

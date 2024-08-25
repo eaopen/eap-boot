@@ -1,8 +1,8 @@
 package org.openea.eap.module.system.controller.admin.logger.vo.operatelog;
 
+import org.openea.eap.framework.common.pojo.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.openea.eap.framework.common.pojo.PageParam;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;

@@ -20,10 +20,6 @@
     </description>
     <url>https://github.com/eaopen/openea-eap</url>
 
-    <properties>
-
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>io.github.eaopen</groupId>
@@ -36,33 +32,21 @@
             <version>${revision}</version>
         </dependency>
 
-        <!-- 集成Obpm平台 -->
-        <!-- EapObpmConfiguration重载服务 authService,userService,permissionService -->
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-obpm-proxy</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--        </dependency>-->
 
-        <!-- 集成平台内IM消息 -->
+        <!-- 工作流。默认注释，保证编译速度 -->
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-module-bpm-rest</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
+
+        <!-- AI 大模型相关模块。默认注释，保证编译速度 -->
 <!--        <dependency>-->
 <!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-extj-message-rest</artifactId>-->
+<!--            <artifactId>eap-module-ai-biz</artifactId>-->
 <!--            <version>${revision}</version>-->
 <!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-bpm-rest</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>io.github.eaopen</groupId>-->
-<!--            <artifactId>eap-module-lowcode-rest</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-
 
         <!-- spring boot 配置所需依赖 -->
         <dependency>

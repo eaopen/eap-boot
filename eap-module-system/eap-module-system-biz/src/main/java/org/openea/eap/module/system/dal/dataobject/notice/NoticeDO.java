@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.dal.dataobject.notice;
 
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.module.system.enums.notice.NoticeTypeEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.module.system.enums.notice.NoticeTypeEnum;
 
 /**
  * 通知公告表

@@ -9,7 +9,7 @@
     "businessName" : "demo",
     "className" : "InfraStudent",
     "classComment" : "学生",
-    "author" : "芋道源码"
+    "author" : "EAP源码"
   },
   "columns": [ {
     "id" : 100,

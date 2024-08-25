@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
  * 基于 S3 协议的文件客户端，实现 MinIO、阿里云、腾讯云、七牛云、华为云等云服务
  * <p>
  * S3 协议的客户端，采用亚马逊提供的 software.amazon.awssdk.s3 库
+ *
  */
 public class S3FileClient extends AbstractFileClient<S3FileClientConfig> {
 
@@ -35,6 +36,7 @@ public class S3FileClient extends AbstractFileClient<S3FileClientConfig> {
                 .region(buildRegion()) // Region
                 .credentials(config.getAccessKey(), config.getAccessSecret()) // 认证密钥
                 .build();
+        enableVirtualStyleEndpoint();
     }
 
     /**
@@ -82,6 +84,17 @@ public class S3FileClient extends AbstractFileClient<S3FileClientConfig> {
                     .replaceAll("." + S3FileClientConfig.ENDPOINT_TENCENT, ""); // 去除 Endpoint
         }
         return null;
+    }
+
+    /**
+     * 开启 VirtualStyle 模式
+     */
+    private void enableVirtualStyleEndpoint() {
+        if (StrUtil.containsAll(config.getEndpoint(),
+                S3FileClientConfig.ENDPOINT_TENCENT, // 腾讯云 https://cloud.tencent.com/document/product/436/41284
+                S3FileClientConfig.ENDPOINT_VOLCES)) { // 火山云 https://www.volcengine.com/docs/6349/1288493
+            client.enableVirtualStyleEndpoint();
+        }
     }
 
     @Override

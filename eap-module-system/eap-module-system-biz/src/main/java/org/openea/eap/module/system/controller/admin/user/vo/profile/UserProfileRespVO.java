@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.controller.admin.user.vo.profile;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
 import org.openea.eap.module.system.controller.admin.dept.vo.dept.DeptSimpleRespVO;
 import org.openea.eap.module.system.controller.admin.dept.vo.post.PostSimpleRespVO;
 import org.openea.eap.module.system.controller.admin.permission.vo.role.RoleSimpleRespVO;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;

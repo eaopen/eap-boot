@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.service.sms;
 
 import org.openea.eap.framework.common.exception.ServiceException;
+import org.openea.eap.module.system.api.sms.dto.code.SmsCodeValidateReqDTO;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeSendReqDTO;
 import org.openea.eap.module.system.api.sms.dto.code.SmsCodeUseReqDTO;
-import org.openea.eap.module.system.api.sms.dto.code.SmsCodeValidateReqDTO;
 
 import javax.validation.Valid;
 

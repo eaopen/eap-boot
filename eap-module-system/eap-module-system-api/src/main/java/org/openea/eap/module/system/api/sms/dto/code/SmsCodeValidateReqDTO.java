@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.api.sms.dto.code;
 
-import lombok.Data;
 import org.openea.eap.framework.common.validation.InEnum;
 import org.openea.eap.framework.common.validation.Mobile;
 import org.openea.eap.module.system.enums.sms.SmsSceneEnum;
+import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

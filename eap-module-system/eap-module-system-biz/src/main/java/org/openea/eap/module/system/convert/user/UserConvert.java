@@ -1,8 +1,6 @@
 package org.openea.eap.module.system.convert.user;
 
-import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.framework.common.util.collection.MapUtils;
 import org.openea.eap.framework.common.util.object.BeanUtils;
@@ -18,6 +16,8 @@ import org.openea.eap.module.system.dal.dataobject.dept.PostDO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;
 import org.openea.eap.module.system.dal.dataobject.social.SocialUserDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.Map;

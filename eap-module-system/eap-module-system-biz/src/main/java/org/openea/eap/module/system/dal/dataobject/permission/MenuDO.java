@@ -1,14 +1,14 @@
 package org.openea.eap.module.system.dal.dataobject.permission;
 
-import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
 
 /**
  * 菜单 DO
@@ -42,6 +42,11 @@ public class MenuDO extends BaseDO {
      * 菜单名称
      */
     private String name;
+
+
+    // 所属系统
+
+
     /**
      * 权限标识
      *

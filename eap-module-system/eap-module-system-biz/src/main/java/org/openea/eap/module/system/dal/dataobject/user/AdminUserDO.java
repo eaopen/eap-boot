@@ -1,14 +1,14 @@
 package org.openea.eap.module.system.dal.dataobject.user;
 
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
+import org.openea.eap.module.system.enums.common.SexEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.*;
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
-import org.openea.eap.module.system.enums.common.SexEnum;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;

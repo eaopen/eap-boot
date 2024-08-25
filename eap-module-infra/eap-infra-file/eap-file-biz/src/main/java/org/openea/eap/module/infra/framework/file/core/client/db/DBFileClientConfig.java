@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 
 /**
  * 基于 DB 存储的文件客户端的配置类
+ *
  */
 @Data
 public class DBFileClientConfig implements FileClientConfig {

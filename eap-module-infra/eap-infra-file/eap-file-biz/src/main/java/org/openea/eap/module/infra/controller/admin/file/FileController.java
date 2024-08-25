@@ -31,7 +31,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
-import static org.openea.eap.framework.common.util.servlet.ServletUtils.writeAttachment;
+import static org.openea.eap.module.infra.framework.file.core.utils.FileTypeUtils.writeAttachment;
 
 @Tag(name = "管理后台 - 文件存储")
 @RestController
@@ -47,11 +47,10 @@ public class FileController {
 
     @PostMapping("/upload")
     @Operation(summary = "上传文件", description = "模式一：后端上传文件")
-    public CommonResult<FileDO> uploadFile(FileUploadReqVO uploadReqVO) throws Exception {
+    public CommonResult<String> uploadFile(FileUploadReqVO uploadReqVO) throws Exception {
         MultipartFile file = uploadReqVO.getFile();
         String path = uploadReqVO.getPath();
-        FileDO fileDo = fileService.uploadFile(file.getOriginalFilename(), path, IoUtil.readBytes(file.getInputStream()));;
-        return CommonResult.success(fileDo);
+        return success(fileService.createFile(file.getOriginalFilename(), path, IoUtil.readBytes(file.getInputStream())));
     }
 
     @GetMapping("/presigned-url")

@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.api.user.dto;
 
-import lombok.Data;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import lombok.Data;
 
 import java.util.Set;
 

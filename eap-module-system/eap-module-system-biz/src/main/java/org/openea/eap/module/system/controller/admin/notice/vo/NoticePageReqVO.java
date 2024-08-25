@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.controller.admin.notice.vo;
 
+import org.openea.eap.framework.common.pojo.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.openea.eap.framework.common.pojo.PageParam;
 
 @Schema(description = "管理后台 - 通知公告分页 Request VO")
 @Data

@@ -1,10 +1,9 @@
 package org.openea.eap.module.system.service.language;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.openea.eap.framework.common.util.spring.EapAppUtil;
 import org.openea.eap.module.infra.api.translate.TranslateApi;
 
 import java.util.*;
@@ -13,7 +12,7 @@ import java.util.*;
 public class TranslateUtil {
 
     public static TranslateApi getTranslateApi() {
-        return EapAppUtil.getBean(TranslateApi.class);
+        return SpringUtil.getBean(TranslateApi.class);
     }
 
     /**

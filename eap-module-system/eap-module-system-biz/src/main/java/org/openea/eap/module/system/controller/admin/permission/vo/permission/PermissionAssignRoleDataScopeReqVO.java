@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.controller.admin.permission.vo.permission;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
 import org.openea.eap.framework.common.validation.InEnum;
 import org.openea.eap.module.system.enums.permission.DataScopeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;

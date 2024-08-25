@@ -1,23 +1,16 @@
 package org.openea.eap.module.system.service.user;
 
 import cn.hutool.core.collection.CollUtil;
-import org.openea.eap.framework.common.pojo.PageParam;
-import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdatePasswordReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdateReqVO;
-import org.openea.eap.module.system.controller.admin.user.vo.user.UserImportExcelVO;
-import org.openea.eap.module.system.controller.admin.user.vo.user.UserImportRespVO;
-import org.openea.eap.module.system.controller.admin.user.vo.user.UserPageReqVO;
-import org.openea.eap.module.system.controller.admin.user.vo.user.UserSaveReqVO;
+import org.openea.eap.module.system.controller.admin.user.vo.user.*;
+import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 
 import javax.validation.Valid;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 后台用户 Service 接口
@@ -150,15 +143,6 @@ public interface AdminUserService {
      * @return 用户列表
      */
     List<AdminUserDO> getUserList(Collection<Long> ids);
-
-    /**
-     * 分页获取用户列表
-     * @param pageParam
-     * @param keyword
-     * @param filterCurrentUser
-     * @return
-     */
-    PageResult<AdminUserDO> getUserList(PageParam pageParam, String keyword, Boolean filterCurrentUser);
 
     /**
      * 校验用户们是否有效。如下情况，视为无效：

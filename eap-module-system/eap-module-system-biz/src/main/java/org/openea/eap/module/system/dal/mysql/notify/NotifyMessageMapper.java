@@ -1,6 +1,5 @@
 package org.openea.eap.module.system.dal.mysql.notify;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
@@ -8,6 +7,7 @@ import org.openea.eap.framework.mybatis.core.query.QueryWrapperX;
 import org.openea.eap.module.system.controller.admin.notify.vo.message.NotifyMessageMyPageReqVO;
 import org.openea.eap.module.system.controller.admin.notify.vo.message.NotifyMessagePageReqVO;
 import org.openea.eap.module.system.dal.dataobject.notify.NotifyMessageDO;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

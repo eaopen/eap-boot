@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.api.dept.dto;
 
-import lombok.Data;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import lombok.Data;
 
 /**
  * 部门 Response DTO

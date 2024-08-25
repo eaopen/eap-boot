@@ -19,7 +19,7 @@
         <!-- 文件预览 -->
 <!--        <module>eap-file-view</module>-->
         <!-- 文档处理 -->
-        <module>eap-doc-proc</module>
+<!--        <module>eap-doc-proc</module>-->
     </modules>
 
 </project>

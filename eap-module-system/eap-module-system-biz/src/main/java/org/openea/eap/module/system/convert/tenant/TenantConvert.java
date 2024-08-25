@@ -1,9 +1,9 @@
 package org.openea.eap.module.system.convert.tenant;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.openea.eap.module.system.controller.admin.tenant.vo.tenant.TenantSaveReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserSaveReqVO;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 /**
  * 租户 Convert

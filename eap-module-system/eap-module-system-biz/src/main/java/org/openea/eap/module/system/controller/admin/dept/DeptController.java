@@ -1,8 +1,5 @@
 package org.openea.eap.module.system.controller.admin.dept;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
@@ -12,6 +9,9 @@ import org.openea.eap.module.system.controller.admin.dept.vo.dept.DeptSaveReqVO;
 import org.openea.eap.module.system.controller.admin.dept.vo.dept.DeptSimpleRespVO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.service.dept.DeptService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

@@ -59,12 +59,16 @@ public class FileConfigDO extends BaseDO {
     private Boolean master;
 
     /**
-     * 渠道配置
+     * 支付渠道配置
      */
     @TableField(typeHandler = FileClientConfigTypeHandler.class)
     private FileClientConfig config;
 
     public static class FileClientConfigTypeHandler extends AbstractJsonTypeHandler<Object> {
+
+        public FileClientConfigTypeHandler(Class<?> type) {
+            super(type);
+        }
 
         public FileClientConfigTypeHandler(Class<?> type, Field field) {
             super(type, field);

@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.dal.mysql.logger;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.module.system.controller.admin.logger.vo.loginlog.LoginLogPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.logger.LoginLogDO;
 import org.openea.eap.module.system.enums.logger.LoginResultEnum;
+import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface LoginLogMapper extends BaseMapperX<LoginLogDO> {

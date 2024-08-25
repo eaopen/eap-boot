@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.api.logger.dto;
 
-import lombok.Data;
 import org.openea.eap.framework.common.pojo.PageParam;
+import lombok.Data;
 
 /**
  * 操作日志分页 Request DTO

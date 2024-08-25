@@ -12,6 +12,7 @@
         <module>eap-module-infra-api</module>
         <module>eap-module-infra-biz</module>
         <module>eap-infra-file</module>
+        <module>eap-module-infra-api-impl</module>
         <module>eap-module-infra-rest</module>
     </modules>
     <artifactId>eap-module-infra</artifactId>

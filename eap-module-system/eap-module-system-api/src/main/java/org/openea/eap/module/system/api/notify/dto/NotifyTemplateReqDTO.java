@@ -1,8 +1,8 @@
 package org.openea.eap.module.system.api.notify.dto;
 
-import lombok.Data;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.validation.InEnum;
+import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.dal.mysql.mail;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
 import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.module.system.controller.admin.mail.vo.log.MailLogPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.mail.MailLogDO;
+import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface MailLogMapper extends BaseMapperX<MailLogDO> {

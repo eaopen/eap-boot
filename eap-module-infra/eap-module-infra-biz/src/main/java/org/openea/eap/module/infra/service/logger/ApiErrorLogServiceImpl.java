@@ -1,7 +1,10 @@
 package org.openea.eap.module.infra.service.logger;
 
+import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
+import org.openea.eap.framework.tenant.core.util.TenantUtils;
 import org.openea.eap.module.infra.api.logger.dto.ApiErrorLogCreateReqDTO;
 import org.openea.eap.module.infra.controller.admin.logger.vo.apierrorlog.ApiErrorLogPageReqVO;
 import org.openea.eap.module.infra.dal.dataobject.logger.ApiErrorLogDO;
@@ -15,15 +18,17 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static org.openea.eap.module.infra.enums.ErrorCodeConstants.*;
+import static org.openea.eap.module.infra.dal.dataobject.logger.ApiErrorLogDO.REQUEST_PARAMS_MAX_LENGTH;
+import static org.openea.eap.module.infra.enums.ErrorCodeConstants.API_ERROR_LOG_NOT_FOUND;
+import static org.openea.eap.module.infra.enums.ErrorCodeConstants.API_ERROR_LOG_PROCESSED;
 
 /**
  * API 错误日志 Service 实现类
  *
  */
-@Slf4j
 @Service
 @Validated
+@Slf4j
 public class ApiErrorLogServiceImpl implements ApiErrorLogService {
 
     @Resource
@@ -33,7 +38,13 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
     public void createApiErrorLog(ApiErrorLogCreateReqDTO createDTO) {
         ApiErrorLogDO apiErrorLog = BeanUtils.toBean(createDTO, ApiErrorLogDO.class)
                 .setProcessStatus(ApiErrorLogProcessStatusEnum.INIT.getStatus());
-        apiErrorLogMapper.insert(apiErrorLog);
+        apiErrorLog.setRequestParams(StrUtil.maxLength(apiErrorLog.getRequestParams(), REQUEST_PARAMS_MAX_LENGTH));
+        if (TenantContextHolder.getTenantId() != null) {
+            apiErrorLogMapper.insert(apiErrorLog);
+        } else {
+            // 极端情况下，上下文中没有租户时，此时忽略租户上下文，避免插入失败！
+            TenantUtils.executeIgnore(() -> apiErrorLogMapper.insert(apiErrorLog));
+        }
     }
 
     @Override

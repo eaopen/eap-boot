@@ -22,7 +22,6 @@ public interface AdminUserApi {
      */
     AdminUserRespDTO getUser(Long id);
 
-    AdminUserRespDTO getUserByAccount(String account);
     /**
      * 通过用户 ID 查询用户下属
      *

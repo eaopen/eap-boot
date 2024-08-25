@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.dal.dataobject.dict;
 
 import com.alibaba.fastjson.JSONObject;
+import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
 
 /**
  * 字典数据表

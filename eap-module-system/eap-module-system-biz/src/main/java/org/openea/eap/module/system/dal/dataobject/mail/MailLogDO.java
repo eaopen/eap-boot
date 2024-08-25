@@ -1,12 +1,12 @@
 package org.openea.eap.module.system.dal.dataobject.mail;
 
+import org.openea.eap.framework.common.enums.UserTypeEnum;
+import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.module.system.enums.mail.MailSendStatusEnum;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.*;
-import org.openea.eap.framework.common.enums.UserTypeEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
-import org.openea.eap.module.system.enums.mail.MailSendStatusEnum;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
