@@ -1,6 +1,5 @@
 
-
-
+-- 数据字段表结构维护
 
 -- ALTER TABLE `system_dict_type`
 --     ADD COLUMN `parent_id` bigint NULL COMMENT 'parent' AFTER `id`;
