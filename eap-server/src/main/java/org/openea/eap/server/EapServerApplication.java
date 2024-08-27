@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Import;
         "${eap.info.base-package}.server",
         "${eap.info.base-package}.module",
         "${eap.info.base-package}.framework.quartz"})
-@Import(EapQuartzAutoConfiguration.class)  // load in boot only
+@Import(EapQuartzAutoConfiguration.class)  // load quartz
 public class EapServerApplication {
 
     public static void main(String[] args) {

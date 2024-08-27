@@ -1,7 +1,9 @@
 package org.openea.eap.module.infra;
 
+import org.openea.eap.framework.quartz.config.EapQuartzAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
 /**
  * 项目的启动类
@@ -12,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
+@Import(EapQuartzAutoConfiguration.class)  // load quartz
 public class InfraServerApplication {
 
     public static void main(String[] args) {
