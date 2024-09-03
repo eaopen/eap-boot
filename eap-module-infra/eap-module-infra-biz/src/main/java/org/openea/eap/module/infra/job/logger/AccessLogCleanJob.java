@@ -1,8 +1,8 @@
 package org.openea.eap.module.infra.job.logger;
 
-import org.openea.eap.framework.quartz.core.handler.JobHandler;
 import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.infra.service.logger.ApiAccessLogService;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Component
 @Slf4j
-public class AccessLogCleanJob implements JobHandler {
+public class AccessLogCleanJob {
 
     @Resource
     private ApiAccessLogService apiAccessLogService;
@@ -30,12 +30,11 @@ public class AccessLogCleanJob implements JobHandler {
      */
     private static final Integer DELETE_LIMIT = 100;
 
-    @Override
+    @XxlJob("accessLogCleanJob")
     @TenantIgnore
-    public String execute(String param) {
+    public void execute() {
         Integer count = apiAccessLogService.cleanAccessLog(JOB_CLEAN_RETAIN_DAY, DELETE_LIMIT);
         log.info("[execute][定时执行清理访问日志数量 ({}) 个]", count);
-        return String.format("定时执行清理访问日志数量 %s 个", count);
     }
 
 }

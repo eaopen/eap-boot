@@ -1,36 +1,29 @@
 package org.openea.eap.module.system.api.dept.dto;
 
-import org.openea.eap.framework.common.enums.CommonStatusEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
  * 岗位 Response DTO
  *
  */
+@Schema(description = "RPC 服务 - 岗位 Response DTO")
 @Data
 public class PostRespDTO {
 
-    /**
-     * 岗位序号
-     */
+    @Schema(description = "岗位编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     private Long id;
-    /**
-     * 岗位名称
-     */
+
+    @Schema(description = "岗位名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "小土豆")
     private String name;
-    /**
-     * 岗位编码
-     */
+
+    @Schema(description = "岗位编码", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
     private String code;
-    /**
-     * 岗位排序
-     */
+
+    @Schema(description = "岗位排序", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     private Integer sort;
-    /**
-     * 状态
-     *
-     * 枚举 {@link CommonStatusEnum}
-     */
-    private Integer status;
+
+    @Schema(description = "状态", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
+    private Integer status; // 参见 CommonStatusEnum 枚举
 
 }

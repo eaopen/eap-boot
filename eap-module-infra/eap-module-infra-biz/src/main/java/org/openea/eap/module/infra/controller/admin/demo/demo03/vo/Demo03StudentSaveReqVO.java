@@ -1,12 +1,14 @@
 package org.openea.eap.module.infra.controller.admin.demo.demo03.vo;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import java.util.*;
-import javax.validation.constraints.*;
-import java.time.LocalDateTime;
 import org.openea.eap.module.infra.dal.dataobject.demo.demo03.Demo03CourseDO;
 import org.openea.eap.module.infra.dal.dataobject.demo.demo03.Demo03GradeDO;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "管理后台 - 学生新增/修改 Request VO")
 @Data

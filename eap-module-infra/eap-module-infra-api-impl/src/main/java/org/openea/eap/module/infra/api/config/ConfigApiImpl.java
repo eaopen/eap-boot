@@ -1,17 +1,16 @@
 package org.openea.eap.module.infra.api.config;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.infra.dal.dataobject.config.ConfigDO;
 import org.openea.eap.module.infra.service.config.ConfigService;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-/**
- * 参数配置 API 实现类
- *
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
 @Validated
 public class ConfigApiImpl implements ConfigApi {
 
@@ -19,9 +18,9 @@ public class ConfigApiImpl implements ConfigApi {
     private ConfigService configService;
 
     @Override
-    public String getConfigValueByKey(String key) {
+    public CommonResult<String> getConfigValueByKey(String key) {
         ConfigDO config = configService.getConfigByKey(key);
-        return config != null ? config.getValue() : null;
+        return success(config != null ? config.getValue() : null);
     }
 
 }

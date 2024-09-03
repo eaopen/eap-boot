@@ -1,11 +1,11 @@
 package org.openea.eap.module.infra.service.demo.demo01;
 
-import javax.validation.*;
-
+import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.infra.controller.admin.demo.demo01.vo.Demo01ContactPageReqVO;
 import org.openea.eap.module.infra.controller.admin.demo.demo01.vo.Demo01ContactSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.demo.demo01.Demo01ContactDO;
-import org.openea.eap.framework.common.pojo.PageResult;
+
+import javax.validation.Valid;
 
 /**
  * 示例联系人 Service 接口

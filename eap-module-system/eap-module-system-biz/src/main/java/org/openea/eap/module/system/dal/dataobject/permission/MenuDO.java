@@ -44,7 +44,10 @@ public class MenuDO extends BaseDO {
     private String name;
 
 
-    // 所属系统
+    /**
+     * 所属系统，默认为0-主系统
+     */
+//    private Long systemId;
 
 
     /**

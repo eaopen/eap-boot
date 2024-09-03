@@ -17,8 +17,8 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 import static cn.hutool.core.util.RandomUtil.randomEle;
-import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildTime;
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildBetweenTime;
+import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildTime;
 import static org.openea.eap.framework.common.util.object.ObjectUtils.cloneIgnoreId;
 import static org.openea.eap.framework.test.core.util.AssertUtils.assertPojoEquals;
 import static org.openea.eap.framework.test.core.util.RandomUtils.*;

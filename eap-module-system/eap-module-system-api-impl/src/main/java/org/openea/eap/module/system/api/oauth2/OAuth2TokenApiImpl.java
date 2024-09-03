@@ -1,48 +1,49 @@
 package org.openea.eap.module.system.api.oauth2;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCheckRespDTO;
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCreateReqDTO;
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenRespDTO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.service.oauth2.OAuth2TokenService;
-import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-/**
- * OAuth2.0 Token API 实现类
- *
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
+@Validated
 public class OAuth2TokenApiImpl implements OAuth2TokenApi {
 
     @Resource
     private OAuth2TokenService oauth2TokenService;
 
     @Override
-    public OAuth2AccessTokenRespDTO createAccessToken(OAuth2AccessTokenCreateReqDTO reqDTO) {
+    public CommonResult<OAuth2AccessTokenRespDTO> createAccessToken(OAuth2AccessTokenCreateReqDTO reqDTO) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(
                 reqDTO.getUserId(), reqDTO.getUserType(), reqDTO.getClientId(), reqDTO.getScopes());
-        return BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class);
+        return success(BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class));
     }
 
     @Override
-    public OAuth2AccessTokenCheckRespDTO checkAccessToken(String accessToken) {
+    public CommonResult<OAuth2AccessTokenCheckRespDTO> checkAccessToken(String accessToken) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.checkAccessToken(accessToken);
-        return BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenCheckRespDTO.class);
+        return success(BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenCheckRespDTO.class));
     }
 
     @Override
-    public OAuth2AccessTokenRespDTO removeAccessToken(String accessToken) {
+    public CommonResult<OAuth2AccessTokenRespDTO> removeAccessToken(String accessToken) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.removeAccessToken(accessToken);
-        return BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class);
+        return success(BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class));
     }
 
     @Override
-    public OAuth2AccessTokenRespDTO refreshAccessToken(String refreshToken, String clientId) {
+    public CommonResult<OAuth2AccessTokenRespDTO> refreshAccessToken(String refreshToken, String clientId) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.refreshAccessToken(refreshToken, clientId);
-        return BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class);
+        return success(BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class));
     }
 
 }

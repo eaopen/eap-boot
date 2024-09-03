@@ -2,36 +2,43 @@ package org.openea.eap.module.system.api.dept;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.module.system.api.dept.dto.PostRespDTO;
+import org.openea.eap.module.system.enums.ApiConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 岗位 API 接口
- *
- */
+@FeignClient(name = ApiConstants.NAME) // TODO 芋艿：fallbackFactory =
+@Tag(name = "RPC 服务 - 岗位")
 public interface PostApi {
 
-    /**
-     * 校验岗位们是否有效。如下情况，视为无效：
-     * 1. 岗位编号不存在
-     * 2. 岗位被禁用
-     *
-     * @param ids 岗位编号数组
-     */
-    void validPostList(Collection<Long> ids);
+    String PREFIX = ApiConstants.PREFIX + "/post";
 
-    List<PostRespDTO> getPostList(Collection<Long> ids);
+    @GetMapping(PREFIX + "/valid")
+    @Operation(summary = "校验岗位是否合法")
+    @Parameter(name = "ids", description = "岗位编号数组", example = "1,2", required = true)
+    CommonResult<Boolean> validPostList(@RequestParam("ids") Collection<Long> ids);
+
+    @GetMapping(PREFIX + "/list")
+    @Operation(summary = "获得岗位列表")
+    @Parameter(name = "ids", description = "岗位编号数组", example = "1,2", required = true)
+    CommonResult<List<PostRespDTO>> getPostList(@RequestParam("ids") Collection<Long> ids);
 
     default Map<Long, PostRespDTO> getPostMap(Collection<Long> ids) {
         if (CollUtil.isEmpty(ids)) {
             return MapUtil.empty();
         }
 
-        List<PostRespDTO> list = getPostList(ids);
+        List<PostRespDTO> list = getPostList(ids).getData();
         return CollectionUtils.convertMap(list, PostRespDTO::getId);
     }
 

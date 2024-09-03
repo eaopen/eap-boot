@@ -1,9 +1,12 @@
 package org.openea.eap.module.infra.controller.admin.demo.demo03.vo;
 
-import lombok.*;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.openea.eap.framework.common.pojo.PageParam;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 
 import static org.openea.eap.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;

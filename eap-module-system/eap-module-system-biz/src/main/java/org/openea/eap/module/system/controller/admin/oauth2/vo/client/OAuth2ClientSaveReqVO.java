@@ -3,7 +3,7 @@ package org.openea.eap.module.system.controller.admin.oauth2.vo.client;
 import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.common.util.json.JsonUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.AssertTrue;

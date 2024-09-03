@@ -1,8 +1,8 @@
 package org.openea.eap.module.infra.job.logger;
 
-import org.openea.eap.framework.quartz.core.handler.JobHandler;
 import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.infra.service.logger.ApiErrorLogService;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public class ErrorLogCleanJob implements JobHandler {
+public class ErrorLogCleanJob {
 
     @Resource
     private ApiErrorLogService apiErrorLogService;
@@ -30,12 +30,11 @@ public class ErrorLogCleanJob implements JobHandler {
      */
     private static final Integer DELETE_LIMIT = 100;
 
-    @Override
+    @XxlJob("errorLogCleanJob")
     @TenantIgnore
-    public String execute(String param) {
+    public void execute() {
         Integer count = apiErrorLogService.cleanErrorLog(JOB_CLEAN_RETAIN_DAY,DELETE_LIMIT);
         log.info("[execute][定时执行清理错误日志数量 ({}) 个]", count);
-        return String.format("定时执行清理错误日志数量 %s 个", count);
     }
 
 }

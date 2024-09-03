@@ -1,12 +1,12 @@
 package org.openea.eap.module.infra.dal.mysql.demo.demo02;
 
-import java.util.*;
-
-import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.framework.mybatis.core.mapper.BaseMapperX;
+import org.openea.eap.framework.mybatis.core.query.LambdaQueryWrapperX;
 import org.openea.eap.module.infra.controller.admin.demo.demo02.vo.Demo02CategoryListReqVO;
 import org.openea.eap.module.infra.dal.dataobject.demo.demo02.Demo02CategoryDO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * 示例分类 Mapper

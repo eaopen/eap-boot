@@ -206,7 +206,7 @@ eap:
 
 eap:
   info:
-    version: 2.7.0
+    version: 2.7.2
     base-package: org.openea.eap
   web:
     admin-ui:

@@ -1,12 +1,13 @@
 package org.openea.eap.module.infra.controller.admin.demo.demo03.vo;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import java.time.LocalDateTime;
-import com.alibaba.excel.annotation.*;
 import org.openea.eap.framework.excel.core.annotations.DictFormat;
 import org.openea.eap.framework.excel.core.convert.DictConvert;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Schema(description = "管理后台 - 学生 Response VO")
 @Data

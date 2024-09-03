@@ -3,33 +3,27 @@ package org.openea.eap.module.system.api.sms.dto.code;
 import org.openea.eap.framework.common.validation.InEnum;
 import org.openea.eap.framework.common.validation.Mobile;
 import org.openea.eap.module.system.enums.sms.SmsSceneEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-/**
- * 短信验证码的校验 Request DTO
- *
- */
+@Schema(description = "RPC 服务 - 短信验证码的校验 Request DTO")
 @Data
 public class SmsCodeValidateReqDTO {
 
-    /**
-     * 手机号
-     */
+    @Schema(description = "手机号", requiredMode = Schema.RequiredMode.REQUIRED, example = "15601691300")
     @Mobile
     @NotEmpty(message = "手机号不能为空")
     private String mobile;
-    /**
-     * 发送场景
-     */
+
+    @Schema(description = "发送场景", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     @NotNull(message = "发送场景不能为空")
     @InEnum(SmsSceneEnum.class)
     private Integer scene;
-    /**
-     * 验证码
-     */
+
+    @Schema(description = "验证码", requiredMode = Schema.RequiredMode.REQUIRED, example = "1024")
     @NotEmpty(message = "验证码")
     private String code;
 

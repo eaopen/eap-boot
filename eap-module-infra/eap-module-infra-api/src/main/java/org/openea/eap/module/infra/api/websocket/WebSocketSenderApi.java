@@ -1,14 +1,26 @@
 package org.openea.eap.module.infra.api.websocket;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.json.JsonUtils;
+import org.openea.eap.module.infra.api.websocket.dto.WebSocketSendReqDTO;
+import org.openea.eap.module.infra.enums.ApiConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-/**
- * WebSocket 发送器的 API 接口
- *
- * 对 WebSocketMessageSender 进行封装，提供给其它模块使用
- *
- */
+import javax.validation.Valid;
+
+@FeignClient(name = ApiConstants.NAME) // TODO 芋艿：fallbackFactory =
+@Tag(name = "RPC 服务 - WebSocket 发送器的") // 对 WebSocketMessageSender 进行封装，提供给其它模块使用
 public interface WebSocketSenderApi {
+
+    String PREFIX = ApiConstants.PREFIX + "/websocket";
+
+    @PostMapping(PREFIX + "/send")
+    @Operation(summary = "发送 WebSocket 消息")
+    CommonResult<Boolean> send(@Valid @RequestBody WebSocketSendReqDTO message);
 
     /**
      * 发送消息给指定用户
@@ -18,7 +30,10 @@ public interface WebSocketSenderApi {
      * @param messageType 消息类型
      * @param messageContent 消息内容，JSON 格式
      */
-    void send(Integer userType, Long userId, String messageType, String messageContent);
+    default void send(Integer userType, Long userId, String messageType, String messageContent) {
+        send(new WebSocketSendReqDTO().setUserType(userType).setUserId(userId)
+                .setMessageType(messageType).setMessageContent(messageContent)).checkError();
+    }
 
     /**
      * 发送消息给指定用户类型
@@ -27,7 +42,10 @@ public interface WebSocketSenderApi {
      * @param messageType 消息类型
      * @param messageContent 消息内容，JSON 格式
      */
-    void send(Integer userType, String messageType, String messageContent);
+    default void send(Integer userType, String messageType, String messageContent) {
+        send(new WebSocketSendReqDTO().setUserType(userType)
+                .setMessageType(messageType).setMessageContent(messageContent)).checkError();
+    }
 
     /**
      * 发送消息给指定 Session
@@ -36,7 +54,10 @@ public interface WebSocketSenderApi {
      * @param messageType 消息类型
      * @param messageContent 消息内容，JSON 格式
      */
-    void send(String sessionId, String messageType, String messageContent);
+    default void send(String sessionId, String messageType, String messageContent) {
+        send(new WebSocketSendReqDTO().setSessionId(sessionId)
+                .setMessageType(messageType).setMessageContent(messageContent)).checkError();
+    }
 
     default void sendObject(Integer userType, Long userId, String messageType, Object messageContent) {
         send(userType, userId, messageType, JsonUtils.toJsonString(messageContent));
