@@ -22,6 +22,8 @@ update_git_project() {
   if [ -d "$project_dir" ]; then
     cd "$project_dir"
     git checkout .
+    git checkout dev
+    git checkout .
     git pull
     mvn clean install -Dgpg.skip=true -Dmaven.javadoc.skip=true -DskipTests=true
   else
@@ -61,7 +63,7 @@ mvn install -Dgpg.skip=true -Dmaven.javadoc.skip=true -DskipTests=true
 # docker image vars
 
 artifactId=eap-server
-version=0.0.0
+version=1.0.0
 #version=$(date +%F)
 # docker
 docker build ../eap-server/. --tag ${artifactId}:${version}
