@@ -154,7 +154,18 @@ wx:
 
 # EAP配置项，设置当前项目所有自定义的配置
 eap:
-  demo: true # 开启演示模式
+  env: # 多环境的配置项
+    tag: ${HOSTNAME}
+  captcha:
+    enable: false # 本地环境，暂时关闭图片验证码，方便登录等接口的测试
+  security:
+    mock-enable: true
+  access-log: # 访问日志的配置项
+    enable: false
+  wxa-code:
+    env-version: develop # 小程序版本: 正式版为 "release"；体验版为 "trial"；开发版为 "develop"
+  wxa-subscribe-message:
+    miniprogram-state: developer # 跳转小程序类型：开发版为 “developer”；体验版为 “trial”为；正式版为 “formal”
 
 justauth:
   enabled: true
