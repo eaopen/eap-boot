@@ -12,6 +12,12 @@ spring:
       - de.codecentric.boot.admin.server.ui.config.AdminServerUiAutoConfiguration # 禁用 Spring Boot Admin 的 Server UI 的自动配置
       - de.codecentric.boot.admin.client.config.SpringBootAdminClientAutoConfiguration # 禁用 Spring Boot Admin 的 Client 的自动配置
   datasource:
+    db-type: MySQL #数据库类型
+    host: ${jdbc_host:127.0.0.1}
+    port: ${jdbc_port:3306}
+    username: ${jdbc_user:eapuser}
+    password: ${jdbc_password:eap2020}
+    db-name: eap-db
     druid: # Druid 【监控】相关的全局配置
       web-stat-filter:
         enabled: true
@@ -46,21 +52,28 @@ spring:
       primary: master
       datasource:
         master:
-          url: jdbc:mysql://10.8.2.70:3306/eap-db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
-          username: eapuser
-          password: eap2024
-        slave: # 模拟从库，可根据自己需要修改
+          url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.dbname}?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&&serverTimezone=UTC
+          username: ${spring.datasource.username}
+          password: ${spring.datasource.password}
+          #driver-class-name: com.mysql.cj.jdbc.Driver
+#          url: jdbc:mysql://127.0.0.1:3306/eap-db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
+#          username: root
+#          password: root
+        slave: # 模拟从库，可根据自己需要修改 # 模拟从库，可根据自己需要修改
           lazy: true # 开启懒加载，保证启动速度
-          url: jdbc:mysql://10.9.8.162:3308/etech-db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
-          username: etech
-          password: NewDevETech6111
+          url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.dbname}?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&&serverTimezone=UTC
+          username: ${spring.datasource.username}
+          password: ${spring.datasource.password}
+#          url: jdbc:mysql://127.0.0.1:3306/eap-db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
+#          username: root
+#          password: root
 
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
   redis:
-    host: 10.9.8.162 # 地址
-    port: 6379 # 端口
-    database: 1 # 数据库索引
-    password: ETech.Redis.162 # 密码，建议生产环境开启
+    host: ${redis_host:127.0.0.1} # 地址
+    port: ${redis_port:6379} # 端口
+    database: ${redis_db:1} # 数据库索引
+    password: ${redis_password:123456} # 密码，建议生产环境开启
 
 --- #################### 定时任务相关配置 ####################
 
@@ -104,8 +117,8 @@ spring:
   rabbitmq:
     host: 127.0.0.1 # RabbitMQ 服务的地址
     port: 5672 # RabbitMQ 服务的端口
-    username: rabbit # RabbitMQ 服务的账号
-    password: rabbit # RabbitMQ 服务的密码
+    username: ${rabbit_user:guest} # RabbitMQ 服务的账号
+    password: ${rabbit_password:guest} # RabbitMQ 服务的密码
   # Kafka 配置项，对应 KafkaProperties 配置类
   kafka:
     bootstrap-servers: 127.0.0.1:9092 # 指定 Kafka Broker 地址，可以设置多个，以逗号分隔
