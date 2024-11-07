@@ -4,7 +4,7 @@
 -- ALTER TABLE `system_dict_type`
 --     ADD COLUMN `parent_id` bigint NULL COMMENT 'parent' AFTER `id`;
 
-ALTER TABLE `eap-db`.`system_dict_type`
+ALTER TABLE `system_dict_type`
     ADD COLUMN `is_tree` tinyint NULL DEFAULT 0 COMMENT '树形' AFTER `status`,
 ADD COLUMN `parent_id` bigint NULL DEFAULT 0 COMMENT '上级' AFTER `is_tree`,
 ADD COLUMN `data_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'data' COMMENT '数据类型(data/json/sql)' AFTER `parent_id`,
