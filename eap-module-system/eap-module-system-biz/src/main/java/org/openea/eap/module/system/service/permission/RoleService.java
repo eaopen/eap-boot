@@ -5,7 +5,7 @@ import org.openea.eap.module.system.controller.admin.permission.vo.role.RolePage
 import org.openea.eap.module.system.controller.admin.permission.vo.role.RoleSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;

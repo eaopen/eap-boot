@@ -9,7 +9,7 @@ import org.openea.eap.module.system.dal.mysql.logger.LoginLogMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildBetweenTime;
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildTime;

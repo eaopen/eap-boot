@@ -13,6 +13,7 @@ import org.openea.eap.framework.common.util.validation.ValidationUtils;
 import org.openea.eap.framework.datapermission.core.util.DataPermissionUtils;
 import org.openea.eap.module.infra.api.config.ConfigApi;
 import org.openea.eap.module.infra.api.file.FileApi;
+import org.openea.eap.module.system.controller.admin.auth.vo.AuthRegisterReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdatePasswordReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdateReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserImportExcelVO;
@@ -38,15 +39,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import javax.validation.ConstraintViolationException;
+import jakarta.annotation.Resource;
+import jakarta.validation.ConstraintViolationException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
-import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertSet;
+import static org.openea.eap.framework.common.util.collection.CollectionUtils.*;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 import static org.openea.eap.module.system.enums.LogRecordConstants.*;
 
@@ -111,6 +111,26 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         // 3. 记录操作日志上下文
         LogRecordContext.putVariable("user", user);
+        return user.getId();
+    }
+
+    @Override
+    public Long registerUser(AuthRegisterReqVO registerReqVO) {
+        // 1.1 校验账户配合
+        tenantService.handleTenantInfo(tenant -> {
+            long count = userMapper.selectCount();
+            if (count >= tenant.getAccountCount()) {
+                throw exception(USER_COUNT_MAX, tenant.getAccountCount());
+            }
+        });
+        // 1.2 校验正确性
+        validateUserForCreateOrUpdate(null, registerReqVO.getUsername(), null, null, null, null);
+
+        // 2. 插入用户
+        AdminUserDO user = BeanUtils.toBean(registerReqVO, AdminUserDO.class);
+        user.setStatus(CommonStatusEnum.ENABLE.getStatus()); // 默认开启
+        user.setPassword(encodePassword(registerReqVO.getPassword())); // 加密密码
+        userMapper.insert(user);
         return user.getId();
     }
 
@@ -250,7 +270,12 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public PageResult<AdminUserDO> getUserPage(UserPageReqVO reqVO) {
-        return userMapper.selectPage(reqVO, getDeptCondition(reqVO.getDeptId()));
+        // 如果有角色编号，查询角色对应的用户编号
+        Set<Long> userIds = reqVO.getRoleId() != null ?
+                permissionService.getUserRoleIdListByRoleId(singleton(reqVO.getRoleId())) : null;
+
+        // 分页查询
+        return userMapper.selectPage(reqVO, getDeptCondition(reqVO.getDeptId()), userIds);
     }
 
     @Override
@@ -338,7 +363,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             // 校验邮箱唯一
             validateEmailUnique(id, email);
             // 校验部门处于开启状态
-            deptService.validateDeptList(CollectionUtils.singleton(deptId));
+            deptService.validateDeptList(singleton(deptId));
             // 校验岗位处于开启状态
             postService.validatePostList(postIds);
             return user;

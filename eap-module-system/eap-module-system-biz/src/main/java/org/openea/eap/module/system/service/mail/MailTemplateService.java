@@ -5,7 +5,7 @@ import org.openea.eap.module.system.controller.admin.mail.vo.template.MailTempla
 import org.openea.eap.module.system.controller.admin.mail.vo.template.MailTemplateSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.mail.MailTemplateDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 

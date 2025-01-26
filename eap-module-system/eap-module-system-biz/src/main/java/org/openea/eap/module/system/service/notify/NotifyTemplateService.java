@@ -5,7 +5,7 @@ import org.openea.eap.module.system.controller.admin.notify.vo.template.NotifyTe
 import org.openea.eap.module.system.controller.admin.notify.vo.template.NotifyTemplateSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.notify.NotifyTemplateDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Map;
 
 /**

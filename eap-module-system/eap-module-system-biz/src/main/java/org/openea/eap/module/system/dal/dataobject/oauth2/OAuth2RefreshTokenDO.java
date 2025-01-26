@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.dal.dataobject.oauth2;
 
 import org.openea.eap.framework.common.enums.UserTypeEnum;
-import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.db.TenantBaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -23,7 +23,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class OAuth2RefreshTokenDO extends BaseDO {
+public class OAuth2RefreshTokenDO extends TenantBaseDO {
 
     /**
      * 编号，数据库字典

@@ -7,7 +7,7 @@ import org.openea.eap.module.system.controller.admin.language.vo.LangTypePageReq
 import org.openea.eap.module.system.controller.admin.language.vo.LangTypeUpdateReqVO;
 import org.openea.eap.module.system.dal.dataobject.language.LangTypeDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 

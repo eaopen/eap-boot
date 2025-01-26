@@ -81,9 +81,9 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: NONE # “智能”模式，基于 IdTypeEnvironmentPostProcessor + 数据源的类型，自动适配成 AUTO、INPUT 模式。
-#      id-type: AUTO # 自增 ID，适合 MySQL 等直接自增的数据库
-#      id-type: INPUT # 用户输入 ID，适合 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库
-#      id-type: ASSIGN_ID # 分配 ID，默认使用雪花算法。注意，Oracle、PostgreSQL、Kingbase、DB2、H2 数据库时，需要去除实体类上的 @KeySequence 注解
+      #      id-type: AUTO # 自增 ID，适合 MySQL 等直接自增的数据库
+      #      id-type: INPUT # 用户输入 ID，适合 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库
+      #      id-type: ASSIGN_ID # 分配 ID，默认使用雪花算法。注意，Oracle、PostgreSQL、Kingbase、DB2、H2 数据库时，需要去除实体类上的 @KeySequence 注解
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
     banner: false # 关闭控制台的 Banner 打印
@@ -206,7 +206,7 @@ eap:
 
 eap:
   info:
-    version: 2.7.4
+    version: 2.8.0
     base-package: org.openea.eap
   web:
     admin-ui:
@@ -244,11 +244,13 @@ eap:
     base-package: ${eap.info.base-package}
     db-schemas: ${spring.datasource.dynamic.datasource.master.name}
     front-type: 10 # 前端模版的类型，参见 CodegenFrontTypeEnum 枚举类
+    unit-test-enable: false # 是否生成单元测试
   tenant: # 多租户相关配置项
     enable: ${tenant_enable:false}
     ignore-urls:
       - /admin-api/system/tenant/get-id-by-name # 基于名字获取租户，不许带租户编号
       - /admin-api/system/tenant/get-by-website # 基于域名获取租户，不许带租户编号
+      - /admin-api/system/captcha/get-image # 获取图片验证码，和租户无关
       - /admin-api/system/captcha/get # 获取图片验证码，和租户无关
       - /admin-api/system/captcha/check # 校验图片验证码，和租户无关
       - /admin-api/infra/file/*/get/** # 获取图片，和租户无关
@@ -300,6 +302,7 @@ eap:
       - tmp_report_data_1
       - tmp_report_data_income
     ignore-caches:
+      - user_role_ids
       - permission_menu_ids
       - oauth_client
       - notify_template
@@ -312,19 +315,5 @@ eap:
     send-maximum-quantity-per-day: 10
     begin-code: 9999 # 这里配置 9999 的原因是，测试方便。
     end-code: 9999 # 这里配置 9999 的原因是，测试方便。
-  trade:
-    order:
-      app-id: 1 # 商户编号
-      pay-expire-time: 2h # 支付的过期时间
-      receive-expire-time: 14d # 收货的过期时间
-      comment-expire-time: 7d # 评论的过期时间
-    express:
-      client: kd_niao
-      kd-niao:
-        api-key: cb022f1e-48f1-4c4a-a723-9001ac9676b8
-        business-id: 1809751
-      kd100:
-        key: pLXUGAwK5305
-        customer: E77DF18BE109F454A5CD319E44BF5177
 
 debug: false

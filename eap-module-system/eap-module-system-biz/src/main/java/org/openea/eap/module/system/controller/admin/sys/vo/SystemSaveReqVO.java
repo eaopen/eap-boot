@@ -3,7 +3,7 @@ package org.openea.eap.module.system.controller.admin.sys.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import java.util.*;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 @Schema(description = "管理后台 - 系统应用新增/修改 Request VO")
 @Data

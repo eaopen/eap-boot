@@ -28,8 +28,7 @@ import static cn.hutool.core.util.RandomUtil.randomEle;
 import static org.openea.eap.framework.test.core.util.AssertUtils.assertServiceException;
 import static org.openea.eap.framework.test.core.util.RandomUtils.*;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -268,7 +267,7 @@ public class MailSendServiceImplTest extends BaseMockitoUnitTest {
 
     @Test
     public void testDoSendMail_success() {
-        try (MockedStatic<MailUtil> mailUtilMock = mockStatic(MailUtil.class)) {
+        try (final MockedStatic<MailUtil> mailUtilMock = mockStatic(MailUtil.class)) {
             // 准备参数
             MailSendMessage message = randomPojo(MailSendMessage.class, o -> o.setNickname("芋艿"));
             // mock 方法（获得邮箱账号）
@@ -279,16 +278,16 @@ public class MailSendServiceImplTest extends BaseMockitoUnitTest {
             // mock 方法（发送邮件）
             String messageId = randomString();
             mailUtilMock.when(() -> MailUtil.send(
-                    argThat(mailAccount -> {
-                        assertEquals("芋艿 <7685@qq.com>", mailAccount.getFrom());
-                        assertTrue(mailAccount.isAuth());
-                        assertEquals(account.getUsername(), mailAccount.getUser());
-                        assertEquals(account.getPassword(), mailAccount.getPass());
-                        assertEquals(account.getHost(), mailAccount.getHost());
-                        assertEquals(account.getPort(), mailAccount.getPort());
-                        assertEquals(account.getSslEnable(), mailAccount.isSslEnable());
-                        return true;
-                    }), eq(message.getMail()), eq(message.getTitle()), eq(message.getContent()), eq(true)))
+                            argThat(mailAccount -> {
+                                assertEquals("芋艿 <7685@qq.com>", mailAccount.getFrom());
+                                assertTrue(mailAccount.isAuth());
+                                assertEquals(account.getUsername(), mailAccount.getUser());
+                                assertArrayEquals(account.getPassword().toCharArray(), mailAccount.getPass().toCharArray());
+                                assertEquals(account.getHost(), mailAccount.getHost());
+                                assertEquals(account.getPort(), mailAccount.getPort());
+                                assertEquals(account.getSslEnable(), mailAccount.isSslEnable());
+                                return true;
+                            }), eq(message.getMail()), eq(message.getTitle()), eq(message.getContent()), eq(true)))
                     .thenReturn(messageId);
 
             // 调用
@@ -311,16 +310,15 @@ public class MailSendServiceImplTest extends BaseMockitoUnitTest {
             // mock 方法（发送邮件）
             Exception e = new NullPointerException("啦啦啦");
             mailUtilMock.when(() -> MailUtil.send(argThat(mailAccount -> {
-                        assertEquals("芋艿 <7685@qq.com>", mailAccount.getFrom());
-                        assertTrue(mailAccount.isAuth());
-                        assertEquals(account.getUsername(), mailAccount.getUser());
-                        assertEquals(account.getPassword(), mailAccount.getPass());
-                        assertEquals(account.getHost(), mailAccount.getHost());
-                        assertEquals(account.getPort(), mailAccount.getPort());
-                        assertEquals(account.getSslEnable(), mailAccount.isSslEnable());
-                        return true;
-                    }), eq(message.getMail()), eq(message.getTitle()), eq(message.getContent()), eq(true)))
-                    .thenThrow(e);
+                assertEquals("芋艿 <7685@qq.com>", mailAccount.getFrom());
+                assertTrue(mailAccount.isAuth());
+                assertEquals(account.getUsername(), mailAccount.getUser());
+                assertArrayEquals(account.getPassword().toCharArray(), mailAccount.getPass().toCharArray());
+                assertEquals(account.getHost(), mailAccount.getHost());
+                assertEquals(account.getPort(), mailAccount.getPort());
+                assertEquals(account.getSslEnable(), mailAccount.isSslEnable());
+                return true;
+            }), eq(message.getMail()), eq(message.getTitle()), eq(message.getContent()), eq(true))).thenThrow(e);
 
             // 调用
             mailSendService.doSendMail(message);

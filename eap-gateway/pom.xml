@@ -37,13 +37,9 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.xiaoymin</groupId> <!-- 接口文档 -->
             <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+            <version>4.5.0</version>
         </dependency>
 
         <!-- RPC 远程调用相关 -->

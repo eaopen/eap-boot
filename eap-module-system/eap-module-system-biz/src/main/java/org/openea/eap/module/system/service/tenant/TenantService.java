@@ -8,7 +8,7 @@ import org.openea.eap.module.system.dal.dataobject.tenant.TenantDO;
 import org.openea.eap.module.system.service.tenant.handler.TenantInfoHandler;
 import org.openea.eap.module.system.service.tenant.handler.TenantMenuHandler;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;
 

@@ -8,11 +8,11 @@ import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2Clie
 import org.openea.eap.module.system.controller.admin.oauth2.vo.client.OAuth2ClientSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
 import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2ClientMapper;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.context.annotation.Import;
 
-import javax.annotation.Resource;
 import java.util.Collections;
 
 import static org.openea.eap.framework.common.util.object.ObjectUtils.cloneIgnoreId;

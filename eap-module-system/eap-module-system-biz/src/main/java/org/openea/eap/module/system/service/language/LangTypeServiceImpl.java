@@ -11,7 +11,7 @@ import org.openea.eap.module.system.dal.mysql.language.LangTypeMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 

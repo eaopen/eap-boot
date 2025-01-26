@@ -3,6 +3,7 @@ package org.openea.eap.module.system.service.user;
 import cn.hutool.core.collection.CollUtil;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
+import org.openea.eap.module.system.controller.admin.auth.vo.AuthRegisterReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdatePasswordReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdateReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserImportExcelVO;
@@ -10,8 +11,8 @@ import org.openea.eap.module.system.controller.admin.user.vo.user.UserImportResp
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserPageReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.user.UserSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
+import jakarta.validation.Valid;
 
-import javax.validation.Valid;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +32,14 @@ public interface AdminUserService {
      * @return 用户编号
      */
     Long createUser(@Valid UserSaveReqVO createReqVO);
+
+    /**
+     * 注册用户
+     *
+     * @param registerReqVO 用户信息
+     * @return 用户编号
+     */
+    Long registerUser(@Valid AuthRegisterReqVO registerReqVO);
 
     /**
      * 修改用户

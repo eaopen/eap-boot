@@ -9,15 +9,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "管理后台 - 发送手机验证码 Request VO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthSmsSendReqVO {
+public class AuthSmsSendReqVO extends CaptchaVerificationReqVO {
 
     @Schema(description = "手机号", requiredMode = Schema.RequiredMode.REQUIRED, example = "eapyuanma")
     @NotEmpty(message = "手机号不能为空")

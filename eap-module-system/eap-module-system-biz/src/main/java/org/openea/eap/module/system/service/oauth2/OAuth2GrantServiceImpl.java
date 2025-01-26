@@ -11,7 +11,7 @@ import org.openea.eap.module.system.enums.ErrorCodeConstants;
 import org.openea.eap.module.system.service.auth.AdminAuthService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;

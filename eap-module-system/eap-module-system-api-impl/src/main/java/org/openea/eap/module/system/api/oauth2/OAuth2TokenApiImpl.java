@@ -7,10 +7,11 @@ import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCreateReqDTO
 import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenRespDTO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.service.oauth2.OAuth2TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 

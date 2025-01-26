@@ -10,16 +10,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 
 @Schema(description = "管理后台 - 账号密码登录 Request VO，如果登录并绑定社交用户，需要传递 social 开头的参数")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthLoginReqVO {
+public class AuthLoginReqVO extends CaptchaVerificationReqVO {
 
     @Schema(description = "账号", requiredMode = Schema.RequiredMode.REQUIRED, example = "eapyuanma")
     @NotEmpty(message = "登录账号不能为空")

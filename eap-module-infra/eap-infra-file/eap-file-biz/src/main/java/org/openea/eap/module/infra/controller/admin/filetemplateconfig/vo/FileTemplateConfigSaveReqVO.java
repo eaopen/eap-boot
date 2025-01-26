@@ -3,7 +3,7 @@ package org.openea.eap.module.infra.controller.admin.filetemplateconfig.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import java.util.*;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.util.*;
 
 @Schema(description = "管理后台 - 文件模板配置新增/修改 Request VO")

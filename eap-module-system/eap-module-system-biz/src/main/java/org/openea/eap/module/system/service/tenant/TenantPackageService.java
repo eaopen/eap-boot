@@ -5,7 +5,7 @@ import org.openea.eap.module.system.controller.admin.tenant.vo.packages.TenantPa
 import org.openea.eap.module.system.controller.admin.tenant.vo.packages.TenantPackageSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.tenant.TenantPackageDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**

@@ -11,10 +11,12 @@ import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.DateUtils;
+import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.security.core.LoginUser;
 import org.openea.eap.framework.security.core.util.JwtUtil;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
+import org.openea.eap.framework.tenant.core.util.TenantUtils;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.token.OAuth2AccessTokenPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
@@ -28,7 +30,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -79,6 +81,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OAuth2AccessTokenDO refreshAccessToken(String refreshToken, String clientId) {
         // 查询访问令牌
         OAuth2RefreshTokenDO refreshTokenDO = oauth2RefreshTokenMapper.selectByRefreshToken(refreshToken);
@@ -97,7 +100,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         // 移除相关的访问令牌
         List<OAuth2AccessTokenDO> accessTokenDOs = oauth2AccessTokenMapper.selectListByRefreshToken(refreshToken);
         if (CollUtil.isNotEmpty(accessTokenDOs)) {
-            oauth2AccessTokenMapper.deleteBatchIds(convertSet(accessTokenDOs, OAuth2AccessTokenDO::getId));
+            oauth2AccessTokenMapper.deleteByIds(convertSet(accessTokenDOs, OAuth2AccessTokenDO::getId));
             oauth2AccessTokenRedisDAO.deleteList(convertSet(accessTokenDOs, OAuth2AccessTokenDO::getAccessToken));
         }
 
@@ -119,12 +122,16 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
             return accessTokenDO;
         }
 
-        // 获取不到，从 MySQL 中获取
-        // todo 需要保护避免acessToken多条记录的错误数据
-//        accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
-        List<OAuth2AccessTokenDO> accessTokenList = oauth2AccessTokenMapper.selectList(new QueryWrapper<OAuth2AccessTokenDO>().eq("access_token", accessTokenDO).orderByDesc("create_time"));
-        if(accessTokenList!=null && accessTokenList.size()>0){
-            accessTokenDO = accessTokenList.get(0);
+        // 获取不到，从 MySQL 中获取访问令牌
+        accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
+        if (accessTokenDO == null) {
+            // 特殊：从 MySQL 中获取刷新令牌。原因：解决部分场景不方便刷新访问令牌场景
+            // 例如说，积木报表只允许传递 token，不允许传递 refresh_token，导致无法刷新访问令牌
+            // 再例如说，前端 WebSocket 的 token 直接跟在 url 上，无法传递 refresh_token
+            OAuth2RefreshTokenDO refreshTokenDO = oauth2RefreshTokenMapper.selectByRefreshToken(accessToken);
+            if (refreshTokenDO != null && !DateUtils.isExpired(refreshTokenDO.getExpiresTime())) {
+                accessTokenDO = convertToAccessToken(refreshTokenDO);
+            }
         }
 
         // 如果在 MySQL 存在，则往 Redis 中写入
@@ -147,6 +154,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OAuth2AccessTokenDO removeAccessToken(String accessToken) {
         // 删除访问令牌
         OAuth2AccessTokenDO accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
@@ -200,6 +208,14 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
                 .setExpiresTime(LocalDateTime.now().plusSeconds(clientDO.getRefreshTokenValiditySeconds()));
         oauth2RefreshTokenMapper.insert(refreshToken);
         return refreshToken;
+    }
+
+    private OAuth2AccessTokenDO convertToAccessToken(OAuth2RefreshTokenDO refreshTokenDO) {
+        OAuth2AccessTokenDO accessTokenDO = BeanUtils.toBean(refreshTokenDO, OAuth2AccessTokenDO.class)
+                .setAccessToken(refreshTokenDO.getRefreshToken());
+        TenantUtils.execute(refreshTokenDO.getTenantId(),
+                        () -> accessTokenDO.setUserInfo(buildUserInfo(refreshTokenDO.getUserId(), refreshTokenDO.getUserType())));
+        return accessTokenDO;
     }
 
     /**

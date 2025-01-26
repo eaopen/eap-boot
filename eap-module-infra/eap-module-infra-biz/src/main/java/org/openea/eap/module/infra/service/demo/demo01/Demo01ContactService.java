@@ -5,7 +5,7 @@ import org.openea.eap.module.infra.controller.admin.demo.demo01.vo.Demo01Contact
 import org.openea.eap.module.infra.controller.admin.demo.demo01.vo.Demo01ContactSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.demo.demo01.Demo01ContactDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 示例联系人 Service 接口

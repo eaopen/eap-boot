@@ -10,7 +10,7 @@ import org.openea.eap.module.infra.service.filetemplateconfig.FileTemplateConfig
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.File;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;

@@ -11,7 +11,7 @@ import org.openea.eap.module.infra.dal.mysql.file.FileModuleMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.module.infra.enums.ErrorCodeConstants.FILE_CONFIG_NOT_EXISTS;

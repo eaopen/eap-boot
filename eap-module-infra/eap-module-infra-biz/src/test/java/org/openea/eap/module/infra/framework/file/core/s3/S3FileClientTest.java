@@ -8,7 +8,7 @@ import org.openea.eap.module.infra.framework.file.core.client.s3.S3FileClientCon
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.Validation;
+import jakarta.validation.Validation;
 
 public class S3FileClientTest {
 

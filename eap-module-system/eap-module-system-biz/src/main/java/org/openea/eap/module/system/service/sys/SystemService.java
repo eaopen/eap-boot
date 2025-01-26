@@ -1,7 +1,7 @@
 package org.openea.eap.module.system.service.sys;
 
 import java.util.*;
-import javax.validation.*;
+import jakarta.validation.*;
 import org.openea.eap.module.system.controller.admin.sys.vo.*;
 import org.openea.eap.module.system.dal.dataobject.sys.SystemDO;
 import org.openea.eap.framework.common.pojo.PageResult;

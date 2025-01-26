@@ -17,8 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 
@@ -78,7 +78,7 @@ public class SocialClientController {
     @Operation(summary = "发送订阅消息") // 用于测试
     @PreAuthorize("@ss.hasPermission('system:social-client:query')")
     public void sendSubscribeMessage(@RequestBody SocialWxaSubscribeMessageSendReqDTO reqDTO) {
-        socialClientApi.sendWxaSubscribeMessage(reqDTO);
+        socialClientApi.sendWxaSubscribeMessage(reqDTO).checkError();
     }
 
 }

@@ -5,7 +5,7 @@ import org.openea.eap.module.system.service.permission.RoleService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Collection;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;

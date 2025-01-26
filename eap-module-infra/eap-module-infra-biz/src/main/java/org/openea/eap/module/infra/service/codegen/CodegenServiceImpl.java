@@ -25,10 +25,11 @@ import com.google.common.annotations.VisibleForTesting;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertMap;
@@ -178,11 +179,18 @@ public class CodegenServiceImpl implements CodegenService {
                         && tableField.getMetaInfo().isNullable() == codegenColumn.getNullable()
                         && tableField.isKeyFlag() == codegenColumn.getPrimaryKey()
                         && tableField.getComment().equals(codegenColumn.getColumnComment());
-        Set<String> modifyFieldNames = tableFields.stream()
-                .filter(tableField -> codegenColumnDOMap.get(tableField.getColumnName()) != null
-                        && !primaryKeyPredicate.test(tableField, codegenColumnDOMap.get(tableField.getColumnName())))
-                .map(TableField::getColumnName)
-                .collect(Collectors.toSet());
+        Set<String> modifyFieldNames = IntStream.range(0, tableFields.size()).mapToObj(index -> {
+            TableField tableField = tableFields.get(index);
+            String columnName = tableField.getColumnName();
+            CodegenColumnDO codegenColumn = codegenColumnDOMap.get(columnName);
+            if (codegenColumn == null) {
+                return null;
+            }
+            if (!primaryKeyPredicate.test(tableField, codegenColumn) || codegenColumn.getOrdinalPosition() != index) {
+                return columnName;
+            }
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toSet());
         // 3.2 计算需要【删除】的字段
         Set<String> tableFieldNames = convertSet(tableFields, TableField::getName);
         Set<Long> deleteColumnIds = codegenColumns.stream()

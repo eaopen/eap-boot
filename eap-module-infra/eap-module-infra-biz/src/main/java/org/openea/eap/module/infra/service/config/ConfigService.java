@@ -5,7 +5,7 @@ import org.openea.eap.module.infra.controller.admin.config.vo.ConfigPageReqVO;
 import org.openea.eap.module.infra.controller.admin.config.vo.ConfigSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.config.ConfigDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * 参数配置 Service 接口

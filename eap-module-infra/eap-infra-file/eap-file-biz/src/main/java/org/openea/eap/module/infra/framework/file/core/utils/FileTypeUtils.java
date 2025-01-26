@@ -6,7 +6,7 @@ import com.alibaba.ttl.TransmittableThreadLocal;
 import lombok.SneakyThrows;
 import org.apache.tika.Tika;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 

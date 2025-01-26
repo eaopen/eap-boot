@@ -6,7 +6,7 @@ import org.openea.eap.module.infra.controller.admin.file.vo.module.FileModulePag
 import org.openea.eap.module.infra.controller.admin.file.vo.module.FileModuleUpdateReqVO;
 import org.openea.eap.module.infra.dal.dataobject.file.FileModuleDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 public interface FileModuleService {
 

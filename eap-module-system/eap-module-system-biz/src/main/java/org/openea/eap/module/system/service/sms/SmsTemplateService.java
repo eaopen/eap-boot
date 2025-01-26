@@ -5,7 +5,7 @@ import org.openea.eap.module.system.controller.admin.sms.vo.template.SmsTemplate
 import org.openea.eap.module.system.controller.admin.sms.vo.template.SmsTemplateSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsTemplateDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Map;
 
 /**

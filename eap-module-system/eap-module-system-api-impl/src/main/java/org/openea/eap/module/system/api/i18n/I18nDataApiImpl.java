@@ -4,7 +4,7 @@ import cn.hutool.json.JSONObject;
 import org.openea.eap.module.system.service.language.I18nDataService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 

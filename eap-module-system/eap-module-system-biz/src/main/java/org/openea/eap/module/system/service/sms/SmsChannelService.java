@@ -6,7 +6,7 @@ import org.openea.eap.module.system.controller.admin.sms.vo.channel.SmsChannelPa
 import org.openea.eap.module.system.controller.admin.sms.vo.channel.SmsChannelSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.sms.SmsChannelDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**

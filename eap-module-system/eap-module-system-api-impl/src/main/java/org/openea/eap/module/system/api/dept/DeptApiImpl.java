@@ -5,10 +5,11 @@ import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.dept.dto.DeptRespDTO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.service.dept.DeptService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 

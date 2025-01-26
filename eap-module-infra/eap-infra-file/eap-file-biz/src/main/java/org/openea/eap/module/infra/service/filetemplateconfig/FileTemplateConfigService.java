@@ -1,7 +1,7 @@
 package org.openea.eap.module.infra.service.filetemplateconfig;
 
 import java.util.*;
-import javax.validation.*;
+import jakarta.validation.*;
 import org.openea.eap.module.infra.controller.admin.filetemplateconfig.vo.*;
 import org.openea.eap.module.infra.dal.dataobject.filetemplateconfig.FileTemplateConfigDO;
 import org.openea.eap.framework.common.pojo.PageResult;

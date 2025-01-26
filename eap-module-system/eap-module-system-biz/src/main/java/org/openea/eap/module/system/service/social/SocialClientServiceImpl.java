@@ -12,7 +12,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ReflectUtil;
-import groovy.lang.Lazy;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -51,10 +50,11 @@ import me.chanjar.weixin.mp.config.impl.WxMpRedisConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -284,7 +284,8 @@ public class SocialClientServiceImpl implements SocialClientService {
     }
 
     @Override
-    @Cacheable(cacheNames = RedisKeyConstants.WXA_SUBSCRIBE_TEMPLATE, key = "#userType", condition = "#result != null")
+    @Cacheable(cacheNames = RedisKeyConstants.WXA_SUBSCRIBE_TEMPLATE, key = "#userType",
+            unless = "#result == null")
     public List<TemplateInfo> getSubscribeTemplateList(Integer userType) {
         WxMaService service = getWxMaService(userType);
         try {

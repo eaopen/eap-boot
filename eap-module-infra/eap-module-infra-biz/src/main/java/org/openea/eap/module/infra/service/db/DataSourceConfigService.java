@@ -3,7 +3,7 @@ package org.openea.eap.module.infra.service.db;
 import org.openea.eap.module.infra.controller.admin.db.vo.DataSourceConfigSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**

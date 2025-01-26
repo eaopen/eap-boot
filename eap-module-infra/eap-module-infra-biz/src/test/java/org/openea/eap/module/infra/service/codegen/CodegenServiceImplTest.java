@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -241,10 +241,10 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
                 .setDataSourceConfigId(1L).setScene(CodegenSceneEnum.ADMIN.getScene()));
         codegenTableMapper.insert(table);
         CodegenColumnDO column01 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId())
-                .setColumnName("id"));
+                .setColumnName("id").setPrimaryKey(true).setOrdinalPosition(0));
         codegenColumnMapper.insert(column01);
         CodegenColumnDO column02 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId())
-                .setColumnName("name"));
+                .setColumnName("name").setOrdinalPosition(1));
         codegenColumnMapper.insert(column02);
         // 准备参数
         Long tableId = table.getId();
@@ -486,9 +486,11 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
                         .setTemplateType(CodegenTemplateTypeEnum.MASTER_NORMAL.getType()));
         codegenTableMapper.insert(table);
         // mock 数据（CodegenColumnDO）
-        CodegenColumnDO column01 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId()));
+        CodegenColumnDO column01 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId())
+                .setOrdinalPosition(1));
         codegenColumnMapper.insert(column01);
-        CodegenColumnDO column02 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId()));
+        CodegenColumnDO column02 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId())
+                .setOrdinalPosition(2));
         codegenColumnMapper.insert(column02);
         // mock 数据（sub CodegenTableDO）
         CodegenTableDO subTable = randomPojo(CodegenTableDO.class,

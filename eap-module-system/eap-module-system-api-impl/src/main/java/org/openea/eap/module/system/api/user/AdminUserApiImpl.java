@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.framework.datapermission.core.annotation.DataPermission;
 import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
@@ -12,7 +13,7 @@ import org.openea.eap.module.system.service.user.AdminUserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -65,6 +66,7 @@ public class AdminUserApiImpl implements AdminUserApi {
     }
 
     @Override
+    @DataPermission(enable = false) // 禁用数据权限。原因是，一般基于指定 id 的 API 查询，都是数据拼接为主
     public CommonResult<List<AdminUserRespDTO>> getUserList(Collection<Long> ids) {
         List<AdminUserDO> users = userService.getUserList(ids);
         return success(BeanUtils.toBean(users, AdminUserRespDTO.class));

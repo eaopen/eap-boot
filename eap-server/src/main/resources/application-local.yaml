@@ -6,7 +6,7 @@ spring:
   # 数据源配置项
   autoconfigure:
     exclude:
-      - com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure # 排除 Druid 的自动配置，使用 dynamic-datasource-spring-boot-starter 配置多数据源
+      #- com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure # 排除 Druid 的自动配置，使用 dynamic-datasource-spring-boot-starter 配置多数据源
       - org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration # 默认 local 环境，不开启 Quartz 的自动配置
       - de.codecentric.boot.admin.server.config.AdminServerAutoConfiguration # 禁用 Spring Boot Admin 的 Server 的自动配置
       - de.codecentric.boot.admin.server.ui.config.AdminServerUiAutoConfiguration # 禁用 Spring Boot Admin 的 Server UI 的自动配置
@@ -69,11 +69,12 @@ spring:
           password: root
 
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
-  redis:
-    host: 127.0.0.1 # 地址
-    port: 6379 # 端口
-    database: 0 # 数据库索引
-    password: nopass # 密码，建议生产环境开启
+  data:
+    redis:
+      host: 127.0.0.1 # 地址
+      port: 6379 # 端口
+      database: 0 # 数据库索引
+      password: nopass # 密码，建议生产环境开启
 
 --- #################### 定时任务相关配置 ####################
 
@@ -182,12 +183,12 @@ debug: false
 --- #################### 微信公众号、小程序相关配置 ####################
 wx:
   mp: # 公众号配置（必填），参见 https://github.com/Wechat-Group/WxJava/blob/develop/spring-boot-starters/wx-java-mp-spring-boot-starter/README.md 文档
-#    app-id: wx041349c6f39b268b # 测试号（牛希尧提供的）
-#    secret: 5abee519483bc9f8cb37ce280e814bd0
+    #    app-id: wx041349c6f39b268b # 测试号（牛希尧提供的）
+    #    secret: 5abee519483bc9f8cb37ce280e814bd0
     app-id: wx5b23ba7a5589ecbb # 测试号（自己的）
     secret: 2a7b3b20c537e52e74afd395eb85f61f
-#    app-id: wxa69ab825b163be19 # 测试号（Kongdy 提供的）
-#    secret: bd4f9fab889591b62aeac0d7b8d8b4a0
+    #    app-id: wxa69ab825b163be19 # 测试号（Kongdy 提供的）
+    #    secret: bd4f9fab889591b62aeac0d7b8d8b4a0
     # 存储配置，解决 AccessToken 的跨节点的共享
     config-storage:
       type: RedisTemplate # 采用 RedisTemplate 操作 Redis，会自动从 Spring 中获取
@@ -196,10 +197,10 @@ wx:
   miniapp: # 小程序配置（必填），参见 https://github.com/Wechat-Group/WxJava/blob/develop/spring-boot-starters/wx-java-miniapp-spring-boot-starter/README.md 文档
     #    appid: wx62056c0d5e8db250 # 测试号（牛希尧提供的）
     #    secret: 333ae72f41552af1e998fe1f54e1584a
-#    appid: wx63c280fe3248a3e7 # wenhualian的接口测试号
-#    secret: 6f270509224a7ae1296bbf1c8cb97aed
-#    appid: wxc4598c446f8a9cb3 # 测试号（Kongdy 提供的）
-#    secret: 4a1a04e07f6a4a0751b39c3064a92c8b
+    #    appid: wx63c280fe3248a3e7 # wenhualian的接口测试号
+    #    secret: 6f270509224a7ae1296bbf1c8cb97aed
+    #    appid: wxc4598c446f8a9cb3 # 测试号（Kongdy 提供的）
+    #    secret: 4a1a04e07f6a4a0751b39c3064a92c8b
     appid: wx66186af0759f47c9 # 测试号（puhui 提供的）
     secret: 3218bcbd112cbc614c7264ceb20144ac
     config-storage:

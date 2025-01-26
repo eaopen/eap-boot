@@ -3,7 +3,6 @@ package org.openea.eap.module.system.service.auth;
 import cn.hutool.core.util.ReflectUtil;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
-import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.test.core.ut.BaseDbUnitTest;
 import org.openea.eap.module.system.api.sms.SmsCodeApi;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
@@ -22,15 +21,13 @@ import org.openea.eap.module.system.service.social.SocialUserService;
 import org.openea.eap.module.system.service.user.AdminUserService;
 import com.xingyuv.captcha.model.common.ResponseModel;
 import com.xingyuv.captcha.service.CaptchaService;
+import jakarta.annotation.Resource;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-
-import javax.annotation.Resource;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
 
 import static cn.hutool.core.util.RandomUtil.randomEle;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
@@ -40,7 +37,6 @@ import static org.openea.eap.framework.test.core.util.RandomUtils.randomPojo;
 import static org.openea.eap.framework.test.core.util.RandomUtils.randomString;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -69,7 +65,7 @@ public class AdminAuthServiceImplTest extends BaseDbUnitTest {
 
     @BeforeEach
     public void setUp() {
-        ReflectUtil.setFieldValue(authService, "captchaEnable", true);
+        authService.setCaptchaEnable(true);
         // 注入一个 Validator 对象
         ReflectUtil.setFieldValue(authService, "validator",
                 Validation.buildDefaultValidatorFactory().getValidator());
@@ -159,7 +155,7 @@ public class AdminAuthServiceImplTest extends BaseDbUnitTest {
                         .setSocialType(randomEle(SocialTypeEnum.values()).getType()));
 
         // mock 验证码正确
-        ReflectUtil.setFieldValue(authService, "captchaEnable", false);
+        authService.setCaptchaEnable(false);
         // mock user 数据
         AdminUserDO user = randomPojo(AdminUserDO.class, o -> o.setId(1L).setUsername("test_username")
                 .setPassword("test_password").setStatus(CommonStatusEnum.ENABLE.getStatus()));
@@ -212,13 +208,13 @@ public class AdminAuthServiceImplTest extends BaseDbUnitTest {
         String mobile = randomString();
         String code = randomString();
         AuthSmsLoginReqVO reqVO = new AuthSmsLoginReqVO(mobile, code);
-        // mock 方法（校验验证码）
-        when(smsCodeApi.useSmsCode(argThat(reqDTO -> {
-            assertEquals(mobile, reqDTO.getMobile());
-            assertEquals(code, reqDTO.getCode());
-            assertEquals(SmsSceneEnum.ADMIN_MEMBER_LOGIN.getScene(), reqDTO.getScene());
+        // mock 方法（验证码）
+        when(smsCodeApi.useSmsCode(argThat(smsCodeUseReqDTO -> {
+            assertEquals(mobile, smsCodeUseReqDTO.getMobile());
+            assertEquals(code, smsCodeUseReqDTO.getCode());
+            assertEquals(SmsSceneEnum.ADMIN_MEMBER_LOGIN.getScene(), smsCodeUseReqDTO.getScene());
             return true;
-        }))).thenReturn(success(true));
+        }))).thenReturn(success(null));
         // mock 方法（用户信息）
         AdminUserDO user = randomPojo(AdminUserDO.class, o -> o.setId(1L));
         when(userService.getUserByMobile(eq(mobile))).thenReturn(user);
@@ -272,8 +268,6 @@ public class AdminAuthServiceImplTest extends BaseDbUnitTest {
         // 准备参数
         AuthLoginReqVO reqVO = randomPojo(AuthLoginReqVO.class);
 
-        // mock 验证码打开
-        ReflectUtil.setFieldValue(authService, "captchaEnable", true);
         // mock 验证通过
         when(captchaService.verification(argThat(captchaVO -> {
             assertEquals(reqVO.getCaptchaVerification(), captchaVO.getCaptchaVerification());
@@ -290,33 +284,17 @@ public class AdminAuthServiceImplTest extends BaseDbUnitTest {
         AuthLoginReqVO reqVO = randomPojo(AuthLoginReqVO.class);
 
         // mock 验证码关闭
-        ReflectUtil.setFieldValue(authService, "captchaEnable", false);
+        authService.setCaptchaEnable(false);
 
         // 调用，无需断言
         authService.validateCaptcha(reqVO);
     }
 
     @Test
-    public void testValidateCaptcha_constraintViolationException() {
-        // 准备参数
-        AuthLoginReqVO reqVO = randomPojo(AuthLoginReqVO.class).setCaptchaVerification(null);
-
-        // mock 验证码打开
-        ReflectUtil.setFieldValue(authService, "captchaEnable", true);
-
-        // 调用，并断言异常
-        assertThrows(ConstraintViolationException.class, () -> authService.validateCaptcha(reqVO),
-                "验证码不能为空");
-    }
-
-
-    @Test
     public void testCaptcha_fail() {
         // 准备参数
         AuthLoginReqVO reqVO = randomPojo(AuthLoginReqVO.class);
 
-        // mock 验证码打开
-        ReflectUtil.setFieldValue(authService, "captchaEnable", true);
         // mock 验证通过
         when(captchaService.verification(argThat(captchaVO -> {
             assertEquals(reqVO.getCaptchaVerification(), captchaVO.getCaptchaVerification());

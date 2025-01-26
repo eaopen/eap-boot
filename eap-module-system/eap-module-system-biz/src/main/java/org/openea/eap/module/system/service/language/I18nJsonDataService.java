@@ -7,7 +7,7 @@ import org.openea.eap.module.system.controller.admin.language.vo.I18nJsonDataPag
 import org.openea.eap.module.system.controller.admin.language.vo.I18nJsonDataUpdateReqVO;
 import org.openea.eap.module.system.dal.dataobject.language.I18nJsonDataDO;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
