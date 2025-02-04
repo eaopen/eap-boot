@@ -4,6 +4,7 @@ import org.openea.eap.module.system.framework.captcha.core.RedisCaptchaServiceIm
 import com.xingyuv.captcha.properties.AjCaptchaProperties;
 import com.xingyuv.captcha.service.CaptchaCacheService;
 import com.xingyuv.captcha.service.impl.CaptchaServiceFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  *
  */
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(value = {CaptchaCacheService.class})
 public class EapCaptchaConfiguration {
 
     @Bean

@@ -1,54 +1,56 @@
 package org.openea.eap.module.system.api.social;
 
 import org.openea.eap.framework.common.exception.ServiceException;
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserRespDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserUnbindReqDTO;
+import org.openea.eap.module.system.enums.ApiConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-/**
- * 社交用户的 API 接口
- *
- */
+@FeignClient(name = ApiConstants.NAME) // TODO 芋艿：fallbackFactory =
+@Tag(name = "RPC 服务 - 社交用户")
 public interface SocialUserApi {
 
-    /**
-     * 绑定社交用户
-     *
-     * @param reqDTO 绑定信息
-     * @return 社交用户 openid
-     */
-    String bindSocialUser(@Valid SocialUserBindReqDTO reqDTO);
+    String PREFIX = ApiConstants.PREFIX + "/social-user";
 
-    /**
-     * 取消绑定社交用户
-     *
-     * @param reqDTO 解绑
-     */
-    void unbindSocialUser(@Valid SocialUserUnbindReqDTO reqDTO);
+    @PostMapping(PREFIX + "/bind")
+    @Operation(summary = "绑定社交用户")
+    CommonResult<String> bindSocialUser(@Valid @RequestBody SocialUserBindReqDTO reqDTO);
 
-    /**
-     * 获得社交用户，基于 userId
-     *
-     * @param userType   用户类型
-     * @param userId     用户编号
-     * @param socialType 社交平台的类型
-     * @return 社交用户
-     */
-    SocialUserRespDTO getSocialUserByUserId(Integer userType, Long userId, Integer socialType);
+    @DeleteMapping(PREFIX + "/unbind")
+    @Operation(summary = "取消绑定社交用户")
+    CommonResult<Boolean> unbindSocialUser(@Valid @RequestBody SocialUserUnbindReqDTO reqDTO);
 
-    /**
-     * 获得社交用户
-     *
-     * 在认证信息不正确的情况下，也会抛出 {@link ServiceException} 业务异常
-     *
-     * @param userType   用户类型
-     * @param socialType 社交平台的类型
-     * @param code       授权码
-     * @param state      state
-     * @return 社交用户
-     */
-    SocialUserRespDTO getSocialUserByCode(Integer userType, Integer socialType, String code, String state);
+    @GetMapping(PREFIX + "/get-by-user-id")
+    @Operation(summary = "获得社交用户，基于 userId")
+    @Parameters({
+            @Parameter(name = "userType", description = "用户类型", example = "2", required = true),
+            @Parameter(name = "userId", description = "用户编号", example = "1024", required = true),
+            @Parameter(name = "socialType", description = "社交平台的类型", example = "1", required = true),
+    })
+    CommonResult<SocialUserRespDTO> getSocialUserByUserId(@RequestParam("userType") Integer userType,
+                                                          @RequestParam("userId") Long userId,
+                                                          @RequestParam("socialType") Integer socialType);
+
+    @GetMapping(PREFIX + "/get-by-code")
+    @Operation(summary = "获得社交用") // 在认证信息不正确的情况下，也会抛出 {@link ServiceException} 业务异常
+    @Parameters({
+            @Parameter(name = "userType", description = "用户类型", example = "2", required = true),
+            @Parameter(name = "socialType", description = "社交平台的类型", example = "1", required = true),
+            @Parameter(name = "code", description = "授权码", example = "88888", required = true),
+            @Parameter(name = "state", description = "state", example = "666", required = true),
+    })
+    CommonResult<SocialUserRespDTO> getSocialUserByCode(@RequestParam("userType") Integer userType,
+                                                        @RequestParam("socialType") Integer socialType,
+                                                        @RequestParam("code") String code,
+                                                        @RequestParam("state") String state);
 
 }

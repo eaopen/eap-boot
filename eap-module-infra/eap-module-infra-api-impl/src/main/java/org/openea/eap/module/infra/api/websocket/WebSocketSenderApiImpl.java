@@ -1,33 +1,36 @@
 package org.openea.eap.module.infra.api.websocket;
 
+import cn.hutool.core.util.StrUtil;
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.websocket.core.sender.WebSocketMessageSender;
-import org.springframework.stereotype.Component;
+import org.openea.eap.module.infra.api.websocket.dto.WebSocketSendReqDTO;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-/**
- * WebSocket 发送器的 API 实现类
- *
- */
-@Component
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
+@Validated
 public class WebSocketSenderApiImpl implements WebSocketSenderApi {
 
     @Resource
     private WebSocketMessageSender webSocketMessageSender;
 
     @Override
-    public void send(Integer userType, Long userId, String messageType, String messageContent) {
-        webSocketMessageSender.send(userType, userId, messageType, messageContent);
-    }
-
-    @Override
-    public void send(Integer userType, String messageType, String messageContent) {
-        webSocketMessageSender.send(userType, messageType, messageContent);
-    }
-
-    @Override
-    public void send(String sessionId, String messageType, String messageContent) {
-        webSocketMessageSender.send(sessionId, messageType, messageContent);
+    public CommonResult<Boolean> send(WebSocketSendReqDTO message) {
+        if (StrUtil.isNotEmpty(message.getSessionId())) {
+            webSocketMessageSender.send(message.getSessionId(),
+                    message.getMessageType(), message.getMessageContent());
+        } else if (message.getUserType() != null && message.getUserId() != null) {
+            webSocketMessageSender.send(message.getUserType(), message.getUserId(),
+                    message.getMessageType(), message.getMessageContent());
+        } else if (message.getUserType() != null) {
+            webSocketMessageSender.send(message.getUserType(),
+                    message.getMessageType(), message.getMessageContent());
+        }
+        return success(true);
     }
 
 }

@@ -5,10 +5,8 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.jwt.JWTUtil;
-import cn.hutool.jwt.signers.JWTSigner;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.xingyuv.captcha.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -74,7 +72,6 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     @Transactional
     public OAuth2AccessTokenDO createAccessToken(Long userId, String userKey, Integer userType, String clientId, List<String> scopes) {
         OAuth2ClientDO clientDO = oauth2ClientService.validOAuthClientFromCache(clientId);
-        // todo 判断是否需要创建刷新令牌, 如果该用户指定时间内刚创建token则返回之前的值
         // 创建刷新令牌
         OAuth2RefreshTokenDO refreshTokenDO = createOAuth2RefreshToken(userId, userKey, userType, clientDO, scopes);
         // 创建访问令牌
@@ -134,7 +131,6 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         if (accessTokenDO != null && !DateUtils.isExpired(accessTokenDO.getExpiresTime())) {
             oauth2AccessTokenRedisDAO.set(accessTokenDO);
         }
-
         return accessTokenDO;
     }
 
@@ -153,7 +149,6 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     @Override
     public OAuth2AccessTokenDO removeAccessToken(String accessToken) {
         // 删除访问令牌
-        // todo 需要保护避免acessToken多条记录的错误数据
         OAuth2AccessTokenDO accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
         if (accessTokenDO == null) {
             return null;
@@ -161,7 +156,6 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         oauth2AccessTokenMapper.deleteById(accessTokenDO.getId());
         oauth2AccessTokenRedisDAO.delete(accessToken);
         // 删除刷新令牌
-        // todo 是否需要清理该刷新令牌的所有访问令牌
         oauth2RefreshTokenMapper.deleteByRefreshToken(accessTokenDO.getRefreshToken());
         return accessTokenDO;
     }
@@ -228,7 +222,6 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     }
 
     private static String generateAccessToken() {
-        // todo uuid or jwtToken
         return IdUtil.fastSimpleUUID();
     }
 

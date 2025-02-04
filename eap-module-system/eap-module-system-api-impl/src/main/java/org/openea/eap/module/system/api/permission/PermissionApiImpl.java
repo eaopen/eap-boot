@@ -1,41 +1,42 @@
 package org.openea.eap.module.system.api.permission;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.api.permission.dto.DeptDataPermissionRespDTO;
 import org.openea.eap.module.system.service.permission.PermissionService;
-import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Set;
 
-/**
- * 权限 API 实现类
- *
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
+@Validated
 public class PermissionApiImpl implements PermissionApi {
 
     @Resource
     private PermissionService permissionService;
 
     @Override
-    public Set<Long> getUserRoleIdListByRoleIds(Collection<Long> roleIds) {
-        return permissionService.getUserRoleIdListByRoleId(roleIds);
+    public CommonResult<Set<Long>> getUserRoleIdListByRoleIds(Collection<Long> roleIds) {
+        return success(permissionService.getUserRoleIdListByRoleId(roleIds));
     }
 
     @Override
-    public boolean hasAnyPermissions(Long userId, String... permissions) {
-        return permissionService.hasAnyPermissions(userId, permissions);
+    public CommonResult<Boolean> hasAnyPermissions(Long userId, String... permissions) {
+        return success(permissionService.hasAnyPermissions(userId, permissions));
     }
 
     @Override
-    public boolean hasAnyRoles(Long userId, String... roles) {
-        return permissionService.hasAnyRoles(userId, roles);
+    public CommonResult<Boolean> hasAnyRoles(Long userId, String... roles) {
+        return success(permissionService.hasAnyRoles(userId, roles));
     }
 
     @Override
-    public DeptDataPermissionRespDTO getDeptDataPermission(Long userId) {
-        return permissionService.getDeptDataPermission(userId);
+    public CommonResult<DeptDataPermissionRespDTO> getDeptDataPermission(Long userId) {
+        return success(permissionService.getDeptDataPermission(userId));
     }
 
 }

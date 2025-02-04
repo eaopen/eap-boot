@@ -8,9 +8,14 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <modules>
-        <module>eap-framework</module>
         <!-- Server 主项目 -->
         <module>eap-server</module>
+
+        <!-- cloud -->
+        <module>eap-gateway</module>
+        <module>eap-cloud-system-start</module>
+        <module>eap-cloud-infra-start</module>
+
         <!-- 各种 module 拓展 -->
         <module>eap-module-system</module>
         <module>eap-module-infra</module>
@@ -25,7 +30,7 @@
     <url>https://github.com/eaopen/openea-eap</url>
 
     <properties>
-        <revision>2.7.0</revision>
+        <revision>2.7.3</revision>
         <!-- Maven 相关 -->
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -190,6 +195,16 @@
             </distributionManagement>
         </profile>
         <profile>
+            <id>dev106</id>
+            <distributionManagement>
+                <repository>
+                    <id>dev106-nexus</id>
+                    <name>dev106-nexus</name>
+                    <url>http://192.168.8.106:8081/repository/maven-releases/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
             <id>ossrh</id>
             <distributionManagement>
                 <snapshotRepository>
@@ -224,9 +239,13 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.5.0</version>
                         <configuration>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
+                            <charset>UTF-8</charset>
                             <doclint>none</doclint>
                             <failOnError>false</failOnError>
                             <skip>false</skip>
+                            <additionalJOption>-quiet</additionalJOption>
                         </configuration>
                         <executions>
                             <execution>

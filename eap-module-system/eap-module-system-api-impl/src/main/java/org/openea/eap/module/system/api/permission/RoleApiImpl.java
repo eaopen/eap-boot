@@ -1,23 +1,25 @@
 package org.openea.eap.module.system.api.permission;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.service.permission.RoleService;
-import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Collection;
 
-/**
- * 角色 API 实现类
- *
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
+@Validated
 public class RoleApiImpl implements RoleApi {
 
     @Resource
     private RoleService roleService;
 
     @Override
-    public void validRoleList(Collection<Long> ids) {
+    public CommonResult<Boolean> validRoleList(Collection<Long> ids) {
         roleService.validateRoleList(ids);
+        return success(true);
     }
 }

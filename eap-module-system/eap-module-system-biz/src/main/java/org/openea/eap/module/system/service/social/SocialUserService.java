@@ -4,7 +4,6 @@ import org.openea.eap.framework.common.exception.ServiceException;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
 import org.openea.eap.module.system.api.social.dto.SocialUserRespDTO;
-import org.openea.eap.module.system.api.social.dto.SocialWxQrcodeReqDTO;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.social.SocialUserDO;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;

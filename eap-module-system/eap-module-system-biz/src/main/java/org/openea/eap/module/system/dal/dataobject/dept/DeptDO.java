@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 部门表
+ * 公司/部门表
  *
  * @author ruoyi
  */
@@ -21,6 +21,9 @@ import lombok.EqualsAndHashCode;
 public class DeptDO extends TenantBaseDO {
 
     public static final Long PARENT_ID_ROOT = 0L;
+
+    public static final String CATEGORY_COMPANY = "company";
+    public static final String CATEGORY_DEPARTMENT = "department";
 
     /**
      * 部门ID
@@ -37,6 +40,11 @@ public class DeptDO extends TenantBaseDO {
      * 关联 {@link #id}
      */
     private Long parentId;
+    /**
+     * 分类
+     * 公司company/部门department
+     */
+//    private String category;
     /**
      * 显示顺序
      */

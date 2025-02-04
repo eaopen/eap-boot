@@ -1,17 +1,16 @@
 package org.openea.eap.module.infra.api.logger;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.infra.api.logger.dto.ApiAccessLogCreateReqDTO;
 import org.openea.eap.module.infra.service.logger.ApiAccessLogService;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-/**
- * API 访问日志的 API 实现类
- *
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
 @Validated
 public class ApiAccessLogApiImpl implements ApiAccessLogApi {
 
@@ -19,8 +18,9 @@ public class ApiAccessLogApiImpl implements ApiAccessLogApi {
     private ApiAccessLogService apiAccessLogService;
 
     @Override
-    public void createApiAccessLog(ApiAccessLogCreateReqDTO createDTO) {
+    public CommonResult<Boolean> createApiAccessLog(ApiAccessLogCreateReqDTO createDTO) {
         apiAccessLogService.createApiAccessLog(createDTO);
+        return success(true);
     }
 
 }

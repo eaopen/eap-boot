@@ -1,15 +1,14 @@
 package org.openea.eap.module.system.api.social.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 
 /**
- * 获取小程序码 Request DTO
- *
- * @author HUIHUI
  * @see <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html">获取不限制的小程序码</a>
  */
+@Schema(description = "RPC 服务 - 获得获取小程序码 Request DTO")
 @Data
 public class SocialWxQrcodeReqDTO {
 
@@ -36,32 +35,24 @@ public class SocialWxQrcodeReqDTO {
      */
     public static final Boolean HYALINE = true;
 
-    /**
-     * 场景
-     */
+    @Schema(description = "场景", requiredMode = Schema.RequiredMode.REQUIRED, example = "1001")
     @NotEmpty(message = "场景不能为空")
     private String scene;
-    /**
-     * 页面路径
-     */
+
+    @Schema(description = "页面路径", requiredMode = Schema.RequiredMode.REQUIRED, example = "pages/goods/index")
     @NotEmpty(message = "页面路径不能为空")
     private String path;
-    /**
-     * 二维码宽度
-     */
+
+    @Schema(description = "二维码宽度", example = "430")
     private Integer width;
 
-    /**
-     * 是否需要透明底色
-     */
+    @Schema(description = "是否需要透明底色", example = "true")
     private Boolean autoColor;
-    /**
-     * 是否检查 page 是否存在
-     */
+
+    @Schema(description = "是否检查 page 是否存在", example = "true")
     private Boolean checkPath;
-    /**
-     * 是否需要透明底色
-     */
+
+    @Schema(description = "是否需要透明底色", example = "true")
     private Boolean hyaline;
 
 }

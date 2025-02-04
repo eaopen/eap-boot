@@ -28,7 +28,10 @@ spring:
 
 mybatis-plus:
   lazy-initialization: true # 单元测试，设置 MyBatis Mapper 延迟加载，加速每个单元测试
-  type-aliases-package: ${eap.info.base-package}.module.*.dal.dataobject
+  type-aliases-package: ${eap.info.base-package}.dal.dataobject
+  global-config:
+    db-config:
+      id-type: AUTO # H2 主键递增
 
 --- #################### 定时任务相关配置 ####################
 
@@ -45,4 +48,4 @@ mybatis-plus:
 # EAP配置项，设置当前项目所有自定义的配置
 eap:
   info:
-    base-package: org.openea.eap
+    base-package: org.openea.eap.module.infra

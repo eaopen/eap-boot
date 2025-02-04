@@ -1,42 +1,25 @@
 package org.openea.eap.module.system.api.social.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-
-/**
- * 小程序订阅消息模版 Response DTO
- *
- * @author HUIHUI
- */
+@Schema(description = "RPC 服务 - 小程序订阅消息模版 Response DTO")
 @Data
 public class SocialWxaSubscribeTemplateRespDTO {
 
-    /**
-     * 模版编号
-     */
+    @Schema(description = "模版编号", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     private String id;
 
-    /**
-     * 模版标题
-     */
+    @Schema(description = "模版标题", requiredMode = Schema.RequiredMode.REQUIRED, example = "模版标题")
     private String title;
 
-    /**
-     * 模版内容
-     */
+    @Schema(description = "模版内容", requiredMode = Schema.RequiredMode.REQUIRED, example = "模版内容")
     private String content;
 
-    /**
-     * 模板内容示例
-     */
+    @Schema(description = "模板内容示例", requiredMode = Schema.RequiredMode.REQUIRED, example = "模版内容示例")
     private String example;
 
-    /**
-     * 模版类型
-     *
-     * 2：为一次性订阅
-     * 3：为长期订阅
-     */
-    private Integer type;
+    @Schema(description = "模版类型", requiredMode = Schema.RequiredMode.REQUIRED, example = "2")
+    private Integer type; // 2：为一次性订阅；3：为长期订阅
 
 }

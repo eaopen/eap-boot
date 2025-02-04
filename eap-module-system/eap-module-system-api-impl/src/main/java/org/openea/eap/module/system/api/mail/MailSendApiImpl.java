@@ -1,18 +1,16 @@
 package org.openea.eap.module.system.api.mail;
 
+import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.api.mail.dto.MailSendSingleToUserReqDTO;
 import org.openea.eap.module.system.service.mail.MailSendService;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-/**
- * 邮件发送 API 实现类
- *
- * @author wangjingyi
- */
-@Service
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
+
+@RestController // 提供 RESTful API 接口，给 Feign 调用
 @Validated
 public class MailSendApiImpl implements MailSendApi {
 
@@ -20,15 +18,15 @@ public class MailSendApiImpl implements MailSendApi {
     private MailSendService mailSendService;
 
     @Override
-    public Long sendSingleMailToAdmin(MailSendSingleToUserReqDTO reqDTO) {
-        return mailSendService.sendSingleMailToAdmin(reqDTO.getMail(), reqDTO.getUserId(),
-                reqDTO.getTemplateCode(), reqDTO.getTemplateParams());
+    public CommonResult<Long> sendSingleMailToAdmin(MailSendSingleToUserReqDTO reqDTO) {
+        return success(mailSendService.sendSingleMailToAdmin(reqDTO.getMail(), reqDTO.getUserId(),
+                reqDTO.getTemplateCode(), reqDTO.getTemplateParams()));
     }
 
     @Override
-    public Long sendSingleMailToMember(MailSendSingleToUserReqDTO reqDTO) {
-        return mailSendService.sendSingleMailToMember(reqDTO.getMail(), reqDTO.getUserId(),
-                reqDTO.getTemplateCode(), reqDTO.getTemplateParams());
+    public CommonResult<Long> sendSingleMailToMember(MailSendSingleToUserReqDTO reqDTO) {
+        return success(mailSendService.sendSingleMailToMember(reqDTO.getMail(), reqDTO.getUserId(),
+                reqDTO.getTemplateCode(), reqDTO.getTemplateParams()));
     }
 
 }

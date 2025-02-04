@@ -40,6 +40,7 @@ import java.util.function.Consumer;
 
 import static cn.hutool.core.util.RandomUtil.randomBytes;
 import static cn.hutool.core.util.RandomUtil.randomEle;
+import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.collection.SetUtils.asSet;
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildBetweenTime;
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildTime;
@@ -85,7 +86,7 @@ public class AdminUserServiceImplTest extends BaseDbUnitTest {
     @BeforeEach
     public void before() {
         // mock 初始化密码
-        when(configApi.getConfigValueByKey(USER_INIT_PASSWORD_KEY)).thenReturn("eapyuanma");
+        when(configApi.getConfigValueByKey(USER_INIT_PASSWORD_KEY)).thenReturn(success("eapyuanma"));
     }
 
     @Test
