@@ -9,6 +9,7 @@ import org.openea.eap.module.infra.framework.file.core.client.ftp.FtpFileClient;
 import org.openea.eap.module.infra.framework.file.core.client.ftp.FtpFileClientConfig;
 import org.openea.eap.module.infra.framework.file.core.client.local.LocalFileClient;
 import org.openea.eap.module.infra.framework.file.core.client.local.LocalFileClientConfig;
+import org.openea.eap.module.infra.framework.file.core.client.s3.MinioFileClient;
 import org.openea.eap.module.infra.framework.file.core.client.s3.S3FileClient;
 import org.openea.eap.module.infra.framework.file.core.client.s3.S3FileClientConfig;
 import org.openea.eap.module.infra.framework.file.core.client.sftp.SftpFileClient;
@@ -31,6 +32,7 @@ public enum FileStorageEnum {
     SFTP(12, SftpFileClientConfig.class, SftpFileClient.class),
 
     S3(20, S3FileClientConfig.class, S3FileClient.class),
+    MINIO(21, S3FileClientConfig.class, MinioFileClient.class),
     ;
 
     /**
