@@ -3,7 +3,7 @@ package org.openea.eap.module.infra.framework.file.core.s3;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.IdUtil;
 import org.openea.eap.framework.common.util.validation.ValidationUtils;
-import org.openea.eap.module.infra.framework.file.core.client.s3.S3FileClient;
+import org.openea.eap.module.infra.framework.file.core.client.s3.MinioFileClient;
 import org.openea.eap.module.infra.framework.file.core.client.s3.S3FileClientConfig;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -98,7 +98,7 @@ public class S3FileClientTest {
         // 校验配置
         ValidationUtils.validate(Validation.buildDefaultValidatorFactory().getValidator(), config);
         // 创建 Client
-        S3FileClient client = new S3FileClient(0L, config);
+        MinioFileClient client = new MinioFileClient(0L, config);
         client.init();
         // 上传文件
         String path = IdUtil.fastSimpleUUID() + ".jpg";
