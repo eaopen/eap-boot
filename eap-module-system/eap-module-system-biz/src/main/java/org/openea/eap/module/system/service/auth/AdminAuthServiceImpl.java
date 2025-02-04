@@ -29,6 +29,7 @@ import com.xingyuv.captcha.model.vo.CaptchaVO;
 import com.xingyuv.captcha.service.CaptchaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -60,6 +61,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @Resource
     private Validator validator;
     @Resource
+    @Lazy
     private CaptchaService captchaService;
     @Resource
     private SmsCodeApi smsCodeApi;
@@ -174,7 +176,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @VisibleForTesting
     void validateCaptcha(AuthLoginReqVO reqVO) {
         // 如果验证码关闭，则不进行校验
-        if (!captchaEnable) {
+        if (!captchaEnable && captchaService!=null) {
             return;
         }
         // 校验验证码

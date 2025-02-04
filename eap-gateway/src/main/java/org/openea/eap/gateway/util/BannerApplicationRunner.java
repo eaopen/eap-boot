@@ -24,13 +24,13 @@ public class BannerApplicationRunner implements ApplicationRunner {
                             "项目启动成功！\n\t" +
                             "----------------------------------------------------------");
 
-
-            // 工作流
-            System.out.println("[工作流模块 eap-module-bpm 教程]");
-            // 商城系统
-            System.out.println("[商城系统 eap-module-mall 教程]");
-            // AI 大模型
-            System.out.println("[AI 大模型 eap-module-ai - 教程]");
+//
+//            // 工作流
+//            System.out.println("[工作流模块 eap-module-bpm 教程]");
+//            // 商城系统
+//            System.out.println("[商城系统 eap-module-mall 教程]");
+//            // AI 大模型
+//            System.out.println("[AI 大模型 eap-module-ai - 教程]");
         });
     }
 
