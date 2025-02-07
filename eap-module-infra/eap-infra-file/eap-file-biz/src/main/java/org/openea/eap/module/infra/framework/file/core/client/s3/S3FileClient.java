@@ -72,6 +72,10 @@ public class S3FileClient extends AbstractFileClient<S3FileClientConfig> {
     private String buildDomain() {
         // 如果已经是 http 或者 https，则不进行拼接.主要适配 MinIO
         if (HttpUtil.isHttp(config.getEndpoint()) || HttpUtil.isHttps(config.getEndpoint())) {
+            // fix endpoint 已经包含 bucket 的情况
+            if(config.getEndpoint().contains(config.getBucket())) {
+                return config.getEndpoint();
+            }
             return StrUtil.format("{}/{}", config.getEndpoint(), config.getBucket());
         }
         // 阿里云、腾讯云、华为云都适合。七牛云比较特殊，必须有自定义域名
