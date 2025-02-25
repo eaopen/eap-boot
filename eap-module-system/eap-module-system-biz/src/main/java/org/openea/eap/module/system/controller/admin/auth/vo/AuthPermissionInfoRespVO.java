@@ -65,6 +65,9 @@ public class AuthPermissionInfoRespVO {
         @Schema(description = "菜单名称", requiredMode = Schema.RequiredMode.REQUIRED, example = "eap")
         private String name;
 
+        @Schema(description = "菜单别名/key", example = "eap")
+        private String alias;
+
         @Schema(description = "路由地址,仅菜单类型为菜单或者目录时，才需要传", example = "post")
         private String path;
 
