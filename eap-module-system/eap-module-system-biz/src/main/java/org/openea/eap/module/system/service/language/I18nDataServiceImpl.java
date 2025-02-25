@@ -30,6 +30,11 @@ public class I18nDataServiceImpl implements I18nDataService {
         langList.add("zh-CN");
         langList.add("zh-HK");
         langList.add("ja-JP");
+
+        // 语言支持优先级
+        // 1 英/中/日/西/法 （适配易，用户量大）
+        // 2 德/葡/俄/韩/印 （适配难，用户量中）
+        // 3 阿/越/泰 （适配难，用户量中/少）
     }
 
     @Resource
