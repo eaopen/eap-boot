@@ -22,6 +22,11 @@
             <artifactId>eap-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-common-share-api</artifactId>
+        </dependency>
+
         <!-- Web 相关 -->
 <!--        <dependency>-->
 <!--            <groupId>org.springdoc</groupId>-->
