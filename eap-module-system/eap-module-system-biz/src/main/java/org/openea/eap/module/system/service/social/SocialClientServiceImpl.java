@@ -97,10 +97,13 @@ public class SocialClientServiceImpl implements SocialClientService {
     @Lazy
     private AuthRequestFactory authRequestFactory;
 
-    @Resource
+    //@Resource
+    @Autowired(required = false)
     private WxMpService wxMpService;
+
     @Resource
     private WxMpProperties wxMpProperties;
+
     @Resource
     private StringRedisTemplate stringRedisTemplate; // WxMpService 需要使用到，所以在 Service 注入了它
     /**
@@ -123,9 +126,11 @@ public class SocialClientServiceImpl implements SocialClientService {
 
             });
 
-    @Resource
+    //@Resource
+    @Autowired(required = false)
     @Lazy
     private WxMaService wxMaService;
+
     @Resource
     private WxMaProperties wxMaProperties;
     /**
