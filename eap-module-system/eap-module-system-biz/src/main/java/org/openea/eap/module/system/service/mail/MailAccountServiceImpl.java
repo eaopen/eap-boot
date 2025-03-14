@@ -81,7 +81,7 @@ public class MailAccountServiceImpl implements MailAccountService {
     }
 
     @Override
-    @Cacheable(value = RedisKeyConstants.MAIL_ACCOUNT, key = "#id", unless = "#result == null")
+    @Cacheable(value = RedisKeyConstants.MAIL_ACCOUNT, key = "#p0", unless = "#result == null")
     public MailAccountDO getMailAccountFromCache(Long id) {
         return getMailAccount(id);
     }

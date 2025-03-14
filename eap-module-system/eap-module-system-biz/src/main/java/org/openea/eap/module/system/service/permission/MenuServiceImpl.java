@@ -184,7 +184,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    @Cacheable(value = RedisKeyConstants.PERMISSION_MENU_ID_LIST, key = "#permission")
+    @Cacheable(value = RedisKeyConstants.PERMISSION_MENU_ID_LIST, key = "#po")
     public List<Long> getMenuIdListByPermissionFromCache(String permission) {
         List<MenuDO> menus = menuMapper.selectListByPermission(permission);
         return convertList(menus, MenuDO::getId);

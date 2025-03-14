@@ -289,7 +289,7 @@ public class SocialClientServiceImpl implements SocialClientService {
     }
 
     @Override
-    @Cacheable(cacheNames = RedisKeyConstants.WXA_SUBSCRIBE_TEMPLATE, key = "#userType",
+    @Cacheable(cacheNames = RedisKeyConstants.WXA_SUBSCRIBE_TEMPLATE, key = "#p0",
             unless = "#result == null")
     public List<TemplateInfo> getSubscribeTemplateList(Integer userType) {
         WxMaService service = getWxMaService(userType);

@@ -97,7 +97,7 @@ public class NotifyTemplateServiceImpl implements NotifyTemplateService {
     }
 
     @Override
-    @Cacheable(cacheNames = RedisKeyConstants.NOTIFY_TEMPLATE, key = "#code",
+    @Cacheable(cacheNames = RedisKeyConstants.NOTIFY_TEMPLATE, key = "#p0",
             unless = "#result == null")
     public NotifyTemplateDO getNotifyTemplateByCodeFromCache(String code) {
         return notifyTemplateMapper.selectByCode(code);
