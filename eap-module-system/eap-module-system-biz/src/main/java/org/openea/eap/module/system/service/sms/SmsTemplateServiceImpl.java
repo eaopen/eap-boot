@@ -112,7 +112,7 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     }
 
     @Override
-    @Cacheable(cacheNames = RedisKeyConstants.SMS_TEMPLATE, key = "#p0",
+    @Cacheable(cacheNames = RedisKeyConstants.SMS_TEMPLATE, key = "#code",
             unless = "#result == null")
     public SmsTemplateDO getSmsTemplateByCodeFromCache(String code) {
         return smsTemplateMapper.selectByCode(code);

@@ -98,7 +98,7 @@ public class OAuth2ClientServiceImpl implements OAuth2ClientService {
     }
 
     @Override
-    @Cacheable(cacheNames = RedisKeyConstants.OAUTH_CLIENT, key = "#p0",
+    @Cacheable(cacheNames = RedisKeyConstants.OAUTH_CLIENT, key = "#clientId",
             unless = "#result == null")
     public OAuth2ClientDO getOAuth2ClientFromCache(String clientId) {
         return oauth2ClientMapper.selectByClientId(clientId);

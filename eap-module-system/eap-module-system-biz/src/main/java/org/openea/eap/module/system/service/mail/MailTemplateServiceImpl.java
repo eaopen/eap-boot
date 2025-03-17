@@ -107,7 +107,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     public MailTemplateDO getMailTemplate(Long id) {return mailTemplateMapper.selectById(id);}
 
     @Override
-    @Cacheable(value = RedisKeyConstants.MAIL_TEMPLATE, key = "#p0", unless = "#result == null")
+    @Cacheable(value = RedisKeyConstants.MAIL_TEMPLATE, key = "#code", unless = "#result == null")
     public MailTemplateDO getMailTemplateByCodeFromCache(String code) {
         return mailTemplateMapper.selectByCode(code);
     }

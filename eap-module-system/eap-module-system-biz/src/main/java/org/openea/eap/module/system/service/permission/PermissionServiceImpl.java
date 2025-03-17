@@ -190,7 +190,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    @Cacheable(value = RedisKeyConstants.MENU_ROLE_ID_LIST, key = "#p0")
+    @Cacheable(value = RedisKeyConstants.MENU_ROLE_ID_LIST, key = "#menuId")
     public Set<Long> getMenuRoleIdListByMenuIdFromCache(Long menuId) {
         return convertSet(roleMenuMapper.selectListByMenuId(menuId), RoleMenuDO::getRoleId);
     }
@@ -256,7 +256,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    @Cacheable(value = RedisKeyConstants.USER_ROLE_ID_LIST, key = "#p0")
+    @Cacheable(value = RedisKeyConstants.USER_ROLE_ID_LIST, key = "#userId")
     public Set<Long> getUserRoleIdListByUserIdFromCache(Long userId) {
         return getUserRoleIdListByUserId(userId);
     }
