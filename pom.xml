@@ -195,8 +195,6 @@
             <modules>
                 <!-- cloud 微服务模块 -->
                 <module>eap-gateway</module>
-                <module>eap-cloud-system-start</module>
-                <module>eap-cloud-infra-start</module>
             </modules>
         </profile>
         <profile>

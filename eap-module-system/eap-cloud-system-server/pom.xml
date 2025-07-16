@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.eaopen</groupId>
-        <artifactId>eap-boot-pom</artifactId>
+        <artifactId>eap-module-system</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>eap-cloud-system-start</artifactId>
+    <artifactId>eap-cloud-system-server</artifactId>
     <name>${project.artifactId}</name>
     <description>
         system 模块下，我们放通用业务，支撑上层的核心业务。

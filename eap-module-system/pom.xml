@@ -12,7 +12,6 @@
         <module>eap-module-system-api</module>
         <module>eap-spring-boot-starter-biz-i18n</module>
         <module>eap-module-system-biz</module>
-        <module>eap-module-system-api-impl</module>
         <module>eap-module-system-rest</module>
     </modules>
     <artifactId>eap-module-system</artifactId>
@@ -24,5 +23,14 @@
         例如说：用户、部门、权限、数据字典等等
     </description>
 
+    <profiles>
+        <profile>
+            <id>cloud</id>
+            <modules>
+                <!-- cloud 微服务模块 -->
+                <module>eap-cloud-system-server</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

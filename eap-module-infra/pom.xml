@@ -12,7 +12,6 @@
         <module>eap-module-infra-api</module>
         <module>eap-module-infra-biz</module>
         <module>eap-infra-file</module>
-        <module>eap-module-infra-api-impl</module>
         <module>eap-module-infra-rest</module>
     </modules>
     <artifactId>eap-module-infra</artifactId>
@@ -24,5 +23,15 @@
         1. 我们放基础设施的运维与管理，支撑上层的通用与核心业务。 例如说：定时任务的管理、服务器的信息等等
         2. 研发工具，提升研发效率与质量。 例如说：代码生成器、接口文档等等
     </description>
+
+    <profiles>
+        <profile>
+            <id>cloud</id>
+            <modules>
+                <!-- cloud 微服务模块 -->
+                <module>eap-cloud-infra-server</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

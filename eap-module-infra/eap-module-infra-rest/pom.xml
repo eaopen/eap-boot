@@ -27,12 +27,6 @@
 
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-module-infra-api-impl</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.eaopen</groupId>
             <artifactId>eap-file-biz</artifactId>
             <version>${revision}</version>
         </dependency>

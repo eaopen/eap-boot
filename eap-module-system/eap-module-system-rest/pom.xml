@@ -26,12 +26,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-module-system-api-impl</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
