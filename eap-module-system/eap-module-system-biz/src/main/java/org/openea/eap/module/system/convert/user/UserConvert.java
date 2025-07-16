@@ -14,7 +14,6 @@ import org.openea.eap.module.system.controller.admin.user.vo.user.UserSimpleResp
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.dal.dataobject.dept.PostDO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;
-import org.openea.eap.module.system.dal.dataobject.social.SocialUserDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -54,12 +53,11 @@ public interface UserConvert {
     }
 
     default UserProfileRespVO convert(AdminUserDO user, List<RoleDO> userRoles,
-                                      DeptDO dept, List<PostDO> posts, List<SocialUserDO> socialUsers) {
+                                      DeptDO dept, List<PostDO> posts) {
         UserProfileRespVO userVO = BeanUtils.toBean(user, UserProfileRespVO.class);
         userVO.setRoles(BeanUtils.toBean(userRoles, RoleSimpleRespVO.class));
         userVO.setDept(BeanUtils.toBean(dept, DeptSimpleRespVO.class));
         userVO.setPosts(BeanUtils.toBean(posts, PostSimpleRespVO.class));
-        userVO.setSocialUsers(BeanUtils.toBean(socialUsers, UserProfileRespVO.SocialUser.class));
         return userVO;
     }
 

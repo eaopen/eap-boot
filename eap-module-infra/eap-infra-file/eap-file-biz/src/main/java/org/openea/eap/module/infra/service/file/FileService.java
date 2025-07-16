@@ -5,6 +5,7 @@ import org.openea.eap.module.infra.controller.admin.file.vo.file.FileCreateReqVO
 import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePageReqVO;
 import org.openea.eap.module.infra.controller.admin.file.vo.file.FilePresignedUrlRespVO;
 import org.openea.eap.module.infra.dal.dataobject.file.FileDO;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -25,14 +26,24 @@ public interface FileService {
     /**
      * 保存文件，并返回文件的访问路径
      *
-     * @param name    文件名称
-     * @param path    文件路径
      * @param content 文件内容
+     * @param name      文件名称，允许空
+     * @param directory 目录，允许空
+     * @param type      文件的 MIME 类型，允许空
      * @return 文件路径
      */
-    String createFile(String name, String path, byte[] content);
+    String createFile(@NotEmpty(message = "文件内容不能为空") byte[] content,
+                      String name, String directory, String type);
 
-    FileDO uploadFile(String name, String path, byte[] content);
+    /**
+     * 生成文件预签名地址信息
+     *
+     * @param name      文件名
+     * @param directory 目录
+     * @return 预签名地址信息
+     */
+    FilePresignedUrlRespVO getFilePresignedUrl(@NotEmpty(message = "文件名不能为空") String name,
+                                               String directory);
 
     /**
      * 创建文件

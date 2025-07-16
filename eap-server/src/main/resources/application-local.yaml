@@ -3,14 +3,16 @@ server:
 
 --- #################### 数据库相关配置 ####################
 spring:
-  # 数据源配置项
   autoconfigure:
+    # noinspection SpringBootApplicationYaml
     exclude:
-      #- com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure # 排除 Druid 的自动配置，使用 dynamic-datasource-spring-boot-starter 配置多数据源
-      - org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration # 默认 local 环境，不开启 Quartz 的自动配置
       - de.codecentric.boot.admin.server.config.AdminServerAutoConfiguration # 禁用 Spring Boot Admin 的 Server 的自动配置
       - de.codecentric.boot.admin.server.ui.config.AdminServerUiAutoConfiguration # 禁用 Spring Boot Admin 的 Server UI 的自动配置
+      - de.codecentric.boot.admin.server.cloud.config.AdminServerDiscoveryAutoConfiguration # 禁用 Spring Boot Admin 的 Server 的自动配置
       - de.codecentric.boot.admin.client.config.SpringBootAdminClientAutoConfiguration # 禁用 Spring Boot Admin 的 Client 的自动配置
+      - org.springframework.ai.autoconfigure.vectorstore.qdrant.QdrantVectorStoreAutoConfiguration # 禁用 AI 模块的 Qdrant，手动创建
+      - org.springframework.ai.autoconfigure.vectorstore.milvus.MilvusVectorStoreAutoConfiguration # 禁用 AI 模块的 Milvus，手动创建
+  # 数据源配置项
   datasource:
     druid: # Druid 【监控】相关的全局配置
       web-stat-filter:
@@ -77,6 +79,12 @@ spring:
       password: nopass # 密码，建议生产环境开启
 
 --- #################### 定时任务相关配置 ####################
+
+xxl:
+  job:
+    enabled: false # 是否开启调度中心，默认为 true 开启
+    admin:
+      addresses: http://127.0.0.1:9090/xxl-job-admin # 调度中心部署跟地址
 
 # Quartz 配置项，对应 QuartzProperties 配置类
 spring:
@@ -175,6 +183,8 @@ logging:
     org.openea.eap.module.statistics.dal.mysql: debug
     org.openea.eap.module.crm.dal.mysql: debug
     org.openea.eap.module.erp.dal.mysql: debug
+    org.openea.eap.module.iot.dal.mysql: debug
+    org.openea.eap.module.iot.dal.tdengine: DEBUG
     org.openea.eap.module.ai.dal.mysql: debug
     org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 3.X 存在部分错误的 WARN 提示
 
@@ -199,10 +209,10 @@ wx:
     #    secret: 333ae72f41552af1e998fe1f54e1584a
     #    appid: wx63c280fe3248a3e7 # wenhualian的接口测试号
     #    secret: 6f270509224a7ae1296bbf1c8cb97aed
-    #    appid: wxc4598c446f8a9cb3 # 测试号（Kongdy 提供的）
-    #    secret: 4a1a04e07f6a4a0751b39c3064a92c8b
-    appid: wx66186af0759f47c9 # 测试号（puhui 提供的）
-    secret: 3218bcbd112cbc614c7264ceb20144ac
+    appid: wxc4598c446f8a9cb3 # 测试号（Kongdy 提供的）
+    secret: 4a1a04e07f6a4a0751b39c3064a92c8b
+#    appid: wx66186af0759f47c9 # 测试号（puhui 提供的）
+#    secret: 3218bcbd112cbc614c7264ceb20144ac
     config-storage:
       type: RedisTemplate # 采用 RedisTemplate 操作 Redis，会自动从 Spring 中获取
       key-prefix: wa # Redis Key 的前缀
@@ -219,6 +229,7 @@ eap:
   pay:
     order-notify-url: http://yunai.natapp1.cc/admin-api/pay/notify/order # 支付渠道的【支付】回调地址
     refund-notify-url: http://yunai.natapp1.cc/admin-api/pay/notify/refund # 支付渠道的【退款】回调地址
+    transfer-notify-url: http://yunai.natapp1.cc/admin-api/pay/notify/transfer # 支付渠道的【转账】回调地址
   access-log: # 访问日志的配置项
     enable: false
   demo: false # 关闭演示模式
@@ -229,7 +240,7 @@ eap:
   tencent-lbs-key: TVDBZ-TDILD-4ON4B-PFDZA-RNLKH-VVF6E # QQ 地图的密钥 https://lbs.qq.com/service/staticV2/staticGuide/staticDoc
 
 justauth:
-  enabled: false
+  enabled: true
   type:
     DINGTALK: # 钉钉
       client-id: dingvrnreaje3yqvzhxg
@@ -241,7 +252,7 @@ justauth:
       agent-id: 1000004
       ignore-check-redirect-uri: true
     # noinspection SpringBootApplicationYaml
-    WECHAT_MINI_APP: # 微信小程序
+    WECHAT_MINI_PROGRAM: # 微信小程序
       client-id: ${wx.miniapp.appid}
       client-secret: ${wx.miniapp.secret}
       ignore-check-redirect-uri: true
@@ -255,3 +266,7 @@ justauth:
     prefix: 'social_auth_state:' # 缓存前缀，目前只对 Redis 缓存生效，默认 JUSTAUTH::STATE::
     timeout: 24h # 超时时长，目前只对 Redis 缓存生效，默认 3 分钟
 
+--- #################### iot相关配置 TODO 芋艿【IOT】：再瞅瞅 ####################
+pf4j:
+#  pluginsDir: /tmp/
+  pluginsDir: ../plugins

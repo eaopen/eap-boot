@@ -11,12 +11,12 @@ import org.openea.eap.module.system.dal.dataobject.social.SocialUserDO;
 import org.openea.eap.module.system.dal.mysql.social.SocialUserBindMapper;
 import org.openea.eap.module.system.dal.mysql.social.SocialUserMapper;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
-import com.xingyuv.jushauth.model.AuthUser;
+import jakarta.annotation.Resource;
+import me.zhyd.oauth.model.AuthUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 
 import static cn.hutool.core.util.RandomUtil.randomEle;

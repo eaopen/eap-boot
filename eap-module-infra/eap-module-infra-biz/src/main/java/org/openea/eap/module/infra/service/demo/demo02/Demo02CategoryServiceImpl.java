@@ -5,10 +5,10 @@ import org.openea.eap.module.infra.controller.admin.demo.demo02.vo.Demo02Categor
 import org.openea.eap.module.infra.controller.admin.demo.demo02.vo.Demo02CategorySaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.demo.demo02.Demo02CategoryDO;
 import org.openea.eap.module.infra.dal.mysql.demo.demo02.Demo02CategoryMapper;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 

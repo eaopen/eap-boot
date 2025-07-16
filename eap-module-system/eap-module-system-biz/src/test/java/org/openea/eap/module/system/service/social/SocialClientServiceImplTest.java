@@ -13,25 +13,24 @@ import org.openea.eap.module.system.controller.admin.socail.vo.client.SocialClie
 import org.openea.eap.module.system.dal.dataobject.social.SocialClientDO;
 import org.openea.eap.module.system.dal.mysql.social.SocialClientMapper;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
+import org.openea.eap.module.system.framework.justauth.core.AuthRequestFactory;
 import com.binarywang.spring.starter.wxjava.miniapp.properties.WxMaProperties;
 import com.binarywang.spring.starter.wxjava.mp.properties.WxMpProperties;
-import com.xingyuv.jushauth.config.AuthConfig;
-import com.xingyuv.jushauth.model.AuthResponse;
-import com.xingyuv.jushauth.model.AuthUser;
-import com.xingyuv.jushauth.request.AuthDefaultRequest;
-import com.xingyuv.jushauth.request.AuthRequest;
-import com.xingyuv.jushauth.utils.AuthStateUtils;
-import com.xingyuv.justauth.AuthRequestFactory;
+import jakarta.annotation.Resource;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
+import me.zhyd.oauth.config.AuthConfig;
+import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthUser;
+import me.zhyd.oauth.request.AuthDefaultRequest;
+import me.zhyd.oauth.request.AuthRequest;
+import me.zhyd.oauth.utils.AuthStateUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.StringRedisTemplate;
-
-import jakarta.annotation.Resource;
 
 import static cn.hutool.core.util.RandomUtil.randomEle;
 import static org.openea.eap.framework.common.util.object.ObjectUtils.cloneIgnoreId;
@@ -102,7 +101,7 @@ public class SocialClientServiceImplTest extends BaseDbUnitTest {
         when(authRequestFactory.get(eq("WECHAT_MP"))).thenReturn(authRequest);
         // mock 方法（AuthResponse）
         AuthUser authUser = randomPojo(AuthUser.class);
-        AuthResponse<?> authResponse = new AuthResponse<>(2000, null, authUser);
+        AuthResponse<AuthUser> authResponse = new AuthResponse<>(2000, null, authUser);
         when(authRequest.login(argThat(authCallback -> {
             assertEquals(code, authCallback.getCode());
             assertEquals(state, authCallback.getState());
@@ -126,7 +125,7 @@ public class SocialClientServiceImplTest extends BaseDbUnitTest {
         AuthRequest authRequest = mock(AuthRequest.class);
         when(authRequestFactory.get(eq("WECHAT_MP"))).thenReturn(authRequest);
         // mock 方法（AuthResponse）
-        AuthResponse<?> authResponse = new AuthResponse<>(0, "模拟失败", null);
+        AuthResponse<AuthUser> authResponse = new AuthResponse<>(0, "模拟失败", null);
         when(authRequest.login(argThat(authCallback -> {
             assertEquals(code, authCallback.getCode());
             assertEquals(state, authCallback.getState());
@@ -316,7 +315,7 @@ public class SocialClientServiceImplTest extends BaseDbUnitTest {
         Integer userType = randomPojo(UserTypeEnum.class).getValue();
         // mock 数据
         SocialClientDO client = randomPojo(SocialClientDO.class, o -> o.setStatus(CommonStatusEnum.DISABLE.getStatus())
-                .setUserType(userType).setSocialType(SocialTypeEnum.WECHAT_MINI_APP.getType()));
+                .setUserType(userType).setSocialType(SocialTypeEnum.WECHAT_MINI_PROGRAM.getType()));
         socialClientMapper.insert(client);
 
         // 调用
@@ -331,7 +330,7 @@ public class SocialClientServiceImplTest extends BaseDbUnitTest {
         Integer userType = randomPojo(UserTypeEnum.class).getValue();
         // mock 数据
         SocialClientDO client = randomPojo(SocialClientDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus())
-                .setUserType(userType).setSocialType(SocialTypeEnum.WECHAT_MINI_APP.getType()));
+                .setUserType(userType).setSocialType(SocialTypeEnum.WECHAT_MINI_PROGRAM.getType()));
         socialClientMapper.insert(client);
         // mock 方法
         WxMaProperties.ConfigStorage configStorage = mock(WxMaProperties.ConfigStorage.class);

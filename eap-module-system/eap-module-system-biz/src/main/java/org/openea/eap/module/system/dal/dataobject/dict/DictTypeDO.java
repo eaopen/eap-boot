@@ -2,6 +2,7 @@ package org.openea.eap.module.system.dal.dataobject.dict;
 
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TenantIgnore
 public class DictTypeDO extends BaseDO {
 
     public static final String DATA_TYPE_DATA = "data";

@@ -32,15 +32,29 @@
             <artifactId>eap-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+
 
         <!-- 三方云服务相关 -->
         <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId> <!-- 文件客户端：解决 ftp 连接 -->
         </dependency>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId><!-- 文件客户端：解决阿里云、腾讯云、minio 等 S3 连接 -->
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId> <!-- 文件客户端：解决 sftp 连接 -->
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId> <!-- 文件客户端：解决阿里云、腾讯云、minio 等 S3 连接 -->
+            <artifactId>s3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId> <!-- 文件客户端：文件类型的识别 -->
         </dependency>
 
         <dependency>
@@ -51,6 +65,10 @@
 
         <!-- 业务组件 -->
 
+        <dependency>
+            <groupId>io.github.eaopen</groupId>
+            <artifactId>eap-spring-boot-starter-biz-tenant</artifactId>
+        </dependency>
 
         <!-- Web 相关 -->
         <dependency>

@@ -1,6 +1,6 @@
 package org.openea.eap.module.system.service.permission;
 
-import org.openea.eap.module.system.api.permission.dto.DeptDataPermissionRespDTO;
+import org.openea.eap.framework.common.biz.system.permission.dto.DeptDataPermissionRespDTO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 
 import java.util.Collection;

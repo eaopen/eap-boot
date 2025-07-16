@@ -3,8 +3,6 @@ package org.openea.eap.module.infra.controller.admin.demo.demo01.vo;
 import org.openea.eap.framework.common.pojo.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -13,8 +11,6 @@ import static org.openea.eap.framework.common.util.date.DateUtils.FORMAT_YEAR_MO
 
 @Schema(description = "管理后台 - 示例联系人分页 Request VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 public class Demo01ContactPageReqVO extends PageParam {
 
     @Schema(description = "名字", example = "张三")

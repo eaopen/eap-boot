@@ -2,6 +2,7 @@ package org.openea.eap.module.system.dal.dataobject.oauth2;
 
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.system.enums.oauth2.OAuth2GrantTypeEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -21,6 +22,7 @@ import java.util.List;
 @KeySequence("system_oauth2_client_seq") // 用于 Oracle、PostgreSQL、Kingbase、DB2、H2 数据库的主键自增。如果是 MySQL 等数据库，可不写。
 @Data
 @EqualsAndHashCode(callSuper = true)
+@TenantIgnore
 public class OAuth2ClientDO extends BaseDO {
 
     /**

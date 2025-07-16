@@ -2,13 +2,12 @@ package org.openea.eap.module.system.controller.admin.sms;
 
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.system.framework.sms.core.enums.SmsChannelEnum;
 import org.openea.eap.module.system.service.sms.SmsSendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.security.PermitAll;
@@ -26,7 +25,8 @@ public class SmsCallbackController {
 
     @PostMapping("/aliyun")
     @PermitAll
-    @Operation(summary = "阿里云短信的回调", description = "参见 https://help.aliyun.com/zh/sms/developer-reference/configure-delivery-receipts-1 文档")
+    @TenantIgnore
+    @Operation(summary = "阿里云短信的回调", description = "参见 https://help.aliyun.com/document_detail/120998.html 文档")
     public CommonResult<Boolean> receiveAliyunSmsStatus(HttpServletRequest request) throws Throwable {
         String text = ServletUtils.getBody(request);
         smsSendService.receiveSmsStatus(SmsChannelEnum.ALIYUN.getCode(), text);
@@ -35,7 +35,8 @@ public class SmsCallbackController {
 
     @PostMapping("/tencent")
     @PermitAll
-    @Operation(summary = "腾讯云短信的回调", description = "参见 https://cloud.tencent.com/document/product/382/59178 文档")
+    @TenantIgnore
+    @Operation(summary = "腾讯云短信的回调", description = "参见 https://cloud.tencent.com/document/product/382/52077 文档")
     public CommonResult<Boolean> receiveTencentSmsStatus(HttpServletRequest request) throws Throwable {
         String text = ServletUtils.getBody(request);
         smsSendService.receiveSmsStatus(SmsChannelEnum.TENCENT.getCode(), text);
@@ -45,10 +46,19 @@ public class SmsCallbackController {
 
     @PostMapping("/huawei")
     @PermitAll
+    @TenantIgnore
     @Operation(summary = "华为云短信的回调", description = "参见 https://support.huaweicloud.com/api-msgsms/sms_05_0003.html 文档")
-    public CommonResult<Boolean> receiveHuaweiSmsStatus(HttpServletRequest request) throws Throwable {
-        String text = ServletUtils.getBody(request);
-        smsSendService.receiveSmsStatus(SmsChannelEnum.HUAWEI.getCode(), text);
+    public CommonResult<Boolean> receiveHuaweiSmsStatus(@RequestBody String requestBody) throws Throwable {
+        smsSendService.receiveSmsStatus(SmsChannelEnum.HUAWEI.getCode(), requestBody);
+        return success(true);
+    }
+
+    @PostMapping("/qiniu")
+    @PermitAll
+    @TenantIgnore
+    @Operation(summary = "七牛云短信的回调", description = "参见 https://developer.qiniu.com/sms/5910/message-push 文档")
+    public CommonResult<Boolean> receiveQiniuSmsStatus(@RequestBody String requestBody) throws Throwable {
+        smsSendService.receiveSmsStatus(SmsChannelEnum.QINIU.getCode(), requestBody);
         return success(true);
     }
 

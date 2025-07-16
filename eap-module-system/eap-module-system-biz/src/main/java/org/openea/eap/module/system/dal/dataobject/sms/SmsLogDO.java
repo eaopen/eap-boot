@@ -2,6 +2,7 @@ package org.openea.eap.module.system.dal.dataobject.sms;
 
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.system.enums.sms.SmsReceiveStatusEnum;
 import org.openea.eap.module.system.enums.sms.SmsSendStatusEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
@@ -27,6 +28,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@TenantIgnore
 public class SmsLogDO extends BaseDO {
 
     /**

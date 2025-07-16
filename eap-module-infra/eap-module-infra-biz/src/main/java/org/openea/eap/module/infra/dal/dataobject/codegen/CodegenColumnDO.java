@@ -1,6 +1,7 @@
 package org.openea.eap.module.infra.dal.dataobject.codegen;
 
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.infra.enums.codegen.CodegenColumnHtmlTypeEnum;
 import org.openea.eap.module.infra.enums.codegen.CodegenColumnListConditionEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
@@ -20,6 +21,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
+@TenantIgnore
 public class CodegenColumnDO extends BaseDO {
 
     /**

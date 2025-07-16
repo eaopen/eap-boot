@@ -14,13 +14,13 @@ import org.openea.eap.module.infra.service.demo.demo01.Demo01ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -57,6 +57,15 @@ public class Demo01ContactController {
     @PreAuthorize("@ss.hasPermission('infra:demo01-contact:delete')")
     public CommonResult<Boolean> deleteDemo01Contact(@RequestParam("id") Long id) {
         demo01ContactService.deleteDemo01Contact(id);
+        return success(true);
+    }
+
+    @DeleteMapping("/delete-list")
+    @Parameter(name = "ids", description = "编号", required = true)
+    @Operation(summary = "批量删除示例联系人")
+    @PreAuthorize("@ss.hasPermission('infra:demo01-contact:delete')")
+    public CommonResult<Boolean> deleteDemo0iContactList(@RequestParam("ids") List<Long> ids) {
+        demo01ContactService.deleteDemo0iContactListByIds(ids);
         return success(true);
     }
 

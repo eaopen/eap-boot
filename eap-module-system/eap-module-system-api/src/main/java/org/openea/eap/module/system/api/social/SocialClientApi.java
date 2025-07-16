@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @FeignClient(name = ApiConstants.NAME) // TODO 芋艿：fallbackFactory =
@@ -63,5 +63,21 @@ public interface SocialClientApi {
     @PostMapping(PREFIX + "/send-wxa-subscribe-message")
     @Operation(summary = "发送微信小程序订阅消息")
     CommonResult<Boolean> sendWxaSubscribeMessage(@Valid @RequestBody SocialWxaSubscribeMessageSendReqDTO reqDTO);
+
+    /**
+     * 上传订单发货到微信小程序
+     *
+     * @param userType 用户类型
+     * @param reqDTO 请求
+     */
+    @PostMapping(PREFIX + "/upload-wxa-order-shipping-info")
+    @Operation(summary = "上传订单发货到微信小程序")
+    CommonResult<Boolean> uploadWxaOrderShippingInfo(@RequestParam("userType") Integer userType,
+                                                     @Valid @RequestBody SocialWxaOrderUploadShippingInfoReqDTO reqDTO);
+
+    @PostMapping(PREFIX + "/notify-wxa-order-confirm-receive")
+    @Operation(summary = "通知订单收货到微信小程序")
+    CommonResult<Boolean>  notifyWxaOrderConfirmReceive(@RequestParam("userType") Integer userType,
+                                                        @Valid @RequestBody SocialWxaOrderNotifyConfirmReceiveReqDTO reqDTO);
 
 }

@@ -19,8 +19,8 @@ import org.openea.eap.module.system.service.member.MemberService;
 import org.openea.eap.module.system.service.oauth2.OAuth2TokenService;
 import org.openea.eap.module.system.service.social.SocialUserService;
 import org.openea.eap.module.system.service.user.AdminUserService;
-import com.xingyuv.captcha.model.common.ResponseModel;
-import com.xingyuv.captcha.service.CaptchaService;
+import com.anji.captcha.model.common.ResponseModel;
+import com.anji.captcha.service.CaptchaService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -186,7 +186,7 @@ public class AdminAuthServiceImplTest extends BaseDbUnitTest {
     public void testSendSmsCode() {
         // 准备参数
         String mobile = randomString();
-        Integer scene = randomEle(SmsSceneEnum.values()).getScene();
+        Integer scene = SmsSceneEnum.ADMIN_MEMBER_LOGIN.getScene();
         AuthSmsSendReqVO reqVO = new AuthSmsSendReqVO(mobile, scene);
         // mock 方法（用户信息）
         AdminUserDO user = randomPojo(AdminUserDO.class);

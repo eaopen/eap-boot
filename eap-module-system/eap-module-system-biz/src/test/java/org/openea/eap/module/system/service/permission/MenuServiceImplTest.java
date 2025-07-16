@@ -203,6 +203,26 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         assertEquals(1, ids.size());
         assertEquals(menu100.getId(), ids.get(0));
     }
+    
+    @Test
+    public void testGetMenuListByPermission() {
+        // mock 数据
+        MenuDO menu100 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus()));
+        menuMapper.insert(menu100);
+        MenuDO menu101 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.DISABLE.getStatus())); // 禁用菜单
+        menuMapper.insert(menu101);
+        MenuDO menu102 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus()));
+        menuMapper.insert(menu102);
+        // 准备参数
+        String permission = menu100.getPermission();
+
+        // 调用
+        List<MenuDO> menuList = menuService.getMenuListByPermission(permission);
+        
+        // 断言
+        assertEquals(1, menuList.size());
+        assertPojoEquals(menu100, menuList.get(0));
+    }
 
     @Test
     public void testGetMenuList_ids() {
@@ -275,7 +295,7 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
     }
 
     @Test
-    public void testValidateMenu_success() {
+    public void testValidateMenu_Name_success() {
         // mock 父子菜单
         MenuDO sonMenu = createParentAndSonMenu();
         // 准备参数
@@ -284,11 +304,11 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         String otherSonMenuName = randomString();
 
         // 调用，无需断言
-        menuService.validateMenu(parentId, otherSonMenuName, otherSonMenuId);
+        menuService.validateMenuName(parentId, otherSonMenuName, otherSonMenuId);
     }
 
     @Test
-    public void testValidateMenu_sonMenuNameDuplicate() {
+    public void testValidateMenu_sonMenuNameNameDuplicate() {
         // mock 父子菜单
         MenuDO sonMenu = createParentAndSonMenu();
         // 准备参数
@@ -297,7 +317,7 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         String otherSonMenuName = sonMenu.getName(); //相同名称
 
         // 调用，并断言异常
-        assertServiceException(() -> menuService.validateMenu(parentId, otherSonMenuName, otherSonMenuId),
+        assertServiceException(() -> menuService.validateMenuName(parentId, otherSonMenuName, otherSonMenuId),
                 MENU_NAME_DUPLICATE);
     }
 

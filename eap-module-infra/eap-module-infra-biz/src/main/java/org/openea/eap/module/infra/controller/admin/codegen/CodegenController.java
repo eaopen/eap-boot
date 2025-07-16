@@ -20,13 +20,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,6 +35,7 @@ import java.util.Map;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
+import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserNickname;
 import static org.openea.eap.module.infra.framework.file.core.utils.FileTypeUtils.writeAttachment;
 
 @Tag(name = "管理后台 - 代码生成器")
@@ -93,7 +94,7 @@ public class CodegenController {
     @PostMapping("/create-list")
     @PreAuthorize("@ss.hasPermission('infra:codegen:create')")
     public CommonResult<List<Long>> createCodegenList(@Valid @RequestBody CodegenCreateListReqVO reqVO) {
-        return success(codegenService.createCodegenList(getLoginUserId(), reqVO));
+        return success(codegenService.createCodegenList(getLoginUserNickname(), reqVO));
     }
 
     @Operation(summary = "更新数据库的表和字段定义")

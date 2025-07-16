@@ -1,15 +1,17 @@
 package org.openea.eap.module.infra.service.demo.demo01;
 
+import cn.hutool.core.collection.CollUtil;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.infra.controller.admin.demo.demo01.vo.Demo01ContactPageReqVO;
 import org.openea.eap.module.infra.controller.admin.demo.demo01.vo.Demo01ContactSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.demo.demo01.Demo01ContactDO;
 import org.openea.eap.module.infra.dal.mysql.demo.demo01.Demo01ContactMapper;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.annotation.Resource;
+import java.util.List;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.module.infra.enums.ErrorCodeConstants.DEMO01_CONTACT_NOT_EXISTS;
@@ -49,6 +51,21 @@ public class Demo01ContactServiceImpl implements Demo01ContactService {
         validateDemo01ContactExists(id);
         // 删除
         demo01ContactMapper.deleteById(id);
+    }
+
+    @Override
+    public void deleteDemo0iContactListByIds(List<Long> ids) {
+        // 校验存在
+        validateDemo01ContactExists(ids);
+        // 删除
+        demo01ContactMapper.deleteByIds(ids);
+    }
+
+    private void validateDemo01ContactExists(List<Long> ids) {
+        List<Demo01ContactDO> list = demo01ContactMapper.selectByIds(ids);
+        if (CollUtil.isEmpty(list) || list.size() != ids.size()) {
+            throw exception(DEMO01_CONTACT_NOT_EXISTS);
+        }
     }
 
     private void validateDemo01ContactExists(Long id) {

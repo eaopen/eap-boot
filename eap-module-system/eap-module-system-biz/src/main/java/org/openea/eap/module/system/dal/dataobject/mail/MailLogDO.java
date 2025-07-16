@@ -2,6 +2,7 @@ package org.openea.eap.module.system.dal.dataobject.mail;
 
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.system.enums.mail.MailSendStatusEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -29,6 +30,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@TenantIgnore
 public class MailLogDO extends BaseDO implements Serializable {
 
     /**

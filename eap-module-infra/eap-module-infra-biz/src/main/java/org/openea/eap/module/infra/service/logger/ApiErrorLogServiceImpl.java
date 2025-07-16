@@ -1,20 +1,20 @@
 package org.openea.eap.module.infra.service.logger;
 
-import cn.hutool.core.util.StrUtil;
+import org.openea.eap.framework.common.biz.infra.logger.dto.ApiErrorLogCreateReqDTO;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.framework.common.util.string.StrUtils;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.openea.eap.framework.tenant.core.util.TenantUtils;
-import org.openea.eap.module.infra.api.logger.dto.ApiErrorLogCreateReqDTO;
 import org.openea.eap.module.infra.controller.admin.logger.vo.apierrorlog.ApiErrorLogPageReqVO;
 import org.openea.eap.module.infra.dal.dataobject.logger.ApiErrorLogDO;
 import org.openea.eap.module.infra.dal.mysql.logger.ApiErrorLogMapper;
 import org.openea.eap.module.infra.enums.logger.ApiErrorLogProcessStatusEnum;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -38,7 +38,7 @@ public class ApiErrorLogServiceImpl implements ApiErrorLogService {
     public void createApiErrorLog(ApiErrorLogCreateReqDTO createDTO) {
         ApiErrorLogDO apiErrorLog = BeanUtils.toBean(createDTO, ApiErrorLogDO.class)
                 .setProcessStatus(ApiErrorLogProcessStatusEnum.INIT.getStatus());
-        apiErrorLog.setRequestParams(StrUtil.maxLength(apiErrorLog.getRequestParams(), REQUEST_PARAMS_MAX_LENGTH));
+        apiErrorLog.setRequestParams(StrUtils.maxLength(apiErrorLog.getRequestParams(), REQUEST_PARAMS_MAX_LENGTH));
         if (TenantContextHolder.getTenantId() != null) {
             apiErrorLogMapper.insert(apiErrorLog);
         } else {

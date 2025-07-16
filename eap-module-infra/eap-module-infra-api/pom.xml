@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-common-share-api</artifactId>
+            <artifactId>eap-common-biz-api</artifactId>
         </dependency>
 
         <!-- Web 相关 -->

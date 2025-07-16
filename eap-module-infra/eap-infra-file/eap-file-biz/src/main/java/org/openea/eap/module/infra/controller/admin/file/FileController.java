@@ -8,25 +8,26 @@ import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.common.util.servlet.ServletUtils;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.infra.controller.admin.file.vo.file.*;
 import org.openea.eap.module.infra.dal.dataobject.file.FileDO;
 import org.openea.eap.module.infra.dal.mysql.file.FileMapper;
 import org.openea.eap.module.infra.service.file.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.annotation.security.PermitAll;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import jakarta.annotation.Resource;
-import jakarta.annotation.security.PermitAll;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -49,14 +50,21 @@ public class FileController {
     @Operation(summary = "上传文件", description = "模式一：后端上传文件")
     public CommonResult<String> uploadFile(FileUploadReqVO uploadReqVO) throws Exception {
         MultipartFile file = uploadReqVO.getFile();
-        String path = uploadReqVO.getPath();
-        return success(fileService.createFile(file.getOriginalFilename(), path, IoUtil.readBytes(file.getInputStream())));
+        byte[] content = IoUtil.readBytes(file.getInputStream());
+        return success(fileService.createFile(content, file.getOriginalFilename(),
+                uploadReqVO.getDirectory(), file.getContentType()));
     }
 
     @GetMapping("/presigned-url")
     @Operation(summary = "获取文件预签名地址", description = "模式二：前端上传文件：用于前端直接上传七牛、阿里云 OSS 等文件存储器")
-    public CommonResult<FilePresignedUrlRespVO> getFilePresignedUrl(@RequestParam("path") String path) throws Exception {
-        return success(fileService.getFilePresignedUrl(path));
+    @Parameters({
+            @Parameter(name = "name", description = "文件名称", required = true),
+            @Parameter(name = "directory", description = "文件目录")
+    })
+    public CommonResult<FilePresignedUrlRespVO> getFilePresignedUrl(
+            @RequestParam("name") String name,
+            @RequestParam(value = "directory", required = false) String directory) {
+        return success(fileService.getFilePresignedUrl(name, directory));
     }
 
     @PostMapping("/create")
@@ -76,6 +84,7 @@ public class FileController {
 
     @GetMapping("/{configId}/get/**")
     @PermitAll
+    @TenantIgnore
     @Operation(summary = "下载文件")
     @Parameter(name = "configId", description = "配置编号", required = true)
     public void getFileContent(HttpServletRequest request,
@@ -115,7 +124,6 @@ public class FileController {
         }
         ServletUtils.writeAttachment(response, fileDo.getName(), content);
     }
-
     @GetMapping("/page")
     @Operation(summary = "获得文件分页")
     @PreAuthorize("@ss.hasPermission('infra:file:query')")

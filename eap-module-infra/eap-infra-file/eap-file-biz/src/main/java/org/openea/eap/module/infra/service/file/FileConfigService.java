@@ -1,11 +1,11 @@
 package org.openea.eap.module.infra.service.file;
 
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.infra.framework.file.core.client.FileClient;
 import org.openea.eap.module.infra.controller.admin.file.vo.config.FileConfigPageReqVO;
 import org.openea.eap.module.infra.controller.admin.file.vo.config.FileConfigSaveReqVO;
 import org.openea.eap.module.infra.dal.dataobject.file.FileConfigDO;
 
+import org.openea.eap.module.infra.framework.file.core.client.FileClient;
 import jakarta.validation.Valid;
 
 /**

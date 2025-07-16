@@ -24,15 +24,10 @@
 
         <dependency>
             <groupId>io.github.eaopen</groupId>
-            <artifactId>eap-common-share-api</artifactId>
+            <artifactId>eap-common-biz-api</artifactId>
         </dependency>
 
         <!-- Web 相关 -->
-<!--        <dependency>-->
-<!--            <groupId>org.springdoc</groupId>-->
-<!--            <artifactId>springdoc-openapi-ui</artifactId>-->
-<!--            <scope>provided</scope> &lt;!&ndash; 设置为 provided，主要是 PageParam 使用到 &ndash;&gt;-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springdoc</groupId> <!-- 接口文档：使用最新版本的 Swagger 模型 -->
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>

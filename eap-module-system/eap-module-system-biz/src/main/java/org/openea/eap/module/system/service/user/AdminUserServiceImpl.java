@@ -3,6 +3,7 @@ package org.openea.eap.module.system.service.user;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.common.exception.ServiceException;
@@ -60,6 +61,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     static final String USER_INIT_PASSWORD_KEY = "system.user.init-password";
 
+    static final String USER_REGISTER_ENABLED_KEY = "system.user.register-enabled";
+
     @Resource
     protected AdminUserMapper userMapper;
 
@@ -116,14 +119,18 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public Long registerUser(AuthRegisterReqVO registerReqVO) {
-        // 1.1 校验账户配合
+        // 1.1 校验是否开启注册
+        if (ObjUtil.notEqual(configApi.getConfigValueByKey(USER_REGISTER_ENABLED_KEY).getCheckedData(), "true")) {
+            throw exception(USER_REGISTER_DISABLED);
+        }
+        // 1.2 校验账户配合
         tenantService.handleTenantInfo(tenant -> {
             long count = userMapper.selectCount();
             if (count >= tenant.getAccountCount()) {
                 throw exception(USER_COUNT_MAX, tenant.getAccountCount());
             }
         });
-        // 1.2 校验正确性
+        // 1.3 校验正确性
         validateUserForCreateOrUpdate(null, registerReqVO.getUsername(), null, null, null, null);
 
         // 2. 插入用户
@@ -338,6 +345,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     /**
      * 获得部门条件：查询指定部门的子部门编号们，包括自身
+     *
      * @param deptId 部门编号
      * @return 部门编号集合
      */
@@ -363,7 +371,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             // 校验邮箱唯一
             validateEmailUnique(id, email);
             // 校验部门处于开启状态
-            deptService.validateDeptList(singleton(deptId));
+            deptService.validateDeptList(CollectionUtils.singleton(deptId));
             // 校验岗位处于开启状态
             postService.validatePostList(postIds);
             return user;

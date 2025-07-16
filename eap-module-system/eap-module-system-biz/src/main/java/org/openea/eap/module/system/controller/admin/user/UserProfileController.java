@@ -19,8 +19,8 @@ import org.openea.eap.module.system.service.permission.PermissionService;
 import org.openea.eap.module.system.service.permission.RoleService;
 import org.openea.eap.module.system.service.social.SocialUserService;
 import org.openea.eap.module.system.service.user.AdminUserService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -67,9 +67,7 @@ public class UserProfileController {
         DeptDO dept = user.getDeptId() != null ? deptService.getDept(user.getDeptId()) : null;
         // 获得岗位信息
         List<PostDO> posts = CollUtil.isNotEmpty(user.getPostIds()) ? postService.getPostList(user.getPostIds()) : null;
-        // 获得社交用户信息
-        List<SocialUserDO> socialUsers = socialService.getSocialUserList(user.getId(), UserTypeEnum.ADMIN.getValue());
-        return success(UserConvert.INSTANCE.convert(user, userRoles, dept, posts, socialUsers));
+        return success(UserConvert.INSTANCE.convert(user, userRoles, dept, posts));
     }
 
     @PutMapping("/update")

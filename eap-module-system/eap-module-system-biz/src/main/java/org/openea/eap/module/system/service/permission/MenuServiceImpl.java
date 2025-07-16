@@ -68,7 +68,8 @@ public class MenuServiceImpl implements MenuService {
         // 校验父菜单存在
         validateParentMenu(createReqVO.getParentId(), null);
         // 校验菜单（自己）
-        validateMenu(createReqVO.getParentId(), createReqVO.getName(), null);
+        validateMenuName(createReqVO.getParentId(), createReqVO.getName(), null);
+        validateMenuComponentName(createReqVO.getComponentName(), null);
 
         // 插入数据库
         MenuDO menu = BeanUtils.toBean(createReqVO, MenuDO.class);
@@ -91,7 +92,8 @@ public class MenuServiceImpl implements MenuService {
         // 校验父菜单存在
         validateParentMenu(updateReqVO.getParentId(), updateReqVO.getId());
         // 校验菜单（自己）
-        validateMenu(updateReqVO.getParentId(), updateReqVO.getName(), updateReqVO.getId());
+        validateMenuName(updateReqVO.getParentId(), updateReqVO.getName(), updateReqVO.getId());
+        validateMenuComponentName(updateReqVO.getComponentName(), updateReqVO.getId());
 
         // 更新到数据库
         MenuDO updateObj = BeanUtils.toBean(updateReqVO, MenuDO.class);
@@ -159,17 +161,19 @@ public class MenuServiceImpl implements MenuService {
             return true;
         }
 
-        // 1. 遍历到 parentId 为根节点，则无需判断
+        // 1. 先判断自身是否禁用
+        if (CommonStatusEnum.isDisable(node.getStatus())) {
+            disabledMenuCache.add(node.getId());
+            return true;
+        }
+
+        // 2. 遍历到 parentId 为根节点，则无需判断
         Long parentId = node.getParentId();
         if (ObjUtil.equal(parentId, ID_ROOT)) {
-            if (CommonStatusEnum.isDisable(node.getStatus())) {
-                disabledMenuCache.add(node.getId());
-                return true;
-            }
             return false;
         }
 
-        // 2. 继续遍历 parent 节点
+        // 3. 继续遍历 parent 节点
         MenuDO parent = menuMap.get(parentId);
         if (parent == null || isMenuDisabled(parent, menuMap, disabledMenuCache)) {
             disabledMenuCache.add(node.getId());
@@ -227,6 +231,24 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         return menus;
+    }
+
+    @Override
+    public List<MenuDO> getMenuListByPermission(String permission) {
+        // 1. 获取权限对应的菜单ID列表
+        List<Long> menuIds = getMenuIdListByPermissionFromCache(permission);
+        if (CollUtil.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
+        
+        // 2. 获取菜单列表
+        List<MenuDO> menuList = getMenuList(menuIds);
+        
+        // 3. 过滤禁用的菜单
+        menuList = filterDisableMenus(menuList);
+        
+        // 4. 处理国际化
+        return toI18n(menuList);
     }
 
     protected void checkMenuI18n(MenuDO menuDO){
@@ -374,7 +396,7 @@ public class MenuServiceImpl implements MenuService {
      * @param id       菜单编号
      */
     @VisibleForTesting
-    void validateMenu(Long parentId, String name, Long id) {
+    void validateMenuName(Long parentId, String name, Long id) {
         MenuDO menu = menuMapper.selectByParentIdAndName(parentId, name);
         if (menu == null) {
             return;
@@ -385,6 +407,30 @@ public class MenuServiceImpl implements MenuService {
         }
         if (!menu.getId().equals(id)) {
             throw exception(MENU_NAME_DUPLICATE);
+        }
+    }
+
+    /**
+     * 校验菜单组件名是否合法
+     *
+     * @param componentName 组件名
+     * @param id            菜单编号
+     */
+    @VisibleForTesting
+    void validateMenuComponentName(String componentName, Long id) {
+        if (StrUtil.isBlank(componentName)) {
+            return;
+        }
+        MenuDO menu = menuMapper.selectByComponentName(componentName);
+        if (menu == null) {
+            return;
+        }
+        // 如果 id 为空，说明不用比较是否为相同 id 的菜单
+        if (id == null) {
+            return;
+        }
+        if (!menu.getId().equals(id)) {
+            throw exception(MENU_COMPONENT_NAME_DUPLICATE);
         }
     }
 

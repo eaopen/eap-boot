@@ -4,15 +4,15 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
-import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.bean.WxJsapiSignature;
-import me.chanjar.weixin.common.bean.subscribemsg.TemplateInfo;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.social.dto.*;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
 import org.openea.eap.module.system.service.social.SocialClientService;
 import org.openea.eap.module.system.service.social.SocialUserService;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.bean.subscribemsg.TemplateInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -83,7 +83,7 @@ public class SocialClientApiImpl implements SocialClientApi {
 
         // 2. 获得社交用户
         SocialUserRespDTO socialUser = socialUserService.getSocialUserByUserId(reqDTO.getUserType(), reqDTO.getUserId(),
-                SocialTypeEnum.WECHAT_MINI_APP.getType());
+                SocialTypeEnum.WECHAT_MINI_PROGRAM.getType());
         if (StrUtil.isBlankIfStr(socialUser.getOpenid())) {
             log.warn("[sendWxaSubscribeMessage][reqDTO({}) 发送订阅消息失败，原因：会员 openid 缺失]", reqDTO);
             return success(false);
@@ -91,6 +91,18 @@ public class SocialClientApiImpl implements SocialClientApi {
 
         // 3. 发送订阅消息
         socialClientService.sendSubscribeMessage(reqDTO, template.getPriTmplId(), socialUser.getOpenid());
+        return success(true);
+    }
+
+    @Override
+    public CommonResult<Boolean> uploadWxaOrderShippingInfo(Integer userType, SocialWxaOrderUploadShippingInfoReqDTO reqDTO) {
+        socialClientService.uploadWxaOrderShippingInfo(userType, reqDTO);
+        return success(true);
+    }
+
+    @Override
+    public CommonResult<Boolean> notifyWxaOrderConfirmReceive(Integer userType, SocialWxaOrderNotifyConfirmReceiveReqDTO reqDTO) {
+        socialClientService.notifyWxaOrderConfirmReceive(userType, reqDTO);
         return success(true);
     }
 

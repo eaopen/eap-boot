@@ -18,14 +18,13 @@ import org.openea.eap.module.infra.framework.codegen.config.CodegenProperties;
 import org.openea.eap.module.infra.service.codegen.inner.CodegenBuilder;
 import org.openea.eap.module.infra.service.codegen.inner.CodegenEngine;
 import org.openea.eap.module.infra.service.db.DatabaseTableService;
-import org.openea.eap.module.system.api.user.AdminUserApi;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.google.common.annotations.VisibleForTesting;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
@@ -52,9 +51,6 @@ public class CodegenServiceImpl implements CodegenService {
     private CodegenColumnMapper codegenColumnMapper;
 
     @Resource
-    private AdminUserApi userApi;
-
-    @Resource
     private CodegenBuilder codegenBuilder;
     @Resource
     private CodegenEngine codegenEngine;
@@ -64,21 +60,21 @@ public class CodegenServiceImpl implements CodegenService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<Long> createCodegenList(Long userId, CodegenCreateListReqVO reqVO) {
+    public List<Long> createCodegenList(String author, CodegenCreateListReqVO reqVO) {
         List<Long> ids = new ArrayList<>(reqVO.getTableNames().size());
         // 遍历添加。虽然效率会低一点，但是没必要做成完全批量，因为不会这么大量
-        reqVO.getTableNames().forEach(tableName -> ids.add(createCodegen(userId, reqVO.getDataSourceConfigId(), tableName)));
+        reqVO.getTableNames().forEach(tableName -> ids.add(createCodegen(author, reqVO.getDataSourceConfigId(), tableName)));
         return ids;
     }
 
-    private Long createCodegen(Long userId, Long dataSourceConfigId, String tableName) {
+    private Long createCodegen(String author, Long dataSourceConfigId, String tableName) {
         // 从数据库中，获得数据库表结构
         TableInfo tableInfo = databaseTableService.getTable(dataSourceConfigId, tableName);
         // 导入
-        return createCodegen0(userId, dataSourceConfigId, tableInfo);
+        return createCodegen0(author, dataSourceConfigId, tableInfo);
     }
 
-    private Long createCodegen0(Long userId, Long dataSourceConfigId, TableInfo tableInfo) {
+    private Long createCodegen0(String author, Long dataSourceConfigId, TableInfo tableInfo) {
         // 校验导入的表和字段非空
         validateTableInfo(tableInfo);
         // 校验是否已经存在
@@ -92,7 +88,7 @@ public class CodegenServiceImpl implements CodegenService {
         table.setDataSourceConfigId(dataSourceConfigId);
         table.setScene(CodegenSceneEnum.ADMIN.getScene()); // 默认配置下，使用管理后台的模板
         table.setFrontType(codegenProperties.getFrontType());
-        table.setAuthor(userApi.getUser(userId).getCheckedData().getNickname());
+        table.setAuthor(author);
         codegenTableMapper.insert(table);
 
         // 构建 CodegenColumnDO 数组，插入到 DB 中

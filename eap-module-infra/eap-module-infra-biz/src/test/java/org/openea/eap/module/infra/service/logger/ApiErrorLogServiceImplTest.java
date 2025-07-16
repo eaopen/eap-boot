@@ -1,9 +1,9 @@
 package org.openea.eap.module.infra.service.logger;
 
+import org.openea.eap.framework.common.biz.infra.logger.dto.ApiErrorLogCreateReqDTO;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.test.core.ut.BaseDbUnitTest;
-import org.openea.eap.module.infra.api.logger.dto.ApiErrorLogCreateReqDTO;
 import org.openea.eap.module.infra.controller.admin.logger.vo.apierrorlog.ApiErrorLogPageReqVO;
 import org.openea.eap.module.infra.dal.dataobject.logger.ApiErrorLogDO;
 import org.openea.eap.module.infra.dal.mysql.logger.ApiErrorLogMapper;

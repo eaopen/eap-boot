@@ -5,11 +5,15 @@ import cn.binarywang.wx.miniapp.api.WxMaSubscribeService;
 import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
+import cn.binarywang.wx.miniapp.bean.shop.request.shipping.*;
+import cn.binarywang.wx.miniapp.bean.shop.response.WxMaOrderShippingInfoBaseResponse;
 import cn.binarywang.wx.miniapp.config.impl.WxMaRedisBetterConfigImpl;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ReflectUtil;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
@@ -19,6 +23,8 @@ import org.openea.eap.framework.common.util.cache.CacheUtils;
 import org.openea.eap.framework.common.util.http.HttpUtils;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.module.system.api.social.dto.SocialWxQrcodeReqDTO;
+import org.openea.eap.module.system.api.social.dto.SocialWxaOrderNotifyConfirmReceiveReqDTO;
+import org.openea.eap.module.system.api.social.dto.SocialWxaOrderUploadShippingInfoReqDTO;
 import org.openea.eap.module.system.api.social.dto.SocialWxaSubscribeMessageSendReqDTO;
 import org.openea.eap.module.system.controller.admin.socail.vo.client.SocialClientPageReqVO;
 import org.openea.eap.module.system.controller.admin.socail.vo.client.SocialClientSaveReqVO;
@@ -26,18 +32,13 @@ import org.openea.eap.module.system.dal.dataobject.social.SocialClientDO;
 import org.openea.eap.module.system.dal.mysql.social.SocialClientMapper;
 import org.openea.eap.module.system.dal.redis.RedisKeyConstants;
 import org.openea.eap.module.system.enums.social.SocialTypeEnum;
+import org.openea.eap.module.system.framework.justauth.core.AuthRequestFactory;
 import com.binarywang.spring.starter.wxjava.miniapp.properties.WxMaProperties;
 import com.binarywang.spring.starter.wxjava.mp.properties.WxMpProperties;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.xingyuv.jushauth.config.AuthConfig;
-import com.xingyuv.jushauth.model.AuthCallback;
-import com.xingyuv.jushauth.model.AuthResponse;
-import com.xingyuv.jushauth.model.AuthUser;
-import com.xingyuv.jushauth.request.AuthRequest;
-import com.xingyuv.jushauth.utils.AuthStateUtils;
-import com.xingyuv.justauth.AuthRequestFactory;
+import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
@@ -47,23 +48,29 @@ import me.chanjar.weixin.common.redis.RedisTemplateWxRedisOps;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpRedisConfigImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import me.zhyd.oauth.config.AuthConfig;
+import me.zhyd.oauth.model.AuthCallback;
+import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthUser;
+import me.zhyd.oauth.request.AuthRequest;
+import me.zhyd.oauth.utils.AuthStateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.Resource;
 import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static org.openea.eap.framework.common.util.collection.MapUtils.findAndThen;
+import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.UTC_MS_WITH_XXX_OFFSET_FORMATTER;
 import static org.openea.eap.framework.common.util.json.JsonUtils.toJsonString;
 import static org.openea.eap.module.system.enums.ErrorCodeConstants.*;
+import static java.util.Collections.singletonList;
 
 /**
  * 社交应用 Service 实现类
@@ -92,13 +99,10 @@ public class SocialClientServiceImpl implements SocialClientService {
     @Value("${eap.wxa-subscribe-message.miniprogram-state:formal}")
     public String miniprogramState;
 
-    //@Resource
-    @Autowired(required = false)
-    @Lazy
+    @Resource
     private AuthRequestFactory authRequestFactory;
 
-    //@Resource
-    @Autowired(required = false)
+    @Resource
     private WxMpService wxMpService;
 
     @Resource
@@ -126,9 +130,7 @@ public class SocialClientServiceImpl implements SocialClientService {
 
             });
 
-    //@Resource
-    @Autowired(required = false)
-    @Lazy
+    @Resource
     private WxMaService wxMaService;
 
     @Resource
@@ -336,6 +338,64 @@ public class SocialClientServiceImpl implements SocialClientService {
         return subscribeMessage;
     }
 
+    @Override
+    public void uploadWxaOrderShippingInfo(Integer userType, SocialWxaOrderUploadShippingInfoReqDTO reqDTO) {
+        WxMaService service = getWxMaService(userType);
+        List<ShippingListBean> shippingList;
+        if (Objects.equals(reqDTO.getLogisticsType(), SocialWxaOrderUploadShippingInfoReqDTO.LOGISTICS_TYPE_EXPRESS)) {
+            shippingList = singletonList(ShippingListBean.builder()
+                    .trackingNo(reqDTO.getLogisticsNo())
+                    .expressCompany(reqDTO.getExpressCompany())
+                    .itemDesc(reqDTO.getItemDesc())
+                    .contact(ContactBean.builder().receiverContact(DesensitizedUtil.mobilePhone(reqDTO.getReceiverContact())).build())
+                    .build());
+        } else {
+            shippingList = singletonList(ShippingListBean.builder().itemDesc(reqDTO.getItemDesc()).build());
+        }
+        WxMaOrderShippingInfoUploadRequest request = WxMaOrderShippingInfoUploadRequest.builder()
+                .orderKey(OrderKeyBean.builder()
+                        .orderNumberType(2) // 使用原支付交易对应的微信订单号，即渠道单号
+                        .transactionId(reqDTO.getTransactionId())
+                        .build())
+                .logisticsType(reqDTO.getLogisticsType()) // 配送方式
+                .deliveryMode(1) // 统一发货
+                .shippingList(shippingList)
+                .payer(PayerBean.builder().openid(reqDTO.getOpenid()).build())
+                .uploadTime(ZonedDateTime.now().format(UTC_MS_WITH_XXX_OFFSET_FORMATTER))
+                .build();
+        try {
+            WxMaOrderShippingInfoBaseResponse response = service.getWxMaOrderShippingService().upload(request);
+            if (response.getErrCode() != 0) {
+                log.error("[uploadWxaOrderShippingInfo][上传微信小程序发货信息失败：request({}) response({})]", request, response);
+                throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_UPLOAD_SHIPPING_INFO_ERROR, response.getErrMsg());
+            }
+            log.info("[uploadWxaOrderShippingInfo][上传微信小程序发货信息成功：request({}) response({})]", request, response);
+        } catch (WxErrorException ex) {
+            log.error("[uploadWxaOrderShippingInfo][上传微信小程序发货信息失败：request({})]", request, ex);
+            throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_UPLOAD_SHIPPING_INFO_ERROR, ex.getError().getErrorMsg());
+        }
+    }
+
+    @Override
+    public void notifyWxaOrderConfirmReceive(Integer userType, SocialWxaOrderNotifyConfirmReceiveReqDTO reqDTO) {
+        WxMaService service = getWxMaService(userType);
+        WxMaOrderShippingInfoNotifyConfirmRequest request = WxMaOrderShippingInfoNotifyConfirmRequest.builder()
+                .transactionId(reqDTO.getTransactionId())
+                .receivedTime(LocalDateTimeUtil.toEpochMilli(reqDTO.getReceivedTime()))
+                .build();
+        try {
+            WxMaOrderShippingInfoBaseResponse response = service.getWxMaOrderShippingService().notifyConfirmReceive(request);
+            if (response.getErrCode() != 0) {
+                log.error("[notifyWxaOrderConfirmReceive][确认收货提醒到微信小程序失败：request({}) response({})]", request, response);
+                throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_NOTIFY_CONFIRM_RECEIVE_ERROR, response.getErrMsg());
+            }
+            log.info("[notifyWxaOrderConfirmReceive][确认收货提醒到微信小程序成功：request({}) response({})]", request, response);
+        } catch (WxErrorException ex) {
+            log.error("[notifyWxaOrderConfirmReceive][确认收货提醒到微信小程序失败：request({})]", request, ex);
+            throw exception(SOCIAL_CLIENT_WEIXIN_MINI_APP_ORDER_NOTIFY_CONFIRM_RECEIVE_ERROR, ex.getError().getErrorMsg());
+        }
+    }
+
     /**
      * 获得 clientId + clientSecret 对应的 WxMpService 对象
      *
@@ -346,7 +406,7 @@ public class SocialClientServiceImpl implements SocialClientService {
     WxMaService getWxMaService(Integer userType) {
         // 第一步，查询 DB 的配置项，获得对应的 WxMaService 对象
         SocialClientDO client = socialClientMapper.selectBySocialTypeAndUserType(
-                SocialTypeEnum.WECHAT_MINI_APP.getType(), userType);
+                SocialTypeEnum.WECHAT_MINI_PROGRAM.getType(), userType);
         if (client != null && Objects.equals(client.getStatus(), CommonStatusEnum.ENABLE.getStatus())) {
             return wxMaServiceCache.getUnchecked(client.getClientId() + ":" + client.getClientSecret());
         }

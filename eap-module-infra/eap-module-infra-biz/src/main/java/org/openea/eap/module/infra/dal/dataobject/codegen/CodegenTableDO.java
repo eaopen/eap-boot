@@ -1,6 +1,7 @@
 package org.openea.eap.module.infra.dal.dataobject.codegen;
 
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.infra.dal.dataobject.db.DataSourceConfigDO;
 import org.openea.eap.module.infra.enums.codegen.CodegenFrontTypeEnum;
 import org.openea.eap.module.infra.enums.codegen.CodegenSceneEnum;
@@ -22,6 +23,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
+@TenantIgnore
 public class CodegenTableDO extends BaseDO {
 
     /**

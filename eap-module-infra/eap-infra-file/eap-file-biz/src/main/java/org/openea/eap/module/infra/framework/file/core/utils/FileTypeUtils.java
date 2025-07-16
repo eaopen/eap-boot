@@ -2,21 +2,25 @@ package org.openea.eap.module.infra.framework.file.core.utils;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import org.openea.eap.framework.common.util.http.HttpUtils;
 import com.alibaba.ttl.TransmittableThreadLocal;
-import lombok.SneakyThrows;
-import org.apache.tika.Tika;
-
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+
 import java.io.IOException;
-import java.net.URLEncoder;
 
 /**
  * 文件类型 Utils
  *
  */
+@Slf4j
 public class FileTypeUtils {
 
-    private static final ThreadLocal<Tika> TIKA = TransmittableThreadLocal.withInitial(Tika::new);
+    private static final Tika TIKA = new Tika();
 
     /**
      * 获得文件的 mineType，对于doc，jar等文件会有误差
@@ -26,7 +30,7 @@ public class FileTypeUtils {
      */
     @SneakyThrows
     public static String getMineType(byte[] data) {
-        return TIKA.get().detect(data);
+        return TIKA.detect(data);
     }
 
     /**
@@ -36,7 +40,7 @@ public class FileTypeUtils {
      * @return mineType 无法识别时会返回“application/octet-stream”
      */
     public static String getMineType(String name) {
-        return TIKA.get().detect(name);
+        return TIKA.detect(name);
     }
 
     /**
@@ -47,7 +51,24 @@ public class FileTypeUtils {
      * @return mineType 无法识别时会返回“application/octet-stream”
      */
     public static String getMineType(byte[] data, String name) {
-        return TIKA.get().detect(data, name);
+        return TIKA.detect(data, name);
+    }
+
+    /**
+     * 根据 mineType 获得文件后缀
+     *
+     * 注意：如果获取不到，或者发生异常，都返回 null
+     *
+     * @param mineType 类型
+     * @return 后缀，例如说 .pdf
+     */
+    public static String getExtension(String mineType) {
+        try {
+            return MimeTypes.getDefaultMimeTypes().forName(mineType).getExtension();
+        } catch (MimeTypeException e) {
+            log.warn("[getExtension][获取文件后缀({}) 失败]", mineType, e);
+            return null;
+        }
     }
 
     /**
@@ -59,7 +80,7 @@ public class FileTypeUtils {
      */
     public static void writeAttachment(HttpServletResponse response, String filename, byte[] content) throws IOException {
         // 设置 header 和 contentType
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(filename, "UTF-8"));
+        response.setHeader("Content-Disposition", "attachment;filename=" + HttpUtils.encodeUtf8(filename));
         String contentType = getMineType(content, filename);
         response.setContentType(contentType);
         // 针对 video 的特殊处理，解决视频地址在移动端播放的兼容性问题

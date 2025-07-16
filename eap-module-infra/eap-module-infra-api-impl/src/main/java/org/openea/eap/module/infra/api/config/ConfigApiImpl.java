@@ -3,10 +3,9 @@ package org.openea.eap.module.infra.api.config;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.infra.dal.dataobject.config.ConfigDO;
 import org.openea.eap.module.infra.service.config.ConfigService;
+import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
-
-import jakarta.annotation.Resource;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 

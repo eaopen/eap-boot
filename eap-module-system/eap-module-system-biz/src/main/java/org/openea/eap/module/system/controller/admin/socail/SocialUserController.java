@@ -4,24 +4,26 @@ import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.module.system.api.social.dto.SocialUserBindReqDTO;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserBindReqVO;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserPageReqVO;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserRespVO;
 import org.openea.eap.module.system.controller.admin.socail.vo.user.SocialUserUnbindReqVO;
-import org.openea.eap.module.system.convert.social.SocialUserConvert;
 import org.openea.eap.module.system.dal.dataobject.social.SocialUserDO;
 import org.openea.eap.module.system.service.social.SocialUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.Resource;
-import jakarta.validation.Valid;
+import java.util.List;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
+import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertList;
 import static org.openea.eap.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
 @Tag(name = "管理后台 - 社交用户")
@@ -36,8 +38,8 @@ public class SocialUserController {
     @PostMapping("/bind")
     @Operation(summary = "社交绑定，使用 code 授权码")
     public CommonResult<Boolean> socialBind(@RequestBody @Valid SocialUserBindReqVO reqVO) {
-        socialUserService.bindSocialUser(SocialUserConvert.INSTANCE.convert(
-                getLoginUserId(), UserTypeEnum.ADMIN.getValue(), reqVO));
+        socialUserService.bindSocialUser(BeanUtils.toBean(reqVO, SocialUserBindReqDTO.class)
+                .setUserId(getLoginUserId()).setUserType(UserTypeEnum.ADMIN.getValue()));
         return CommonResult.success(true);
     }
 
@@ -46,6 +48,15 @@ public class SocialUserController {
     public CommonResult<Boolean> socialUnbind(@RequestBody SocialUserUnbindReqVO reqVO) {
         socialUserService.unbindSocialUser(getLoginUserId(), UserTypeEnum.ADMIN.getValue(), reqVO.getType(), reqVO.getOpenid());
         return CommonResult.success(true);
+    }
+
+    @GetMapping("/get-bind-list")
+    @Operation(summary = "获得绑定社交用户列表")
+    public CommonResult<List<SocialUserRespVO>> getBindSocialUserList() {
+        List<SocialUserDO> list = socialUserService.getSocialUserList(getLoginUserId(), UserTypeEnum.ADMIN.getValue());
+        return success(convertList(list, socialUser -> new SocialUserRespVO() // 返回精简信息
+                .setId(socialUser.getId()).setType(socialUser.getType()).setOpenid(socialUser.getOpenid())
+                .setNickname(socialUser.getNickname()).setAvatar(socialUser.getNickname())));
     }
 
     // ==================== 社交用户 CRUD ====================

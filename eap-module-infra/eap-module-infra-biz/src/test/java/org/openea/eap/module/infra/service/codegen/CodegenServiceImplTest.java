@@ -20,22 +20,18 @@ import org.openea.eap.module.infra.framework.codegen.config.CodegenProperties;
 import org.openea.eap.module.infra.service.codegen.inner.CodegenBuilder;
 import org.openea.eap.module.infra.service.codegen.inner.CodegenEngine;
 import org.openea.eap.module.infra.service.db.DatabaseTableService;
-import org.openea.eap.module.system.api.user.AdminUserApi;
-import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import org.junit.jupiter.api.Disabled;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import jakarta.annotation.Resource;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildBetweenTime;
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildTime;
 import static org.openea.eap.framework.common.util.object.ObjectUtils.cloneIgnoreId;
@@ -67,9 +63,6 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
     private DatabaseTableService databaseTableService;
 
     @MockBean
-    private AdminUserApi userApi;
-
-    @MockBean
     private CodegenBuilder codegenBuilder;
     @MockBean
     private CodegenEngine codegenEngine;
@@ -80,7 +73,7 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
     @Test
     public void testCreateCodegenList() {
         // 准备参数
-        Long userId = randomLongId();
+        String author = randomString();
         CodegenCreateListReqVO reqVO = randomPojo(CodegenCreateListReqVO.class,
                 o -> o.setDataSourceConfigId(1L).setTableNames(Collections.singletonList("t_yunai")));
         // mock 方法（TableInfo）
@@ -98,18 +91,15 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
         // mock 方法（CodegenTableDO）
         CodegenTableDO table = randomPojo(CodegenTableDO.class);
         when(codegenBuilder.buildTable(same(tableInfo))).thenReturn(table);
-        // mock 方法（AdminUserRespDTO）
-        AdminUserRespDTO user = randomPojo(AdminUserRespDTO.class, o -> o.setNickname("芋头"));
-        when(userApi.getUser(eq(userId))).thenReturn(success(user));
         // mock 方法（CodegenColumnDO）
         List<CodegenColumnDO> columns = randomPojoList(CodegenColumnDO.class);
         when(codegenBuilder.buildColumns(eq(table.getId()), same(fields)))
                 .thenReturn(columns);
         // mock 方法（CodegenProperties）
-        when(codegenProperties.getFrontType()).thenReturn(CodegenFrontTypeEnum.VUE3.getType());
+        when(codegenProperties.getFrontType()).thenReturn(CodegenFrontTypeEnum.VUE3_ELEMENT_PLUS.getType());
 
         // 调用
-        List<Long> result = codegenService.createCodegenList(userId, reqVO);
+        List<Long> result = codegenService.createCodegenList(author, reqVO);
         // 断言
         assertEquals(1, result.size());
         // 断言（CodegenTableDO）
@@ -117,8 +107,8 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
         assertPojoEquals(table, dbTable);
         assertEquals(1L, dbTable.getDataSourceConfigId());
         assertEquals(CodegenSceneEnum.ADMIN.getScene(), dbTable.getScene());
-        assertEquals(CodegenFrontTypeEnum.VUE3.getType(), dbTable.getFrontType());
-        assertEquals("芋头", dbTable.getAuthor());
+        assertEquals(CodegenFrontTypeEnum.VUE3_ELEMENT_PLUS.getType(), dbTable.getFrontType());
+        assertEquals(author, dbTable.getAuthor());
         // 断言（CodegenColumnDO）
         List<CodegenColumnDO> dbColumns = codegenColumnMapper.selectList();
         assertEquals(columns.size(), dbColumns.size());
@@ -234,7 +224,6 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
     }
 
     @Test
-    @Disabled // TODO @芋艿：这个单测会随机性失败，需要定位下；
     public void testSyncCodegenFromDB() {
         // mock 数据（CodegenTableDO）
         CodegenTableDO table = randomPojo(CodegenTableDO.class, o -> o.setTableName("t_yunai")
@@ -263,7 +252,7 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
         when(databaseTableService.getTable(eq(1L), eq("t_yunai")))
                 .thenReturn(tableInfo);
         // mock 方法（CodegenTableDO）
-        List<CodegenColumnDO> newColumns = randomPojoList(CodegenColumnDO.class);
+        List<CodegenColumnDO> newColumns = randomPojoList(CodegenColumnDO.class, 2);
         when(codegenBuilder.buildColumns(eq(table.getId()), argThat(tableFields -> {
             assertEquals(2, tableFields.size());
             assertSame(tableInfo.getFields(), tableFields);
@@ -457,9 +446,11 @@ public class CodegenServiceImplTest extends BaseDbUnitTest {
                         .setTemplateType(CodegenTemplateTypeEnum.ONE.getType()));
         codegenTableMapper.insert(table);
         // mock 数据（CodegenColumnDO）
-        CodegenColumnDO column01 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId()));
+        CodegenColumnDO column01 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId())
+                .setOrdinalPosition(1));
         codegenColumnMapper.insert(column01);
-        CodegenColumnDO column02 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId()));
+        CodegenColumnDO column02 = randomPojo(CodegenColumnDO.class, o -> o.setTableId(table.getId())
+                .setOrdinalPosition(2));
         codegenColumnMapper.insert(column02);
         // mock 执行生成
         Map<String, String> codes = MapUtil.of(randomString(), randomString());

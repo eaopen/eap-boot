@@ -1,19 +1,19 @@
 package org.openea.eap.module.infra.service.logger;
 
-import cn.hutool.core.util.StrUtil;
+import org.openea.eap.framework.common.biz.infra.logger.dto.ApiAccessLogCreateReqDTO;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
+import org.openea.eap.framework.common.util.string.StrUtils;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.openea.eap.framework.tenant.core.util.TenantUtils;
-import org.openea.eap.module.infra.api.logger.dto.ApiAccessLogCreateReqDTO;
 import org.openea.eap.module.infra.controller.admin.logger.vo.apiaccesslog.ApiAccessLogPageReqVO;
 import org.openea.eap.module.infra.dal.dataobject.logger.ApiAccessLogDO;
 import org.openea.eap.module.infra.dal.mysql.logger.ApiAccessLogMapper;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 
 import static org.openea.eap.module.infra.dal.dataobject.logger.ApiAccessLogDO.REQUEST_PARAMS_MAX_LENGTH;
@@ -34,8 +34,8 @@ public class ApiAccessLogServiceImpl implements ApiAccessLogService {
     @Override
     public void createApiAccessLog(ApiAccessLogCreateReqDTO createDTO) {
         ApiAccessLogDO apiAccessLog = BeanUtils.toBean(createDTO, ApiAccessLogDO.class);
-        apiAccessLog.setRequestParams(StrUtil.maxLength(apiAccessLog.getRequestParams(), REQUEST_PARAMS_MAX_LENGTH));
-        apiAccessLog.setResultMsg(StrUtil.maxLength(apiAccessLog.getResultMsg(), RESULT_MSG_MAX_LENGTH));
+        apiAccessLog.setRequestParams(StrUtils.maxLength(apiAccessLog.getRequestParams(), REQUEST_PARAMS_MAX_LENGTH));
+        apiAccessLog.setResultMsg(StrUtils.maxLength(apiAccessLog.getResultMsg(), RESULT_MSG_MAX_LENGTH));
         if (TenantContextHolder.getTenantId() != null) {
             apiAccessLogMapper.insert(apiAccessLog);
         } else {

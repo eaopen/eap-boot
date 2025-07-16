@@ -1,8 +1,8 @@
 package org.openea.eap.module.infra.dal.dataobject.file;
 
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.infra.framework.file.core.client.db.DBFileClient;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,6 +22,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TenantIgnore
 public class FileContentDO extends BaseDO {
 
     /**

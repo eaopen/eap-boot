@@ -3,15 +3,13 @@ package org.openea.eap.module.system.service.logger;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.test.core.ut.BaseDbUnitTest;
 import org.openea.eap.framework.test.core.util.RandomUtils;
-import org.openea.eap.module.system.api.logger.dto.OperateLogCreateReqDTO;
+import org.openea.eap.framework.common.biz.system.logger.dto.OperateLogCreateReqDTO;
 import org.openea.eap.module.system.api.logger.dto.OperateLogPageReqDTO;
 import org.openea.eap.module.system.controller.admin.logger.vo.operatelog.OperateLogPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.logger.OperateLogDO;
 import org.openea.eap.module.system.dal.mysql.logger.OperateLogMapper;
-import org.openea.eap.module.system.service.user.AdminUserService;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import static org.openea.eap.framework.common.util.date.LocalDateTimeUtils.buildBetweenTime;

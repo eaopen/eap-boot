@@ -1,8 +1,9 @@
 package org.openea.eap.module.system.dal.dataobject.sms;
 
-import org.openea.eap.module.system.enums.sms.SmsTemplateTypeEnum;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
+import org.openea.eap.module.system.enums.sms.SmsTemplateTypeEnum;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -24,6 +25,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@TenantIgnore
 public class SmsTemplateDO extends BaseDO {
 
     /**

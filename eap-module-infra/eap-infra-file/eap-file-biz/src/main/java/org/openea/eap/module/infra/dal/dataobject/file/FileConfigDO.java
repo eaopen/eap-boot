@@ -3,6 +3,7 @@ package org.openea.eap.module.infra.dal.dataobject.file;
 import cn.hutool.core.util.StrUtil;
 import org.openea.eap.framework.common.util.json.JsonUtils;
 import org.openea.eap.framework.mybatis.core.dataobject.BaseDO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
 import org.openea.eap.module.infra.framework.file.core.client.FileClientConfig;
 import org.openea.eap.module.infra.framework.file.core.client.db.DBFileClientConfig;
 import org.openea.eap.module.infra.framework.file.core.client.ftp.FtpFileClientConfig;
@@ -31,6 +32,7 @@ import java.lang.reflect.Field;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@TenantIgnore
 public class FileConfigDO extends BaseDO {
 
     /**

@@ -5,8 +5,6 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.apache.commons.lang3.StringUtils;
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -26,11 +24,12 @@ import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2AccessTokenMapper;
 import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2RefreshTokenMapper;
 import org.openea.eap.module.system.dal.redis.oauth2.OAuth2AccessTokenRedisDAO;
 import org.openea.eap.module.system.service.user.AdminUserService;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +70,7 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public OAuth2AccessTokenDO createAccessToken(Long userId, String userKey, Integer userType, String clientId, List<String> scopes) {
         OAuth2ClientDO clientDO = oauth2ClientService.validOAuthClientFromCache(clientId);
         // 创建刷新令牌

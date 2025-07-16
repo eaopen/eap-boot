@@ -11,11 +11,6 @@
         <!-- Server 主项目 -->
         <module>eap-server</module>
 
-        <!-- cloud -->
-        <module>eap-gateway</module>
-        <module>eap-cloud-system-start</module>
-        <module>eap-cloud-infra-start</module>
-
         <!-- 各种 module 拓展 -->
         <module>eap-module-system</module>
         <module>eap-module-infra</module>
@@ -30,7 +25,7 @@
     <url>https://github.com/eaopen/openea-eap</url>
 
     <properties>
-        <revision>2.8.2</revision>
+        <revision>2.8.5</revision>
         <!-- Maven 相关 -->
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -190,6 +185,15 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>cloud</id>
+            <modules>
+                <!-- cloud 微服务模块 -->
+                <module>eap-gateway</module>
+                <module>eap-cloud-system-start</module>
+                <module>eap-cloud-infra-start</module>
+            </modules>
+        </profile>
         <profile>
             <id>dev</id>
             <activation>

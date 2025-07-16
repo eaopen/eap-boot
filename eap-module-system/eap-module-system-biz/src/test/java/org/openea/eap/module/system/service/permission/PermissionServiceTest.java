@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import org.openea.eap.framework.common.enums.CommonStatusEnum;
 import org.openea.eap.framework.test.core.ut.BaseDbUnitTest;
-import org.openea.eap.module.system.api.permission.dto.DeptDataPermissionRespDTO;
+import org.openea.eap.framework.common.biz.system.permission.dto.DeptDataPermissionRespDTO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.dataobject.permission.RoleDO;

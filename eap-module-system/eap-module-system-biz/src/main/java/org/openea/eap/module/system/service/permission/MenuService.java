@@ -101,4 +101,12 @@ public interface MenuService {
 
     Integer updateMenuI18n();
 
+    /**
+     * 根据权限获取菜单列表
+     *
+     * @param permission 权限标识
+     * @return 菜单列表
+     */
+    List<MenuDO> getMenuListByPermission(String permission);
+
 }

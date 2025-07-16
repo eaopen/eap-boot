@@ -1,23 +1,23 @@
 package org.openea.eap.module.system.api.oauth2;
 
+import org.openea.eap.framework.common.biz.system.oauth2.OAuth2TokenCommonApi;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
-import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCheckRespDTO;
-import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenCreateReqDTO;
-import org.openea.eap.module.system.api.oauth2.dto.OAuth2AccessTokenRespDTO;
+import org.openea.eap.framework.tenant.core.aop.TenantIgnore;
+import org.openea.eap.framework.common.biz.system.oauth2.dto.OAuth2AccessTokenCheckRespDTO;
+import org.openea.eap.framework.common.biz.system.oauth2.dto.OAuth2AccessTokenCreateReqDTO;
+import org.openea.eap.framework.common.biz.system.oauth2.dto.OAuth2AccessTokenRespDTO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.service.oauth2.OAuth2TokenService;
-import io.swagger.v3.oas.annotations.Operation;
+import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
-
-import jakarta.annotation.Resource;
 
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 
 @RestController // 提供 RESTful API 接口，给 Feign 调用
 @Validated
-public class OAuth2TokenApiImpl implements OAuth2TokenApi {
+public class OAuth2TokenApiImpl implements OAuth2TokenCommonApi {
 
     @Resource
     private OAuth2TokenService oauth2TokenService;
@@ -30,6 +30,7 @@ public class OAuth2TokenApiImpl implements OAuth2TokenApi {
     }
 
     @Override
+    @TenantIgnore // 访问令牌校验时，无需传递租户编号；主要解决上传文件的场景，前端不会传递 tenant-id
     public CommonResult<OAuth2AccessTokenCheckRespDTO> checkAccessToken(String accessToken) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.checkAccessToken(accessToken);
         return success(BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenCheckRespDTO.class));

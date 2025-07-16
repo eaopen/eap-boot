@@ -1,7 +1,7 @@
 package org.openea.eap.module.infra.service.logger;
 
+import org.openea.eap.framework.common.biz.infra.logger.dto.ApiAccessLogCreateReqDTO;
 import org.openea.eap.framework.common.pojo.PageResult;
-import org.openea.eap.module.infra.api.logger.dto.ApiAccessLogCreateReqDTO;
 import org.openea.eap.module.infra.controller.admin.logger.vo.apiaccesslog.ApiAccessLogPageReqVO;
 import org.openea.eap.module.infra.dal.dataobject.logger.ApiAccessLogDO;
 

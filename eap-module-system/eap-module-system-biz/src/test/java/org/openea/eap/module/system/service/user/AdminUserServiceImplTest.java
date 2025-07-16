@@ -11,7 +11,10 @@ import org.openea.eap.module.infra.api.config.ConfigApi;
 import org.openea.eap.module.infra.api.file.FileApi;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdatePasswordReqVO;
 import org.openea.eap.module.system.controller.admin.user.vo.profile.UserProfileUpdateReqVO;
-import org.openea.eap.module.system.controller.admin.user.vo.user.*;
+import org.openea.eap.module.system.controller.admin.user.vo.user.UserImportExcelVO;
+import org.openea.eap.module.system.controller.admin.user.vo.user.UserImportRespVO;
+import org.openea.eap.module.system.controller.admin.user.vo.user.UserPageReqVO;
+import org.openea.eap.module.system.controller.admin.user.vo.user.UserSaveReqVO;
 import org.openea.eap.module.system.dal.dataobject.dept.DeptDO;
 import org.openea.eap.module.system.dal.dataobject.dept.PostDO;
 import org.openea.eap.module.system.dal.dataobject.dept.UserPostDO;
@@ -24,6 +27,7 @@ import org.openea.eap.module.system.service.dept.DeptService;
 import org.openea.eap.module.system.service.dept.PostService;
 import org.openea.eap.module.system.service.permission.PermissionService;
 import org.openea.eap.module.system.service.tenant.TenantService;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -31,14 +35,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import jakarta.annotation.Resource;
-import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static cn.hutool.core.util.RandomUtil.randomBytes;
 import static cn.hutool.core.util.RandomUtil.randomEle;
 import static org.openea.eap.framework.common.pojo.CommonResult.success;
 import static org.openea.eap.framework.common.util.collection.SetUtils.asSet;
@@ -213,6 +214,7 @@ public class AdminUserServiceImplTest extends BaseDbUnitTest {
         UserProfileUpdateReqVO reqVO = randomPojo(UserProfileUpdateReqVO.class, o -> {
             o.setMobile(randomString());
             o.setSex(RandomUtil.randomEle(SexEnum.values()).getSex());
+            o.setAvatar(randomURL());
         });
 
         // 调用
@@ -243,26 +245,6 @@ public class AdminUserServiceImplTest extends BaseDbUnitTest {
         // 断言
         AdminUserDO user = userMapper.selectById(userId);
         assertEquals("encode:yuanma", user.getPassword());
-    }
-
-    @Test
-    public void testUpdateUserAvatar_success() throws Exception {
-        // mock 数据
-        AdminUserDO dbUser = randomAdminUserDO();
-        userMapper.insert(dbUser);
-        // 准备参数
-        Long userId = dbUser.getId();
-        byte[] avatarFileBytes = randomBytes(10);
-        ByteArrayInputStream avatarFile = new ByteArrayInputStream(avatarFileBytes);
-        // mock 方法
-        String avatar = randomString();
-        when(fileApi.createFile(eq( avatarFileBytes))).thenReturn(avatar);
-
-        // 调用
-        userService.updateUserAvatar(userId, avatarFile);
-        // 断言
-        AdminUserDO user = userMapper.selectById(userId);
-        assertEquals(avatar, user.getAvatar());
     }
 
     @Test
