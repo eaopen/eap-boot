@@ -31,6 +31,10 @@
             <version>${revision}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
 
         <!-- 集成平台内IM消息 -->
 <!--        <dependency>-->
