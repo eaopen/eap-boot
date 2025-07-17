@@ -1,6 +1,5 @@
 package org.openea.eap.module.system.api.permission;
 
-import io.swagger.v3.oas.annotations.Parameters;
 import org.openea.eap.framework.common.biz.system.permission.PermissionCommonApi;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.module.system.enums.ApiConstants;

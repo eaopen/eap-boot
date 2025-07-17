@@ -1,11 +1,11 @@
 package org.openea.eap.module.system.api.logger;
 
-import org.openea.eap.framework.common.biz.system.logger.dto.OperateLogRespDTO;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.common.biz.system.logger.dto.OperateLogCreateReqDTO;
 import org.openea.eap.module.system.api.logger.dto.OperateLogPageReqDTO;
+import org.openea.eap.module.system.api.logger.dto.OperateLogRespDTO;
 import org.openea.eap.module.system.dal.dataobject.logger.OperateLogDO;
 import org.openea.eap.module.system.service.logger.OperateLogService;
 import jakarta.annotation.Resource;

@@ -1,10 +1,10 @@
 package org.openea.eap.module.system.api.logger;
 
 import org.openea.eap.framework.common.biz.system.logger.OperateLogCommonApi;
-import org.openea.eap.framework.common.biz.system.logger.dto.OperateLogRespDTO;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.module.system.api.logger.dto.OperateLogPageReqDTO;
+import org.openea.eap.module.system.api.logger.dto.OperateLogRespDTO;
 import org.openea.eap.module.system.enums.ApiConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
