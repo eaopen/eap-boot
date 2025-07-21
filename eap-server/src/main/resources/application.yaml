@@ -61,6 +61,81 @@ spring:
 #      client:
 #        refresh-enabled: false
 
+--- #################### 数据库相关配置 ####################
+spring:
+  # 数据源配置项
+  autoconfigure:
+    exclude:
+      #- com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure # 排除 Druid 的自动配置，使用 dynamic-datasource-spring-boot-starter 配置多数据源
+      - org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration # 默认 local 环境，不开启 Quartz 的自动配置
+      - de.codecentric.boot.admin.server.config.AdminServerAutoConfiguration # 禁用 Spring Boot Admin 的 Server 的自动配置
+      - de.codecentric.boot.admin.server.ui.config.AdminServerUiAutoConfiguration # 禁用 Spring Boot Admin 的 Server UI 的自动配置
+      - de.codecentric.boot.admin.client.config.SpringBootAdminClientAutoConfiguration # 禁用 Spring Boot Admin 的 Client 的自动配置
+  datasource:
+    db-type: MySQL #数据库类型
+    host: ${jdbc_host:127.0.0.1}
+    port: ${jdbc_port:3306}
+    username: ${jdbc_user:eapuser}
+    password: ${jdbc_password:eap2020}
+    db-name: eap-db
+    druid: # Druid 【监控】相关的全局配置
+      web-stat-filter:
+        enabled: true
+      stat-view-servlet:
+        enabled: true
+        allow: # 设置白名单，不填则允许所有访问
+        url-pattern: /druid/*
+        login-username: # 控制台管理用户名和密码
+        login-password:
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true # 慢 SQL 记录
+          slow-sql-millis: 100
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+    dynamic: # 多数据源配置
+      druid: # Druid 【连接池】相关的全局配置
+        initial-size: 5 # 初始连接数
+        min-idle: 10 # 最小连接池数量
+        max-active: 20 # 最大连接池数量
+        max-wait: 600000 # 配置获取连接等待超时的时间，单位：毫秒
+        time-between-eviction-runs-millis: 60000 # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位：毫秒
+        min-evictable-idle-time-millis: 300000 # 配置一个连接在池中最小生存的时间，单位：毫秒
+        max-evictable-idle-time-millis: 900000 # 配置一个连接在池中最大生存的时间，单位：毫秒
+        validation-query: SELECT 1 FROM DUAL # 配置检测连接是否有效
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+      primary: master
+      datasource:
+        master:
+          url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.dbname}?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&&serverTimezone=UTC
+          username: ${spring.datasource.username}
+          password: ${spring.datasource.password}
+          #driver-class-name: com.mysql.cj.jdbc.Driver
+        #          url: jdbc:mysql://127.0.0.1:3306/eap-db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
+        #          username: root
+        #          password: root
+        slave: # 模拟从库，可根据自己需要修改 # 模拟从库，可根据自己需要修改
+          lazy: true # 开启懒加载，保证启动速度
+          url: jdbc:mysql://${spring.datasource.host}:${spring.datasource.port}/${spring.datasource.dbname}?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&&serverTimezone=UTC
+          username: ${spring.datasource.username}
+          password: ${spring.datasource.password}
+  #          url: jdbc:mysql://127.0.0.1:3306/eap-db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true # MySQL Connector/J 8.X 连接的示例
+  #          username: root
+  #          password: root
+
+  # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
+  data:
+    redis:
+      host: ${redis_host:127.0.0.1} # 地址
+      port: ${redis_port:6379} # 端口
+      database: ${redis_db:1} # 数据库索引
+      password: ${redis_password:123456} # 密码，建议生产环境开启
+
 --- #################### 接口文档配置 ####################
 
 springdoc:
