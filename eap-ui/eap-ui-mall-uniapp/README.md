@@ -1,7 +1,6 @@
 仓库地址：
 
-* Gitee：<https://gitee.com/eapcode/eap-mall-uniapp>
-* GitHub：<https://github.com/eapcode/eap-mall-uniapp>
+* GitHub：<https://github.com/eaopen/eap-mall-uniapp>
 
 功能列表：
 * 基于 uniapp 开发，支持微信小程序、微信公众号、H5 移动端，未来会支持支付宝小程序、抖音小程序等
