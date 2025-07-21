@@ -13,6 +13,7 @@ import org.openea.eap.module.infra.dal.mysql.job.JobMapper;
 import org.openea.eap.module.infra.enums.job.JobStatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +33,7 @@ import static org.openea.eap.module.infra.enums.ErrorCodeConstants.*;
 @Service
 @Validated
 @Slf4j
+@ConditionalOnBean(SchedulerManager.class)
 public class JobServiceImpl implements JobService {
 
     @Resource
