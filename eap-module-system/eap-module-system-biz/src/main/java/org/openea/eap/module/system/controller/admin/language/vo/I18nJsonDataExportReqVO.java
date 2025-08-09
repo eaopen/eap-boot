@@ -24,6 +24,12 @@ public class I18nJsonDataExportReqVO {
     @Schema(description = "多语言设置json")
     private String json;
 
+    @Schema(description = "翻译来源", example = "AI_AUTO")
+    private String translationSource;
+
+    @Schema(description = "AI提供商", example = "openai")
+    private String aiProvider;
+
     @Schema(description = "创建时间")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime[] createTime;

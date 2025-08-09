@@ -33,7 +33,13 @@ public interface I18nJsonDataMapper extends BaseMapperX<I18nJsonDataDO> {
                 .likeIfPresent(I18nJsonDataDO::getAlias, reqVO.getAlias())
                 .likeIfPresent(I18nJsonDataDO::getName, reqVO.getName())
                 .likeIfPresent(I18nJsonDataDO::getJson, reqVO.getJson())
+                .eqIfPresent(I18nJsonDataDO::getTranslationSource, reqVO.getTranslationSource())
+                .eqIfPresent(I18nJsonDataDO::getAiProvider, reqVO.getAiProvider())
+                .eqIfPresent(I18nJsonDataDO::getAiModel, reqVO.getAiModel())
+                .geIfPresent(I18nJsonDataDO::getTranslationQuality, reqVO.getMinQuality())
+                .leIfPresent(I18nJsonDataDO::getTranslationQuality, reqVO.getMaxQuality())
                 .betweenIfPresent(I18nJsonDataDO::getCreateTime, reqVO.getCreateTime())
+                .betweenIfPresent(I18nJsonDataDO::getLastAiUpdate, reqVO.getLastAiUpdateTime())
                 .orderByDesc(I18nJsonDataDO::getId));
     }
 
@@ -43,8 +49,38 @@ public interface I18nJsonDataMapper extends BaseMapperX<I18nJsonDataDO> {
                 .likeIfPresent(I18nJsonDataDO::getAlias, reqVO.getAlias())
                 .likeIfPresent(I18nJsonDataDO::getName, reqVO.getName())
                 .likeIfPresent(I18nJsonDataDO::getJson, reqVO.getJson())
+                .eqIfPresent(I18nJsonDataDO::getTranslationSource, reqVO.getTranslationSource())
+                .eqIfPresent(I18nJsonDataDO::getAiProvider, reqVO.getAiProvider())
                 .betweenIfPresent(I18nJsonDataDO::getCreateTime, reqVO.getCreateTime())
                 .orderByDesc(I18nJsonDataDO::getId));
+    }
+
+    /**
+     * 根据AI提供商和模型查询翻译数据
+     */
+    default List<I18nJsonDataDO> selectByAIProvider(String aiProvider, String aiModel) {
+        return selectList(new LambdaQueryWrapperX<I18nJsonDataDO>()
+                .eq(I18nJsonDataDO::getAiProvider, aiProvider)
+                .eqIfPresent(I18nJsonDataDO::getAiModel, aiModel)
+                .orderByDesc(I18nJsonDataDO::getLastAiUpdate));
+    }
+
+    /**
+     * 查询需要AI翻译的数据（质量分数低于阈值的）
+     */
+    default List<I18nJsonDataDO> selectLowQualityTranslations(Integer qualityThreshold) {
+        return selectList(new LambdaQueryWrapperX<I18nJsonDataDO>()
+                .lt(I18nJsonDataDO::getTranslationQuality, qualityThreshold)
+                .in(I18nJsonDataDO::getTranslationSource, "AI_AUTO", "LLM_AUTO")
+                .orderByAsc(I18nJsonDataDO::getTranslationQuality));
+    }
+
+    /**
+     * 统计AI翻译数据
+     */
+    default Long countByTranslationSource(String translationSource) {
+        return selectCount(new LambdaQueryWrapperX<I18nJsonDataDO>()
+                .eq(I18nJsonDataDO::getTranslationSource, translationSource));
     }
 
 }

@@ -1,0 +1,59 @@
+# AI翻译配置示例
+eap:
+  i18n:
+    ai:
+      enabled: true
+      default-provider: mock
+      providers:
+        # Mock翻译提供商（用于测试）
+        mock:
+          enabled: true
+          priority: 999
+          timeout: 5000
+          rate-limit: 1000
+          quality-threshold: 5
+          supported-languages:
+            - zh-CN
+            - en-US
+            - ja-JP
+            - ko-KR
+            - fr-FR
+            - de-DE
+        
+        # OpenAI翻译提供商
+        openai:
+          enabled: false  # 默认禁用，需要配置API密钥后启用
+          api-key: ${OPENAI_API_KEY:your-openai-api-key}
+          api-endpoint: https://api.openai.com/v1/chat/completions
+          default-model: gpt-3.5-turbo
+          priority: 1
+          timeout: 30000
+          max-retries: 3
+          rate-limit: 60
+          quality-threshold: 7
+          supported-languages:
+            - zh-CN
+            - en-US
+            - ja-JP
+            - ko-KR
+            - fr-FR
+            - de-DE
+            - es-ES
+            - pt-PT
+            - ru-RU
+            - ar-SA
+      
+      # 回退策略配置
+      fallback-chains:
+        "zh-CN-en-US": ["openai", "mock"]
+        "en-US-zh-CN": ["openai", "mock"]
+        "zh-CN-ja-JP": ["openai", "mock"]
+        "ja-JP-zh-CN": ["openai", "mock"]
+      
+      # 全局配置
+      global:
+        default-quality-threshold: 5
+        enable-cache: true
+        cache-expire-hours: 24
+        enable-quality-evaluation: true
+        max-batch-size: 100

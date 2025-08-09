@@ -25,4 +25,19 @@ public class I18nJsonDataBaseVO {
     @Schema(description = "多语言设置json")
     private String json;
 
+    @Schema(description = "翻译来源", example = "MANUAL")
+    private String translationSource;
+
+    @Schema(description = "AI模型", example = "gpt-3.5-turbo")
+    private String aiModel;
+
+    @Schema(description = "翻译质量评分", example = "8")
+    private Integer translationQuality;
+
+    @Schema(description = "AI提供商", example = "openai")
+    private String aiProvider;
+
+    @Schema(description = "翻译置信度", example = "0.85")
+    private Double translationConfidence;
+
 }

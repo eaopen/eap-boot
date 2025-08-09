@@ -96,32 +96,86 @@ public class I18nUtil {
     }
 
     public static String getMessage(String code, @Nullable Object[] args, @Nullable String defaultMessage){
-        // TODO 优先配置，配置找不到则自动翻译
-        String lable = null;
+        String label = null;
         try {
             Locale locale = getLocale();
-            lable = getMessageResource().getMessage(code, args, locale);
-            if (StrUtil.isEmpty(lable) && StrUtil.isNotEmpty(defaultMessage)) {
-                lable = defaultMessage;
+            label = getMessageResource().getMessage(code, args, locale);
+            if (StrUtil.isEmpty(label) && StrUtil.isNotEmpty(defaultMessage)) {
+                label = defaultMessage;
             }
-//            return getMessageResource().getMessage(code, args, defaultMessage, getLocale());
         }catch(NoSuchMessageException e){
-            log.warn(e.getMessage()+" (getMessage code="+code+")");
-            // default
-            if (StrUtil.isEmpty(lable) && StrUtil.isNotEmpty(defaultMessage)) {
-                lable = defaultMessage;
+            log.debug(e.getMessage()+" (getMessage code="+code+")");
+            // 尝试AI自动翻译
+            if (StrUtil.isEmpty(label)) {
+                label = tryAITranslation(code, defaultMessage, getLocale());
+            }
+            // 使用默认消息
+            if (StrUtil.isEmpty(label) && StrUtil.isNotEmpty(defaultMessage)) {
+                label = defaultMessage;
             }
         }catch(Exception e){
             log.warn(e.getMessage()+" (getMessage code="+code+")", e);
         }
-        if(StrUtil.isEmpty(lable)
-                && StrUtil.isNotEmpty(defaultMessage)){
-            lable = defaultMessage;
+        
+        if(StrUtil.isEmpty(label) && StrUtil.isNotEmpty(defaultMessage)){
+            label = defaultMessage;
         }
-        if(StrUtil.isEmpty(lable)){
-            lable = code;
+        if(StrUtil.isEmpty(label)){
+            label = code;
         }
-        return lable;
+        return label;
+    }
+
+    /**
+     * 尝试AI自动翻译
+     */
+    private static String tryAITranslation(String code, String defaultMessage, Locale locale) {
+        if (StrUtil.isEmpty(defaultMessage)) {
+            return null;
+        }
+        
+        try {
+            // 从Spring容器获取AITranslationFactory
+            Object aiTranslationFactory = SpringUtils.getBean("AITranslationFactory", false);
+            if (aiTranslationFactory == null) {
+                return null;
+            }
+            
+            String targetLang = locale.toLanguageTag();
+            if ("zh".equals(locale.getLanguage()) && StrUtil.isEmpty(locale.getCountry())) {
+                targetLang = "zh-CN";
+            } else if ("en".equals(locale.getLanguage()) && StrUtil.isEmpty(locale.getCountry())) {
+                targetLang = "en-US";
+            }
+            
+            // 假设默认消息是中文，翻译到目标语言
+            if (!"zh-CN".equals(targetLang)) {
+                // 使用反射调用translateWithFallback方法
+                java.lang.reflect.Method method = aiTranslationFactory.getClass()
+                    .getMethod("translateWithFallback", String.class, String.class, String.class, String.class);
+                Object result = method.invoke(aiTranslationFactory, defaultMessage, "zh-CN", targetLang, "system_message");
+                
+                if (result != null) {
+                    // 检查翻译是否成功
+                    java.lang.reflect.Method getSuccessMethod = result.getClass().getMethod("getSuccess");
+                    Boolean success = (Boolean) getSuccessMethod.invoke(result);
+                    
+                    if (Boolean.TRUE.equals(success)) {
+                        java.lang.reflect.Method getTranslatedTextMethod = result.getClass().getMethod("getTranslatedText");
+                        String translatedText = (String) getTranslatedTextMethod.invoke(result);
+                        
+                        if (StrUtil.isNotEmpty(translatedText)) {
+                            log.debug("AI翻译成功: {} -> {} ({}->{})", defaultMessage, translatedText, "zh-CN", targetLang);
+                            return translatedText;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.debug("AI翻译失败: {}", e.getMessage());
+        }
+        
+        return null;
     }
 
     public static String getMessage(String code, String defaultMessage){

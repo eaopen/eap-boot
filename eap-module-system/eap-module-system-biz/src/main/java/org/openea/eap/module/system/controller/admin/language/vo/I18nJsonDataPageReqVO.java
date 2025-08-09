@@ -29,8 +29,27 @@ public class I18nJsonDataPageReqVO extends PageParam {
     @Schema(description = "多语言设置json")
     private String json;
 
+    @Schema(description = "翻译来源", example = "AI_AUTO")
+    private String translationSource;
+
+    @Schema(description = "AI提供商", example = "openai")
+    private String aiProvider;
+
+    @Schema(description = "AI模型", example = "gpt-3.5-turbo")
+    private String aiModel;
+
+    @Schema(description = "最小质量分数", example = "5")
+    private Integer minQuality;
+
+    @Schema(description = "最大质量分数", example = "10")
+    private Integer maxQuality;
+
     @Schema(description = "创建时间")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime[] createTime;
+
+    @Schema(description = "最后AI更新时间")
+    @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
+    private LocalDateTime[] lastAiUpdateTime;
 
 }
