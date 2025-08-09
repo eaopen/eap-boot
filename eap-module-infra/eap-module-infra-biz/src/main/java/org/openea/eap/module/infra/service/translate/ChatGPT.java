@@ -6,13 +6,22 @@ import io.github.asleepyfish.config.ChatGPTProperties;
 import io.github.asleepyfish.service.OpenAiProxyService;
 import io.github.asleepyfish.util.OpenAiUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
+import org.openea.eap.module.infra.api.translate.*;
+import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
-//@Configuration
-//@EnableChatGPT
+/**
+ * ChatGPT翻译引擎实现
+ * 基于OpenAI ChatGPT API的翻译服务
+ *
+ * @author EAP
+ */
+@Component
 @Slf4j
-public class ChatGPT {
+public class ChatGPT implements TranslateEngine {
 
     private static ChatGPT _instance;
     public static ChatGPT getInstance(){
@@ -23,6 +32,12 @@ public class ChatGPT {
     }
 
     private ChatGPTProperties properties;
+    
+    // TranslateEngine接口所需的成员变量
+    private final AtomicLong requestCount = new AtomicLong(0);
+    private volatile LocalDateTime lastUsedTime = LocalDateTime.now();
+    private volatile boolean available = true;
+    private final Map<String, Object> configuration = new HashMap<>();
 
     public ChatGPTProperties loadChatGPTProperties(){
         if(properties==null){
@@ -72,5 +87,75 @@ public class ChatGPT {
         new ChatGPT().queryMenuI18n("button","roleUpdate","角色修改",0);
     }
 
+    // ========== TranslateEngine接口实现 ==========
+
+    @Override
+    public String getName() {
+        return "ChatGPT";
+    }
+
+    @Override
+    public String getType() {
+        return "CHATGPT";
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return available;
+    }
+
+
+
+    @Override
+    public String translateText(String text, String sourceLang, String targetLang) {
+        try {
+            requestCount.incrementAndGet();
+            lastUsedTime = LocalDateTime.now();
+            
+            String prompt = buildTranslatePrompt(text, sourceLang, targetLang);
+            String result = chat2(prompt);
+            
+            if (result != null && !result.trim().isEmpty()) {
+                return result.trim();
+            } else {
+                log.warn("ChatGPT翻译结果为空");
+                return null;
+            }
+        } catch (Exception e) {
+            log.error("ChatGPT翻译失败: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+
+
+    /**
+     * 构建翻译提示词
+     */
+    private String buildTranslatePrompt(String text, String sourceLang, String targetLang) {
+        return String.format(
+            "请将以下%s文本翻译成%s，保持原文的格式和语气：\n%s",
+            getLanguageName(sourceLang),
+            getLanguageName(targetLang),
+            text
+        );
+    }
+
+    /**
+     * 获取语言名称
+     */
+    private String getLanguageName(String langCode) {
+        switch (langCode) {
+            case "zh-CN": return "中文";
+            case "en-US": return "英文";
+            case "ja-JP": return "日文";
+            case "ko-KR": return "韩文";
+            case "fr-FR": return "法文";
+            case "de-DE": return "德文";
+            case "es-ES": return "西班牙文";
+            case "ru-RU": return "俄文";
+            default: return langCode;
+        }
+    }
 
 }

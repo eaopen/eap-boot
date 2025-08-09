@@ -3,19 +3,32 @@ package org.openea.eap.module.infra.service.translate;
 
 import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSONArray;
+import org.openea.eap.module.infra.api.translate.*;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * google translate
+ * Google翻译引擎实现
+ * 基于Google Translate API的翻译引擎
+ *
+ * @author EAP
  */
-public class GoogleTranslate {
+@Component
+public class GoogleTranslate implements TranslateEngine {
     private static GoogleTranslate _instance = null;
 
     private static int timeout = 5000;
+    
+    // 统计信息
+    private final AtomicLong totalRequests = new AtomicLong(0);
+    private final AtomicLong successfulRequests = new AtomicLong(0);
+    private volatile LocalDateTime lastUsedTime;
+    private volatile boolean available = true;
+    private final Map<String, Object> configuration = new HashMap<>();
 
     /**
      * 获取单例
@@ -30,14 +43,14 @@ public class GoogleTranslate {
     }
 
     /**
-     * 翻译文本
+     * 内部翻译方法
      * @param text  文本内容
      * @param sourceLang  文本所属语言。如果不知道，可以使用auto
      * @param targetLang  目标语言。必须是明确的有效的目标语言
      * @return
      * @throws Exception
      */
-    public String translateText(String text,String sourceLang, String targetLang) throws Exception{
+    private String doTranslate(String text,String sourceLang, String targetLang) throws Exception{
         String retStr="";
         if(StringUtils.isEmpty(sourceLang)){
             sourceLang = "auto";
@@ -220,6 +233,42 @@ public class GoogleTranslate {
         LANGUAGE_MAP.put("yi","Yiddish");
         LANGUAGE_MAP.put("yo","Yoruba");
         LANGUAGE_MAP.put("zu","Zulu");
+    }
+
+    // ========== TranslateEngine接口实现 ==========
+
+    @Override
+    public String getName() {
+        return "Google Translate";
+    }
+
+    @Override
+    public String getType() {
+        return "GOOGLE";
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return available;
+    }
+
+    @Override
+    public String translateText(String text, String sourceLang, String targetLang) {
+        try {
+            totalRequests.incrementAndGet();
+            lastUsedTime = LocalDateTime.now();
+            
+            String result = doTranslate(text, sourceLang, targetLang);
+            
+            if (result != null && !result.trim().isEmpty()) {
+                successfulRequests.incrementAndGet();
+                return result.trim();
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
