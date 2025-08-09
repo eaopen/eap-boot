@@ -8,6 +8,8 @@ import org.openea.eap.module.system.dal.dataobject.mail.MailTemplateDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.mq.message.mail.MailSendMessage;
 import org.openea.eap.module.system.mq.producer.mail.MailProducer;
+import org.openea.eap.module.message.api.MessageSendApi;
+import org.openea.eap.module.message.api.dto.MessageSendReqDTO;
 import org.openea.eap.module.system.service.member.MemberService;
 import org.openea.eap.module.system.service.user.AdminUserService;
 import com.google.common.annotations.VisibleForTesting;
@@ -47,6 +49,8 @@ public class MailSendServiceImpl implements MailSendService {
     private MailLogService mailLogService;
     @Resource
     private MailProducer mailProducer;
+    @Resource
+    private MessageSendApi messageSendApi;
 
     @Override
     public Long sendSingleMailToAdmin(String mail, Long userId,
@@ -91,10 +95,21 @@ public class MailSendServiceImpl implements MailSendService {
         String content = mailTemplateService.formatMailTemplateContent(template.getContent(), templateParams);
         Long sendLogId = mailLogService.createMailLog(userId, userType, mail,
                 account, template, content, templateParams, isSend);
-        // 发送 MQ 消息，异步执行发送短信
+        // 兼容旧链路：保留原有事件；并通过新消息模块发送（覆盖通道为 EMAIL）
         if (isSend) {
-            mailProducer.sendMailSendMessage(sendLogId, mail, account.getId(),
-                    template.getNickname(), title, content);
+            try {
+                MessageSendReqDTO req = new MessageSendReqDTO();
+                req.setSceneCode(templateCode);
+                req.setUserId(userId);
+                req.setUserType(userType);
+                req.setEmail(mail);
+                req.setVariables(templateParams);
+                req.setOverrideChannels(java.util.Set.of("EMAIL"));
+                messageSendApi.send(req);
+            } catch (Exception ignored) {
+                mailProducer.sendMailSendMessage(sendLogId, mail, account.getId(),
+                        template.getNickname(), title, content);
+            }
         }
         return sendLogId;
     }

@@ -16,6 +16,8 @@ import org.openea.eap.module.system.dal.dataobject.sms.SmsTemplateDO;
 import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.mq.message.sms.SmsSendMessage;
 import org.openea.eap.module.system.mq.producer.sms.SmsProducer;
+import org.openea.eap.module.message.api.MessageSendApi;
+import org.openea.eap.module.message.api.dto.MessageSendReqDTO;
 import org.openea.eap.module.system.service.member.MemberService;
 import org.openea.eap.module.system.service.user.AdminUserService;
 import com.google.common.annotations.VisibleForTesting;
@@ -51,6 +53,8 @@ public class SmsSendServiceImpl implements SmsSendService {
 
     @Resource
     private SmsProducer smsProducer;
+    @Resource
+    private MessageSendApi messageSendApi;
 
     @Override
     @DataPermission(enable = false) // 发送短信时，无需考虑数据权限
@@ -95,10 +99,22 @@ public class SmsSendServiceImpl implements SmsSendService {
         String content = smsTemplateService.formatSmsTemplateContent(template.getContent(), templateParams);
         Long sendLogId = smsLogService.createSmsLog(mobile, userId, userType, isSend, template, content, templateParams);
 
-        // 发送 MQ 消息，异步执行发送短信
+        // 兼容旧链路：保留原有事件；并通过新消息模块发送（覆盖通道为 SMS）
         if (isSend) {
-            smsProducer.sendSmsSendMessage(sendLogId, mobile, template.getChannelId(),
-                    template.getApiTemplateId(), newTemplateParams);
+            try {
+                MessageSendReqDTO req = new MessageSendReqDTO();
+                req.setSceneCode(templateCode);
+                req.setUserId(userId);
+                req.setUserType(userType);
+                req.setMobile(mobile);
+                req.setVariables(templateParams);
+                req.setOverrideChannels(java.util.Set.of("SMS"));
+                messageSendApi.send(req);
+            } catch (Exception ignored) {
+                // 降级到原有事件机制
+                smsProducer.sendSmsSendMessage(sendLogId, mobile, template.getChannelId(),
+                        template.getApiTemplateId(), newTemplateParams);
+            }
         }
         return sendLogId;
     }

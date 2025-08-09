@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.github.eaopen</groupId>
+        <artifactId>eap-boot-pom</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>eap-module-message</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>eap-module-message-api</module>
+        <module>eap-module-message-biz</module>
+    </modules>
+
+    <name>${project.artifactId}</name>
+    <description>消息模块（多通道编排、DB/RabbitMQ 队列）</description>
+
+    <profiles>
+        <profile>
+            <id>cloud</id>
+            <modules>
+                <!-- 如需微服务化，可新增 cloud server 模块 -->
+            </modules>
+        </profile>
+    </profiles>
+</project>
