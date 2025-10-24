@@ -35,7 +35,7 @@
         <flatten-maven-plugin.version>1.7.0</flatten-maven-plugin.version>
         <!-- 待优化 -->
         <lombok.version>1.18.36</lombok.version>
-        <spring.boot.version>3.5.3</spring.boot.version>
+        <spring.boot.version>3.5.6</spring.boot.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -213,6 +213,7 @@
                 </repository>
             </distributionManagement>
         </profile>
+        <!--
         <profile>
             <id>dev106</id>
             <distributionManagement>
@@ -223,6 +224,7 @@
                 </repository>
             </distributionManagement>
         </profile>
+        -->
         <profile>
             <id>ossrh</id>
             <distributionManagement>
