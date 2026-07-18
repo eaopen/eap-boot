@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>eap-infra-file</artifactId>
+    <name>${project.artifactId}</name>
     <packaging>pom</packaging>
     <description>基础文件框架</description>
 
