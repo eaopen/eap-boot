@@ -5,7 +5,7 @@ import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.module.system.api.user.dto.AdminUserRespDTO;
 import org.openea.eap.module.system.enums.ApiConstants;
-import com.fhs.core.trans.anno.AutoTrans;
+import org.dromara.core.trans.anno.AutoTrans;
 import com.fhs.trans.service.AutoTransable;
 import feign.FeignIgnore;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,6 @@
 package org.openea.eap.module.system.api.user.dto;
 
-import com.fhs.core.trans.vo.VO;
+import org.dromara.core.trans.vo.VO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

@@ -7,6 +7,8 @@ import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSave
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.mysql.permission.MenuMapper;
 import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
+import org.openea.eap.module.system.service.language.I18nDataService;
+import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.openea.eap.module.system.service.tenant.TenantService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -44,6 +46,10 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
     private PermissionService permissionService;
     @MockBean
     private TenantService tenantService;
+    @MockBean
+    private I18nDataService i18nDataService;
+    @MockBean
+    private I18nJsonDataService i18nJsonDataService;
 
     @Test
     public void testCreateMenu_success() {
@@ -207,11 +213,14 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
     @Test
     public void testGetMenuListByPermission() {
         // mock 数据
-        MenuDO menu100 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus()));
+        MenuDO menu100 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus())
+                .setParentId(ID_ROOT));
         menuMapper.insert(menu100);
-        MenuDO menu101 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.DISABLE.getStatus())); // 禁用菜单
+        MenuDO menu101 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.DISABLE.getStatus())
+                .setParentId(ID_ROOT)); // 禁用菜单
         menuMapper.insert(menu101);
-        MenuDO menu102 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus()));
+        MenuDO menu102 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus())
+                .setParentId(ID_ROOT));
         menuMapper.insert(menu102);
         // 准备参数
         String permission = menu100.getPermission();

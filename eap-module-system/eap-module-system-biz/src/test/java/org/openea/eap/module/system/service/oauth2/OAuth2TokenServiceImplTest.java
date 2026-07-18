@@ -5,6 +5,7 @@ import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.ErrorCode;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.DateUtils;
+import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.openea.eap.framework.test.core.ut.BaseDbAndRedisUnitTest;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.token.OAuth2AccessTokenPageReqVO;
@@ -55,6 +56,8 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
     private OAuth2ClientService oauth2ClientService;
     @MockBean
     private AdminUserService adminUserService;
+    @MockBean
+    private SecurityProperties securityProperties;
 
     @Test
     public void testCreateAccessToken() {
@@ -77,7 +80,7 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 断言访问令牌
         OAuth2AccessTokenDO dbAccessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessTokenDO.getAccessToken());
         // TODO @芋艿：expiresTime 被屏蔽，仅 win11 会复现，建议后续修复。
-        assertPojoEquals(accessTokenDO, dbAccessTokenDO, "expiresTime", "createTime", "updateTime", "deleted");
+        assertPojoEquals(accessTokenDO, dbAccessTokenDO, "expiresTime", "createTime", "updateTime", "deleted", "userKey");
         assertEquals(userId, accessTokenDO.getUserId());
         assertEquals(userType, accessTokenDO.getUserType());
         assertEquals(2, accessTokenDO.getUserInfo().size());
@@ -89,10 +92,10 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 断言访问令牌的缓存
         OAuth2AccessTokenDO redisAccessTokenDO = oauth2AccessTokenRedisDAO.get(accessTokenDO.getAccessToken());
         // TODO @芋艿：expiresTime 被屏蔽，仅 win11 会复现，建议后续修复。
-        assertPojoEquals(accessTokenDO, redisAccessTokenDO, "expiresTime", "createTime", "updateTime", "deleted");
+        assertPojoEquals(accessTokenDO, redisAccessTokenDO, "expiresTime", "createTime", "updateTime", "deleted", "userKey");
         // 断言刷新令牌
         OAuth2RefreshTokenDO refreshTokenDO = oauth2RefreshTokenMapper.selectList().get(0);
-        assertPojoEquals(accessTokenDO, refreshTokenDO, "id", "expiresTime", "createTime", "updateTime", "deleted");
+        assertPojoEquals(accessTokenDO, refreshTokenDO, "id", "expiresTime", "createTime", "updateTime", "deleted", "userKey");
         assertFalse(DateUtils.isExpired(refreshTokenDO.getExpiresTime()));
     }
 

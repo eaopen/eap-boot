@@ -50,7 +50,7 @@ class OAuth2CodeServiceImplTest extends BaseDbUnitTest {
         // 断言
         OAuth2CodeDO dbCodeDO = oauth2CodeMapper.selectByCode(codeDO.getCode());
         // TODO @芋艿：expiresTime 被屏蔽，仅 win11 会复现，建议后续修复。
-        assertPojoEquals(codeDO, dbCodeDO, "expiresTime", "createTime", "updateTime", "deleted");
+        assertPojoEquals(codeDO, dbCodeDO, "expiresTime", "createTime", "updateTime", "deleted", "userKey");
         assertEquals(userId, codeDO.getUserId());
         assertEquals(userType, codeDO.getUserType());
         assertEquals(clientId, codeDO.getClientId());

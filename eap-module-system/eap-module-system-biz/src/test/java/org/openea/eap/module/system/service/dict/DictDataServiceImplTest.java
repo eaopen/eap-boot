@@ -72,6 +72,7 @@ public class DictDataServiceImplTest extends BaseDbUnitTest {
             o.setLabel("芋艿");
             o.setDictType("yunai");
             o.setStatus(CommonStatusEnum.ENABLE.getStatus());
+            o.setExtendProps(null); // 非持久化字段不参与数据库克隆与查询断言
         });
         dictDataMapper.insert(dbDictData);
         // 测试 label 不匹配
@@ -332,6 +333,7 @@ public class DictDataServiceImplTest extends BaseDbUnitTest {
     private static DictDataDO randomDictDataDO(Consumer<DictDataDO>... consumers) {
         Consumer<DictDataDO> consumer = (o) -> {
             o.setStatus(randomCommonStatus()); // 保证 status 的范围
+            o.setExtendProps(null); // @TableField(exist = false)
         };
         return randomPojo(DictDataDO.class, ArrayUtils.append(consumer, consumers));
     }

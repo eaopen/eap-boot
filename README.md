@@ -2,13 +2,19 @@
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.java.net/projects/jdk/17/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.15-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Maven](https://img.shields.io/badge/Maven-3.6+-red.svg)](https://maven.apache.org/)
 
 ## 项目简介
 
 EAP Boot 是一个基于 Spring Boot 3.x 的企业级应用开发脚手架（yudao二次开发），提供了完整的后端解决方案。
 项目采用模块化设计，支持单体应用和微服务架构，为企业级应用开发提供了坚实的基础。
+
+## 人机协作
+
+开发人员与编码智能体共用 [AGENTS.md](AGENTS.md) 作为仓库协作规范：其中说明模块边界、兼容性要求、测试和交付标准。Codex 直接读取该文件；Claude Code 通过 [CLAUDE.md](CLAUDE.md) 指向同一规则，避免多份指引发生偏差。
+
+推荐协作流程：先确认模块、接口调用方和已有测试 → 做最小范围修改 → 运行相关测试 → 更新 README/技术文档 → 在交付说明中记录验证结果。涉及共享框架时，先安装同级 `eap-common`，再编译或测试本仓。
 
 ## 核心特性
 
@@ -70,6 +76,18 @@ eap-boot-pom/
 - MySQL 8.0+ / PostgreSQL 12+
 - Redis 6.0+
 - Node.js 16+ (前端开发)
+
+### 共享框架依赖
+
+`eap-boot` 依赖同级 `eap-common` 的 EAP BOM 与框架组件。修改共享框架后，先安装它再验证本仓：
+
+```bash
+cd ../eap-common
+mvn -q -Dflatten.skip=true test
+mvn -q -DskipTests install
+cd ../eap-boot
+mvn -q -Dflatten.skip=true test
+```
 
 ### 本地开发
 
