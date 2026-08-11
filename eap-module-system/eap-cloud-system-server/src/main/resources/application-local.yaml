@@ -140,7 +140,7 @@ logging:
     # 配置自己写的 MyBatis Mapper 打印日志
     org.openea.eap.module.system.dal.mysql: debug
     org.openea.eap.module.system.dal.mysql.sms.SmsChannelMapper: INFO # 配置 SmsChannelMapper 的日志级别为 info
-    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 3.X 存在部分错误的 WARN 提示
+    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 4.1 存在部分错误的 WARN 提示
 
 --- #################### 微信公众号、小程序相关配置 ####################
 wx:

@@ -3,7 +3,7 @@ package org.openea.eap.gateway.handler;
 import org.openea.eap.framework.common.pojo.CommonResult;
 import org.openea.eap.gateway.util.WebFrameworkUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
+import org.springframework.boot.webflux.error.ErrorWebExceptionHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;

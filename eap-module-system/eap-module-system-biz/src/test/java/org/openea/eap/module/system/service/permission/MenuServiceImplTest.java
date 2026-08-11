@@ -11,7 +11,7 @@ import org.openea.eap.module.system.service.language.I18nDataService;
 import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.openea.eap.module.system.service.tenant.TenantService;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import jakarta.annotation.Resource;
@@ -42,13 +42,13 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
     @Resource
     private MenuMapper menuMapper;
 
-    @MockBean
+    @MockitoBean
     private PermissionService permissionService;
-    @MockBean
+    @MockitoBean
     private TenantService tenantService;
-    @MockBean
+    @MockitoBean
     private I18nDataService i18nDataService;
-    @MockBean
+    @MockitoBean
     private I18nJsonDataService i18nJsonDataService;
 
     @Test

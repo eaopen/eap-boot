@@ -186,7 +186,7 @@ logging:
     org.openea.eap.module.iot.dal.mysql: debug
     org.openea.eap.module.iot.dal.tdengine: DEBUG
     org.openea.eap.module.ai.dal.mysql: debug
-    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 3.X 存在部分错误的 WARN 提示
+    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 4.1 存在部分错误的 WARN 提示
 
 debug: false
 

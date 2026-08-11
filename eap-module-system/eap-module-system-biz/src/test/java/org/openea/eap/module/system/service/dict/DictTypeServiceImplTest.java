@@ -9,7 +9,7 @@ import org.openea.eap.module.system.controller.admin.dict.vo.type.DictTypeSaveRe
 import org.openea.eap.module.system.dal.dataobject.dict.DictTypeDO;
 import org.openea.eap.module.system.dal.mysql.dict.DictTypeMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import jakarta.annotation.Resource;
@@ -36,7 +36,7 @@ public class DictTypeServiceImplTest extends BaseDbUnitTest {
 
     @Resource
     private DictTypeMapper dictTypeMapper;
-    @MockBean
+    @MockitoBean
     private DictDataService dictDataService;
 
     @Test

@@ -1,13 +1,13 @@
 # EAP Boot 项目
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.java.net/projects/jdk/17/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.15-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/projects/jdk/21/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Maven](https://img.shields.io/badge/Maven-3.6+-red.svg)](https://maven.apache.org/)
 
 ## 项目简介
 
-EAP Boot 是一个基于 Spring Boot 3.x 的企业级应用开发脚手架（yudao二次开发），提供了完整的后端解决方案。
+EAP Boot 是一个基于 Spring Boot 4.1 的企业级应用开发脚手架（yudao二次开发），提供了完整的后端解决方案。
 项目采用模块化设计，支持单体应用和微服务架构，为企业级应用开发提供了坚实的基础。
 
 ## 人机协作
@@ -18,7 +18,7 @@ EAP Boot 是一个基于 Spring Boot 3.x 的企业级应用开发脚手架（yud
 
 ## 核心特性
 
-- 🚀 **现代化技术栈**：基于 Spring Boot 3.5 + Java 17
+- 🚀 **现代化技术栈**：基于 Spring Boot 4.1 + Java 21
 - 🏗️ **模块化架构**：清晰的模块划分，易于维护和扩展
 - 🔐 **完整的权限系统**：用户、角色、权限管理
 - 📊 **基础设施支持**：定时任务、代码生成、接口文档等
@@ -29,14 +29,14 @@ EAP Boot 是一个基于 Spring Boot 3.x 的企业级应用开发脚手架（yud
 ## 技术栈
 
 ### 后端技术
-- **核心框架**：Spring Boot 3.5
+- **核心框架**：Spring Boot 4.1
 - **数据访问**：MyBatis Plus
 - **安全框架**：Spring Security
 - **缓存**：Redis
 - **消息队列**：RabbitMQ
 - **数据库**：MySQL、PostgreSQL、Oracle 等
 - **构建工具**：Maven 3.6+
-- **Java版本**：JDK 17
+- **Java版本**：JDK 21
 
 ### 微服务技术
 - **服务网关**：Spring Cloud Gateway
@@ -71,11 +71,18 @@ eap-boot-pom/
 
 ### 环境要求
 
-- JDK 17+
+- JDK 21+
 - Maven 3.6+
 - MySQL 8.0+ / PostgreSQL 12+
 - Redis 6.0+
 - Node.js 16+ (前端开发)
+
+### 3.0 升级说明
+
+- `boot4` 分支的项目版本为 3.0.0，运行与构建基线升级为 JDK 21、Spring Boot 4.1.0。
+- 微服务依赖升级到 Spring Cloud 2025.1.2 与 Spring Cloud Alibaba 2025.1.0.0。
+- 单元测试已从已移除的 `@MockBean` 迁移到 `@MockitoBean`；自定义测试基类同步采用 Boot 4 的 JDBC、Redis 和 SQL 初始化自动配置。
+- 升级前必须先安装同分支的 `eap-common` 3.0.0，旧版 2.x BOM 与 3.0.0 应用不可混用。
 
 ### 共享框架依赖
 
