@@ -16,6 +16,8 @@ EAP Boot 是一个基于 Spring Boot 3.x 的企业级应用开发脚手架（yud
 
 推荐协作流程：先确认模块、接口调用方和已有测试 → 做最小范围修改 → 运行相关测试 → 更新 README/技术文档 → 在交付说明中记录验证结果。涉及共享框架时，先安装同级 `eap-common`，再编译或测试本仓。
 
+升级本仓前先阅读 [升级指南](doc/升级指南.md)（正文在 eap-common，本文件只列本仓特有事项）；版本变更见 [更新日志](CHANGELOG.md)，框架/BOM 层变更见 [eap-common 更新日志](../eap-common/CHANGELOG.md)。
+
 ## 核心特性
 
 - 🚀 **现代化技术栈**：基于 Spring Boot 3.5 + Java 17
