@@ -15,7 +15,7 @@
     <description>
         国际化i18n及翻译
     </description>
-    <url>https://github.com/eaopen/openea-eap</url>
+    <url>https://github.com/eaopen/eap-boot</url>
 
     <dependencies>
         <dependency>

@@ -95,7 +95,7 @@ mvn -q -Dflatten.skip=true test
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/eaopen/openea-eap.git
+git clone https://github.com/eaopen/eap-boot.git
 cd openea-eap
 ```
 
@@ -247,8 +247,8 @@ kubectl apply -f k8s/
 
 ## 联系我们
 
-- 项目地址：https://github.com/eaopen/openea-eap
-- 问题反馈：https://github.com/eaopen/openea-eap/issues
+- 项目地址：https://github.com/eaopen/eap-boot
+- 问题反馈：https://github.com/eaopen/eap-boot/issues
 - 邮箱：github@eaopen.github.io
 
 ## 致谢
