@@ -7,6 +7,14 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- OAuth2 access token 查询与撤销兼容历史重复 JWT：读取时拒绝身份不明确的重复 token，登出时批量撤销全部
+  access-token 与关联 refresh-token；Redis 命中无 `jti` 的历史 token 时仍回查数据库，避免缓存覆盖绕过重复检测，
+  被当作 access-token 缓存的 refresh-token 同样执行重复检测；新 JWT 与普通 UUID access-token 保留缓存快路径，
+  同时避免管理端和会员端触发 `TooManyResultsException`。
+- OAuth2 RPC 签发恢复透传 `userKey`；保留仅传 `userId` 的原有调用方式，兼容紧密系统与外部集成系统。
+
 ## [2.9.2] - 2026-09-15
 
 ### Changed
