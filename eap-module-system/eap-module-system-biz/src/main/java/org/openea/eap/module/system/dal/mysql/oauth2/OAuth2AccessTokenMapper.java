@@ -9,6 +9,7 @@ import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Mapper
@@ -16,11 +17,29 @@ public interface OAuth2AccessTokenMapper extends BaseMapperX<OAuth2AccessTokenDO
 
     @TenantIgnore // 获取 token 的时候，需要忽略租户编号。原因是：一些场景下，可能不会传递 tenant-id 请求头，例如说文件上传、积木报表等等
     default OAuth2AccessTokenDO selectByAccessToken(String accessToken) {
-        return selectOne(OAuth2AccessTokenDO::getAccessToken, accessToken);
+        List<OAuth2AccessTokenDO> accessTokens = selectListByAccessToken(accessToken);
+        return accessTokens.isEmpty() ? null : accessTokens.get(0);
     }
 
+    /**
+     * 查询同一访问令牌的全部记录，兼容历史版本可能产生的重复 JWT。
+     */
+    @TenantIgnore
+    default List<OAuth2AccessTokenDO> selectListByAccessToken(String accessToken) {
+        return selectList(new LambdaQueryWrapperX<OAuth2AccessTokenDO>()
+                .eq(OAuth2AccessTokenDO::getAccessToken, accessToken)
+                .orderByDesc(OAuth2AccessTokenDO::getId));
+    }
+
+    @TenantIgnore
     default List<OAuth2AccessTokenDO> selectListByRefreshToken(String refreshToken) {
         return selectList(OAuth2AccessTokenDO::getRefreshToken, refreshToken);
+    }
+
+    @TenantIgnore
+    default int deleteByIdsIgnoringTenant(Collection<Long> ids) {
+        return delete(new LambdaQueryWrapperX<OAuth2AccessTokenDO>()
+                .in(OAuth2AccessTokenDO::getId, ids));
     }
 
     default PageResult<OAuth2AccessTokenDO> selectPage(OAuth2AccessTokenPageReqVO reqVO) {

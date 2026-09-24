@@ -25,7 +25,7 @@ public class OAuth2TokenApiImpl implements OAuth2TokenCommonApi {
     @Override
     public CommonResult<OAuth2AccessTokenRespDTO> createAccessToken(OAuth2AccessTokenCreateReqDTO reqDTO) {
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(
-                reqDTO.getUserId(), reqDTO.getUserType(), reqDTO.getClientId(), reqDTO.getScopes());
+                reqDTO.getUserId(), reqDTO.getUserKey(), reqDTO.getUserType(), reqDTO.getClientId(), reqDTO.getScopes());
         return success(BeanUtils.toBean(accessTokenDO, OAuth2AccessTokenRespDTO.class));
     }
 
