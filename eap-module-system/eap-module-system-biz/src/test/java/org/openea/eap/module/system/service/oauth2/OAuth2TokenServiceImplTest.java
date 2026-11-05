@@ -5,6 +5,7 @@ import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.ErrorCode;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.DateUtils;
+import org.openea.eap.framework.common.util.json.JsonUtils;
 import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.openea.eap.framework.test.core.ut.BaseDbAndRedisUnitTest;
@@ -22,6 +23,7 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,6 +53,9 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
 
     @Resource
     private OAuth2AccessTokenRedisDAO oauth2AccessTokenRedisDAO;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @MockBean
     private OAuth2ClientService oauth2ClientService;
@@ -243,10 +248,18 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 准备参数
         String accessToken = refreshTokenDO.getRefreshToken();
 
+        // An old application may already have cached the refresh credential as an access identity.
+        OAuth2AccessTokenDO oldAlias = new OAuth2AccessTokenDO().setAccessToken(accessToken)
+                .setRefreshToken(accessToken).setUserId(refreshTokenDO.getUserId())
+                .setUserType(refreshTokenDO.getUserType()).setExpiresTime(refreshTokenDO.getExpiresTime());
+        String oldCacheKey = "oauth2_access_token:" + accessToken;
+        stringRedisTemplate.opsForValue().set(oldCacheKey, JsonUtils.toJsonString(oldAlias));
+
         assertNull(oauth2TokenService.getAccessToken(accessToken));
         assertServiceException(() -> oauth2TokenService.checkAccessToken(accessToken),
                 new ErrorCode(401, "访问令牌不存在"));
         assertNull(oauth2AccessTokenRedisDAO.get(accessToken));
+        assertNotNull(stringRedisTemplate.opsForValue().get(oldCacheKey));
         assertNotNull(oauth2RefreshTokenMapper.selectByRefreshToken(accessToken));
     }
 
