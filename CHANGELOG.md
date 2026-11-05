@@ -51,4 +51,4 @@
 
 2.8.5 之前的版本记录见 git tag 与提交历史。
 
-- 移除未配置项目和凭据的 SonarQube 示例 workflow；保留仓库已连接的 SonarCloud 和 CodeQL 扫描。
+- 将独立 SonarQube 扫描改为显式手动入口，要求项目键及凭据校验；自动检查继续使用仓库已连接的 SonarCloud 和 CodeQL。

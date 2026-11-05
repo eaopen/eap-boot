@@ -1,0 +1,32 @@
+name: Optional SonarQube analysis
+on:
+  workflow_dispatch:
+    inputs:
+      project_key:
+        description: Configured SonarQube project key
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      SONAR_PROJECT_KEY: ${{ inputs.project_key }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate requested SonarQube configuration
+        shell: bash
+        run: |
+          test -n "$SONAR_TOKEN" || { echo "SONAR_TOKEN is required" >&2; exit 1; }
+          test -n "$SONAR_HOST_URL" || { echo "SONAR_HOST_URL is required" >&2; exit 1; }
+          test -n "$SONAR_PROJECT_KEY" || { echo "project_key is required" >&2; exit 1; }
+      - name: Analyze with SonarQube
+        uses: SonarSource/sonarqube-scan-action@7295e71c9583053f5bf40e9d4068a0c974603ec8
+        with:
+          args: -Dsonar.projectKey=${{ inputs.project_key }}
