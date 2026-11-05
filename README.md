@@ -5,7 +5,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.15-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Maven](https://img.shields.io/badge/Maven-3.6+-red.svg)](https://maven.apache.org/)
 
-## 认证安全补丁候选 2.9.0.1-rc2
+## 认证安全补丁候选 2.9.0.1-rc3
 
 基于 v2.9.0 回移已确认源头修复，保持第三方平台版本不变。先安装同版 eap-common，再按 [升级入口](doc/升级指南.md) 验证本仓。候选不是生产发布批准。
 
