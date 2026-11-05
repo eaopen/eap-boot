@@ -235,7 +235,7 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
     }
 
     @Test
-    public void testCheckAccessToken_refreshToken() {
+    public void testCheckAccessToken_refreshTokenMustNotAuthenticate() {
         // mock 数据（访问令牌）
         OAuth2RefreshTokenDO refreshTokenDO = randomPojo(OAuth2RefreshTokenDO.class)
                 .setExpiresTime(LocalDateTime.now().plusDays(1));
@@ -243,11 +243,11 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 准备参数
         String accessToken = refreshTokenDO.getRefreshToken();
 
-        // 调研，并断言
-        OAuth2AccessTokenDO result = oauth2TokenService.getAccessToken(accessToken);
-        // 断言
-        assertPojoEquals(refreshTokenDO, result, "expiresTime", "createTime", "updateTime", "deleted",
-                "creator", "updater");
+        assertNull(oauth2TokenService.getAccessToken(accessToken));
+        assertServiceException(() -> oauth2TokenService.checkAccessToken(accessToken),
+                new ErrorCode(401, "访问令牌不存在"));
+        assertNull(oauth2AccessTokenRedisDAO.get(accessToken));
+        assertNotNull(oauth2RefreshTokenMapper.selectByRefreshToken(accessToken));
     }
 
     @Test
