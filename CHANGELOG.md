@@ -50,3 +50,5 @@
 ## 更早版本
 
 2.8.5 之前的版本记录见 git tag 与提交历史。
+
+- 移除未配置项目和凭据的 SonarQube 示例 workflow；保留仓库已连接的 SonarCloud 和 CodeQL 扫描。
