@@ -19,6 +19,7 @@ import static org.openea.eap.framework.test.core.util.RandomUtils.*;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 
 /**
@@ -46,7 +47,7 @@ public class OAuth2GrantServiceImplTest extends BaseMockitoUnitTest {
         List<String> scopes = Lists.newArrayList("read", "write");
         // mock 方法
         OAuth2AccessTokenDO accessTokenDO = randomPojo(OAuth2AccessTokenDO.class);
-        when(oauth2TokenService.createAccessToken(eq(userId), eq(userType),
+        when(oauth2TokenService.createAccessToken(eq(userId), isNull(), eq(userType),
                 eq(clientId), eq(scopes))).thenReturn(accessTokenDO);
 
         // 调用，并断言
