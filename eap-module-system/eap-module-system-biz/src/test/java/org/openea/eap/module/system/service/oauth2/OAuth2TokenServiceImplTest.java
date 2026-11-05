@@ -5,6 +5,8 @@ import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.ErrorCode;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.DateUtils;
+import org.openea.eap.framework.common.util.json.JsonUtils;
+import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
 import org.openea.eap.framework.test.core.ut.BaseDbAndRedisUnitTest;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.token.OAuth2AccessTokenPageReqVO;
@@ -21,6 +23,7 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,10 +54,15 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
     @Resource
     private OAuth2AccessTokenRedisDAO oauth2AccessTokenRedisDAO;
 
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
     @MockBean
     private OAuth2ClientService oauth2ClientService;
     @MockBean
     private AdminUserService adminUserService;
+    @MockBean
+    private SecurityProperties securityProperties;
 
     @Test
     public void testCreateAccessToken() {
@@ -77,7 +85,7 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 断言访问令牌
         OAuth2AccessTokenDO dbAccessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessTokenDO.getAccessToken());
         // TODO @芋艿：expiresTime 被屏蔽，仅 win11 会复现，建议后续修复。
-        assertPojoEquals(accessTokenDO, dbAccessTokenDO, "expiresTime", "createTime", "updateTime", "deleted");
+        assertPojoEquals(accessTokenDO, dbAccessTokenDO, "expiresTime", "createTime", "updateTime", "deleted", "userKey");
         assertEquals(userId, accessTokenDO.getUserId());
         assertEquals(userType, accessTokenDO.getUserType());
         assertEquals(2, accessTokenDO.getUserInfo().size());
@@ -89,10 +97,10 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 断言访问令牌的缓存
         OAuth2AccessTokenDO redisAccessTokenDO = oauth2AccessTokenRedisDAO.get(accessTokenDO.getAccessToken());
         // TODO @芋艿：expiresTime 被屏蔽，仅 win11 会复现，建议后续修复。
-        assertPojoEquals(accessTokenDO, redisAccessTokenDO, "expiresTime", "createTime", "updateTime", "deleted");
+        assertPojoEquals(accessTokenDO, redisAccessTokenDO, "expiresTime", "createTime", "updateTime", "deleted", "userKey");
         // 断言刷新令牌
         OAuth2RefreshTokenDO refreshTokenDO = oauth2RefreshTokenMapper.selectList().get(0);
-        assertPojoEquals(accessTokenDO, refreshTokenDO, "id", "expiresTime", "createTime", "updateTime", "deleted");
+        assertPojoEquals(accessTokenDO, refreshTokenDO, "id", "expiresTime", "createTime", "updateTime", "deleted", "userKey");
         assertFalse(DateUtils.isExpired(refreshTokenDO.getExpiresTime()));
     }
 
@@ -232,7 +240,7 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
     }
 
     @Test
-    public void testCheckAccessToken_refreshToken() {
+    public void testCheckAccessToken_refreshTokenMustNotAuthenticate() {
         // mock 数据（访问令牌）
         OAuth2RefreshTokenDO refreshTokenDO = randomPojo(OAuth2RefreshTokenDO.class)
                 .setExpiresTime(LocalDateTime.now().plusDays(1));
@@ -240,11 +248,19 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 准备参数
         String accessToken = refreshTokenDO.getRefreshToken();
 
-        // 调研，并断言
-        OAuth2AccessTokenDO result = oauth2TokenService.getAccessToken(accessToken);
-        // 断言
-        assertPojoEquals(refreshTokenDO, result, "expiresTime", "createTime", "updateTime", "deleted",
-                "creator", "updater");
+        // An old application may already have cached the refresh credential as an access identity.
+        OAuth2AccessTokenDO oldAlias = new OAuth2AccessTokenDO().setAccessToken(accessToken)
+                .setRefreshToken(accessToken).setUserId(refreshTokenDO.getUserId())
+                .setUserType(refreshTokenDO.getUserType()).setExpiresTime(refreshTokenDO.getExpiresTime());
+        String oldCacheKey = "oauth2_access_token:" + accessToken;
+        stringRedisTemplate.opsForValue().set(oldCacheKey, JsonUtils.toJsonString(oldAlias));
+
+        assertNull(oauth2TokenService.getAccessToken(accessToken));
+        assertServiceException(() -> oauth2TokenService.checkAccessToken(accessToken),
+                new ErrorCode(401, "访问令牌不存在"));
+        assertNull(oauth2AccessTokenRedisDAO.get(accessToken));
+        assertNotNull(stringRedisTemplate.opsForValue().get(oldCacheKey));
+        assertNotNull(oauth2RefreshTokenMapper.selectByRefreshToken(accessToken));
     }
 
     @Test
