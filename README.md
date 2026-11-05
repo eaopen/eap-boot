@@ -1,5 +1,7 @@
 # EAP Boot 项目
 
+开发线认证修复使用配套 `2.9.3-SNAPSHOT`；只用于开发验证，不替代 Current 的 `2.9.0.1-rc3` 维护补丁。迁移及制品验证见 [升级指南](doc/升级指南.md)。
+
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.java.net/projects/jdk/17/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.16-brightgreen.svg)](https://spring.io/projects/spring-boot)
