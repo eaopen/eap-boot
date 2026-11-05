@@ -9,12 +9,10 @@ import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.DateUtils;
-import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.security.core.LoginUser;
 import org.openea.eap.framework.security.core.util.JwtUtil;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
-import org.openea.eap.framework.tenant.core.util.TenantUtils;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.token.OAuth2AccessTokenPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
@@ -102,6 +100,12 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
             throw exception0(GlobalErrorCodeConstants.BAD_REQUEST.getCode(), "刷新令牌的客户端编号不正确");
         }
 
+        // A legacy JWT lineage must sign in again, including when its old access row is logically deleted.
+        if (oauth2AccessTokenMapper.selectAccessTokensByRefreshTokenIncludingDeleted(refreshToken).stream()
+                .anyMatch(JwtUtil::isJwtWithoutId)) {
+            throw exception0(GlobalErrorCodeConstants.UNAUTHORIZED.getCode(), "旧JWT关联会话不再续期，请重新登录");
+        }
+
         // todo 检查不允许频繁刷新token
 
         // 移除相关的访问令牌
@@ -123,42 +127,31 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
 
     @Override
     public OAuth2AccessTokenDO getAccessToken(String accessToken) {
+        if (JwtUtil.isJwtWithoutId(accessToken)) {
+            discardInvalidAccessCache(accessToken);
+            return null;
+        }
         // 优先从 Redis 中获取
         OAuth2AccessTokenDO accessTokenDO = oauth2AccessTokenRedisDAO.get(accessToken);
         boolean refreshTokenAlias = accessTokenDO != null
                 && ObjectUtil.equal(accessTokenDO.getAccessToken(), accessTokenDO.getRefreshToken());
-        if (accessTokenDO != null && !JwtUtil.isJwtWithoutId(accessToken) && !refreshTokenAlias) {
+        if (refreshTokenAlias) {
+            discardInvalidAccessCache(accessToken);
+            return null;
+        }
+        if (accessTokenDO != null) {
             return accessTokenDO;
         }
 
-        // 无 jti 的历史 JWT 可能由旧版本重复签发。
-        // 被当作 access token 缓存的 refresh token 也可能存在历史重复行。
-        // 这两种情况即使 Redis 已命中，也必须回查数据库确认 token 只对应一条身份记录。
-
-        // 缓存未命中，或历史令牌需要兼容校验时，从 MySQL 中获取访问令牌
+        // Only actual access-token records can create an authentication cache entry.
         List<OAuth2AccessTokenDO> accessTokenDOs = oauth2AccessTokenMapper.selectListByAccessToken(accessToken);
         if (accessTokenDOs.size() > 1) {
             // 相同 token 可能属于不同用户或租户，不能通过 max(id) 猜测持有者，必须拒绝认证。
             log.error("拒绝使用存在重复记录的访问令牌，记录数：{}", accessTokenDOs.size());
-            oauth2AccessTokenRedisDAO.delete(accessToken);
+            discardInvalidAccessCache(accessToken);
             return null;
         }
         accessTokenDO = CollUtil.getFirst(accessTokenDOs);
-        if (accessTokenDO == null) {
-            // 特殊：从 MySQL 中获取刷新令牌。原因：解决部分场景不方便刷新访问令牌场景
-            // 例如说，积木报表只允许传递 token，不允许传递 refresh_token，导致无法刷新访问令牌
-            // 再例如说，前端 WebSocket 的 token 直接跟在 url 上，无法传递 refresh_token
-            List<OAuth2RefreshTokenDO> refreshTokenDOs = oauth2RefreshTokenMapper.selectListByRefreshToken(accessToken);
-            if (refreshTokenDOs.size() > 1) {
-                log.error("拒绝将存在重复记录的刷新令牌作为访问令牌使用，记录数：{}", refreshTokenDOs.size());
-                oauth2AccessTokenRedisDAO.delete(accessToken);
-                return null;
-            }
-            OAuth2RefreshTokenDO refreshTokenDO = CollUtil.getFirst(refreshTokenDOs);
-            if (refreshTokenDO != null && !DateUtils.isExpired(refreshTokenDO.getExpiresTime())) {
-                accessTokenDO = convertToAccessToken(refreshTokenDO);
-            }
-        }
 
         // 如果在 MySQL 存在，则往 Redis 中写入
         if (accessTokenDO != null && !DateUtils.isExpired(accessTokenDO.getExpiresTime())) {
@@ -246,12 +239,13 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         return refreshToken;
     }
 
-    private OAuth2AccessTokenDO convertToAccessToken(OAuth2RefreshTokenDO refreshTokenDO) {
-        OAuth2AccessTokenDO accessTokenDO = BeanUtils.toBean(refreshTokenDO, OAuth2AccessTokenDO.class)
-                .setAccessToken(refreshTokenDO.getRefreshToken());
-        TenantUtils.execute(refreshTokenDO.getTenantId(),
-                        () -> accessTokenDO.setUserInfo(buildUserInfo(refreshTokenDO.getUserId(), refreshTokenDO.getUserType())));
-        return accessTokenDO;
+    private void discardInvalidAccessCache(String accessToken) {
+        try {
+            oauth2AccessTokenRedisDAO.delete(accessToken);
+        } catch (RuntimeException failure) {
+            // Cache cleanup failure must not turn a rejected credential into an authenticated principal.
+            log.warn("Invalid access credential cache cleanup failed; authentication remains rejected");
+        }
     }
 
     /**

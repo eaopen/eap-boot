@@ -7,6 +7,7 @@ import org.openea.eap.framework.common.exception.ErrorCode;
 import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.test.core.ut.BaseDbUnitTest;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
+import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2RefreshTokenDO;
 import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2AccessTokenMapper;
 import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2RefreshTokenMapper;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import static org.openea.eap.framework.common.util.object.ObjectUtils.cloneIgnoreId;
@@ -28,9 +30,54 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 
 @Import(OAuth2TokenServiceImpl.class)
 class OAuth2TokenServiceDuplicateCompatibilityTest extends BaseDbUnitTest {
+
+    @Test
+    void oldJwtMustBeRejectedBeforeCacheEvenWhenCleanupFails() {
+        String oldJwt = JWTUtil.createToken(Map.of("username", "legacy-user"), "test-secret".getBytes());
+        doThrow(new IllegalStateException("simulated cache outage")).when(accessTokenRedisDAO).delete(oldJwt);
+
+        assertServiceException(() -> tokenService.checkAccessToken(oldJwt),
+                new ErrorCode(401, "访问令牌不存在"));
+        verify(accessTokenRedisDAO, never()).get(oldJwt);
+    }
+
+    @Test
+    void cachedRefreshAliasMustNotAuthenticateEvenWhenCleanupFails() {
+        String refresh = randomString();
+        OAuth2AccessTokenDO alias = randomPojo(OAuth2AccessTokenDO.class)
+                .setAccessToken(refresh).setRefreshToken(refresh)
+                .setExpiresTime(LocalDateTime.now().plusDays(1));
+        when(accessTokenRedisDAO.get(refresh)).thenReturn(alias);
+        doThrow(new IllegalStateException("simulated cache outage")).when(accessTokenRedisDAO).delete(refresh);
+
+        assertServiceException(() -> tokenService.checkAccessToken(refresh),
+                new ErrorCode(401, "访问令牌不存在"));
+    }
+
+    @Test
+    void refreshMustRejectLegacyJwtAncestryIncludingDeletedAccessRows() {
+        String refresh = randomString();
+        String clientId = randomString();
+        refreshTokenMapper.insert(randomPojo(OAuth2RefreshTokenDO.class)
+                .setRefreshToken(refresh).setClientId(clientId)
+                .setExpiresTime(LocalDateTime.now().plusDays(1)));
+        String oldJwt = JWTUtil.createToken(Map.of("username", "legacy-user"), "test-secret".getBytes());
+        OAuth2AccessTokenDO old = randomPojo(OAuth2AccessTokenDO.class)
+                .setAccessToken(oldJwt).setRefreshToken(refresh);
+        accessTokenMapper.insert(old);
+        accessTokenMapper.deleteById(old.getId());
+        when(clientService.validOAuthClientFromCache(clientId)).thenReturn(new OAuth2ClientDO().setClientId(clientId));
+
+        assertEquals(List.of(oldJwt), accessTokenMapper.selectAccessTokensByRefreshTokenIncludingDeleted(refresh));
+        assertServiceException(() -> tokenService.refreshAccessToken(refresh, clientId),
+                new ErrorCode(401, "旧JWT关联会话不再续期，请重新登录"));
+        assertEquals(1, refreshTokenMapper.selectListByRefreshToken(refresh).size());
+    }
 
     @Resource
     private OAuth2TokenServiceImpl tokenService;
