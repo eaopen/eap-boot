@@ -1,5 +1,7 @@
 # EAP Boot 项目
 
+本分支准备 EAP 2.9.3 同版发布候选（JDK17 字节码、Spring Boot 3.5.16）：二奢商城与 Spider 已使用隔离 Maven 仓库验证，正式发布到 Maven Central 与消费项目 DEV 验收尚未完成；升级说明见 doc/升级指南.md。
+
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.java.net/projects/jdk/17/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.16-brightgreen.svg)](https://spring.io/projects/spring-boot)
