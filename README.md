@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/projects/jdk/21/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Maven](https://img.shields.io/badge/Maven-3.6+-red.svg)](https://maven.apache.org/)
 
 ## 项目简介
@@ -77,12 +77,19 @@ eap-boot-pom/
 - Redis 6.0+
 - Node.js 16+ (前端开发)
 
+### Boot4 稳定版更新候选：3.0.1-SNAPSHOT
+
+- 统一使用 JDK21、Spring Boot **4.1.2** 与同版本线 eap-common **3.0.1-SNAPSHOT**；MyBatis-Plus / springdoc / Cloud 版本由同一 BOM 管理。
+- 将 dev 与 maintenance/2.9.0、maintenance/2.8.5 认证变更中适用于 Boot4 的 JWT jti、重复 Access/Refresh Token 拒绝和撤销语义引入候选分支；必须在真实授权与历史会话样例下回归。
+- 技术升级**不得要求事先迁移旧业务数据或旧表单**；Boot4 上旧业务必须完整新增、编辑、提交及审批。
+- 未验证的生产部署、数据库兼容与 Boot4 完整测试不得写成已通过；详见 [本轮升级和验证记录](doc/boot4-stable-refresh-2026-11-05.md)。
+
 ### 3.0 升级说明
 
-- `boot4` 分支的项目版本为 3.0.0，运行与构建基线升级为 JDK 21、Spring Boot 4.1.0。
-- 微服务依赖升级到 Spring Cloud 2025.1.2 与 Spring Cloud Alibaba 2025.1.0.0。
+- 历史初始 `boot4` 分支的项目版本为 3.0.0，曾将运行与构建基线升级为 JDK 21、Spring Boot 4.1.0；本候选已更新为 3.0.1-SNAPSHOT / Boot 4.1.2。
+- 微服务依赖原先采用 Spring Cloud 2025.1.2；本候选升级到 2025.1.4，Spring Cloud Alibaba 继续保持 2025.1.0.0。
 - 单元测试已从已移除的 `@MockBean` 迁移到 `@MockitoBean`；自定义测试基类同步采用 Boot 4 的 JDBC、Redis 和 SQL 初始化自动配置。
-- 升级前必须先安装同分支的 `eap-common` 3.0.0，旧版 2.x BOM 与 3.0.0 应用不可混用。
+- 本候选须先安装同一版本线的 `eap-common` 3.0.1-SNAPSHOT，旧版 2.x 或 3.0.0 BOM 与本候选不能混用。
 
 ### 共享框架依赖
 

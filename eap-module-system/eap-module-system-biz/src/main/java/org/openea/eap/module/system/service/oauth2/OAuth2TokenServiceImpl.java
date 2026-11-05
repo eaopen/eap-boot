@@ -9,12 +9,10 @@ import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.enums.GlobalErrorCodeConstants;
 import org.openea.eap.framework.common.pojo.PageResult;
 import org.openea.eap.framework.common.util.date.DateUtils;
-import org.openea.eap.framework.common.util.object.BeanUtils;
 import org.openea.eap.framework.security.config.SecurityProperties;
 import org.openea.eap.framework.security.core.LoginUser;
 import org.openea.eap.framework.security.core.util.JwtUtil;
 import org.openea.eap.framework.tenant.core.context.TenantContextHolder;
-import org.openea.eap.framework.tenant.core.util.TenantUtils;
 import org.openea.eap.module.system.controller.admin.oauth2.vo.token.OAuth2AccessTokenPageReqVO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2ClientDO;
@@ -25,6 +23,7 @@ import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2RefreshTokenMapper;
 import org.openea.eap.module.system.dal.redis.oauth2.OAuth2AccessTokenRedisDAO;
 import org.openea.eap.module.system.service.user.AdminUserService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +31,10 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.openea.eap.framework.common.exception.util.ServiceExceptionUtil.exception0;
 import static org.openea.eap.framework.common.util.collection.CollectionUtils.convertSet;
@@ -43,6 +44,7 @@ import static org.openea.eap.framework.common.util.collection.CollectionUtils.co
  *
  */
 @Service
+@Slf4j
 public class OAuth2TokenServiceImpl implements OAuth2TokenService {
 
     @Resource
@@ -83,10 +85,14 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     @Transactional(rollbackFor = Exception.class)
     public OAuth2AccessTokenDO refreshAccessToken(String refreshToken, String clientId) {
         // 查询访问令牌
-        OAuth2RefreshTokenDO refreshTokenDO = oauth2RefreshTokenMapper.selectByRefreshToken(refreshToken);
-        if (refreshTokenDO == null) {
+        List<OAuth2RefreshTokenDO> refreshTokenDOs = oauth2RefreshTokenMapper.selectListByRefreshToken(refreshToken);
+        if (refreshTokenDOs.size() != 1) {
+            if (refreshTokenDOs.size() > 1) {
+                log.error("拒绝使用存在重复记录的刷新令牌，记录数：{}", refreshTokenDOs.size());
+            }
             throw exception0(GlobalErrorCodeConstants.BAD_REQUEST.getCode(), "无效的刷新令牌");
         }
+        OAuth2RefreshTokenDO refreshTokenDO = refreshTokenDOs.get(0);
 
         // 校验 Client 匹配
         OAuth2ClientDO clientDO = oauth2ClientService.validOAuthClientFromCache(clientId);
@@ -94,18 +100,24 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
             throw exception0(GlobalErrorCodeConstants.BAD_REQUEST.getCode(), "刷新令牌的客户端编号不正确");
         }
 
+        // A legacy JWT lineage must sign in again, including when its old access row is logically deleted.
+        if (oauth2AccessTokenMapper.selectAccessTokensByRefreshTokenIncludingDeleted(refreshToken).stream()
+                .anyMatch(JwtUtil::isJwtWithoutId)) {
+            throw exception0(GlobalErrorCodeConstants.UNAUTHORIZED.getCode(), "旧JWT关联会话不再续期，请重新登录");
+        }
+
         // todo 检查不允许频繁刷新token
 
         // 移除相关的访问令牌
         List<OAuth2AccessTokenDO> accessTokenDOs = oauth2AccessTokenMapper.selectListByRefreshToken(refreshToken);
         if (CollUtil.isNotEmpty(accessTokenDOs)) {
-            oauth2AccessTokenMapper.deleteByIds(convertSet(accessTokenDOs, OAuth2AccessTokenDO::getId));
+            oauth2AccessTokenMapper.deleteByIdsIgnoringTenant(convertSet(accessTokenDOs, OAuth2AccessTokenDO::getId));
             oauth2AccessTokenRedisDAO.deleteList(convertSet(accessTokenDOs, OAuth2AccessTokenDO::getAccessToken));
         }
 
         // 已过期的情况下，删除刷新令牌
         if (DateUtils.isExpired(refreshTokenDO.getExpiresTime())) {
-            oauth2RefreshTokenMapper.deleteById(refreshTokenDO.getId());
+            oauth2RefreshTokenMapper.deleteByRefreshToken(refreshToken);
             throw exception0(GlobalErrorCodeConstants.UNAUTHORIZED.getCode(), "刷新令牌已过期");
         }
 
@@ -115,23 +127,31 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
 
     @Override
     public OAuth2AccessTokenDO getAccessToken(String accessToken) {
+        if (JwtUtil.isJwtWithoutId(accessToken)) {
+            discardInvalidAccessCache(accessToken);
+            return null;
+        }
         // 优先从 Redis 中获取
         OAuth2AccessTokenDO accessTokenDO = oauth2AccessTokenRedisDAO.get(accessToken);
+        boolean refreshTokenAlias = accessTokenDO != null
+                && ObjectUtil.equal(accessTokenDO.getAccessToken(), accessTokenDO.getRefreshToken());
+        if (refreshTokenAlias) {
+            discardInvalidAccessCache(accessToken);
+            return null;
+        }
         if (accessTokenDO != null) {
             return accessTokenDO;
         }
 
-        // 获取不到，从 MySQL 中获取访问令牌
-        accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
-        if (accessTokenDO == null) {
-            // 特殊：从 MySQL 中获取刷新令牌。原因：解决部分场景不方便刷新访问令牌场景
-            // 例如说，积木报表只允许传递 token，不允许传递 refresh_token，导致无法刷新访问令牌
-            // 再例如说，前端 WebSocket 的 token 直接跟在 url 上，无法传递 refresh_token
-            OAuth2RefreshTokenDO refreshTokenDO = oauth2RefreshTokenMapper.selectByRefreshToken(accessToken);
-            if (refreshTokenDO != null && !DateUtils.isExpired(refreshTokenDO.getExpiresTime())) {
-                accessTokenDO = convertToAccessToken(refreshTokenDO);
-            }
+        // Only actual access-token records can create an authentication cache entry.
+        List<OAuth2AccessTokenDO> accessTokenDOs = oauth2AccessTokenMapper.selectListByAccessToken(accessToken);
+        if (accessTokenDOs.size() > 1) {
+            // 相同 token 可能属于不同用户或租户，不能通过 max(id) 猜测持有者，必须拒绝认证。
+            log.error("拒绝使用存在重复记录的访问令牌，记录数：{}", accessTokenDOs.size());
+            discardInvalidAccessCache(accessToken);
+            return null;
         }
+        accessTokenDO = CollUtil.getFirst(accessTokenDOs);
 
         // 如果在 MySQL 存在，则往 Redis 中写入
         if (accessTokenDO != null && !DateUtils.isExpired(accessTokenDO.getExpiresTime())) {
@@ -156,14 +176,24 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
     @Transactional(rollbackFor = Exception.class)
     public OAuth2AccessTokenDO removeAccessToken(String accessToken) {
         // 删除访问令牌
-        OAuth2AccessTokenDO accessTokenDO = oauth2AccessTokenMapper.selectByAccessToken(accessToken);
-        if (accessTokenDO == null) {
+        List<OAuth2AccessTokenDO> accessTokenDOs = oauth2AccessTokenMapper.selectListByAccessToken(accessToken);
+        if (accessTokenDOs.isEmpty()) {
             return null;
         }
-        oauth2AccessTokenMapper.deleteById(accessTokenDO.getId());
+        OAuth2AccessTokenDO accessTokenDO = accessTokenDOs.get(0);
+        if (accessTokenDOs.size() > 1) {
+            log.warn("撤销访问令牌时发现重复记录，将全部撤销，记录数：{}", accessTokenDOs.size());
+        }
+        oauth2AccessTokenMapper.deleteByIdsIgnoringTenant(convertSet(accessTokenDOs, OAuth2AccessTokenDO::getId));
         oauth2AccessTokenRedisDAO.delete(accessToken);
-        // 删除刷新令牌
-        oauth2RefreshTokenMapper.deleteByRefreshToken(accessTokenDO.getRefreshToken());
+        // 删除全部关联刷新令牌，避免被收敛掉的旧访问令牌通过 refresh_token 再次复活
+        Set<String> refreshTokens = new LinkedHashSet<>();
+        for (OAuth2AccessTokenDO item : accessTokenDOs) {
+            if (StrUtil.isNotBlank(item.getRefreshToken())) {
+                refreshTokens.add(item.getRefreshToken());
+            }
+        }
+        refreshTokens.forEach(oauth2RefreshTokenMapper::deleteByRefreshToken);
         return accessTokenDO;
     }
 
@@ -209,12 +239,13 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         return refreshToken;
     }
 
-    private OAuth2AccessTokenDO convertToAccessToken(OAuth2RefreshTokenDO refreshTokenDO) {
-        OAuth2AccessTokenDO accessTokenDO = BeanUtils.toBean(refreshTokenDO, OAuth2AccessTokenDO.class)
-                .setAccessToken(refreshTokenDO.getRefreshToken());
-        TenantUtils.execute(refreshTokenDO.getTenantId(),
-                        () -> accessTokenDO.setUserInfo(buildUserInfo(refreshTokenDO.getUserId(), refreshTokenDO.getUserType())));
-        return accessTokenDO;
+    private void discardInvalidAccessCache(String accessToken) {
+        try {
+            oauth2AccessTokenRedisDAO.delete(accessToken);
+        } catch (RuntimeException failure) {
+            // Cache cleanup failure must not turn a rejected credential into an authenticated principal.
+            log.warn("Invalid access credential cache cleanup failed; authentication remains rejected");
+        }
     }
 
     /**
