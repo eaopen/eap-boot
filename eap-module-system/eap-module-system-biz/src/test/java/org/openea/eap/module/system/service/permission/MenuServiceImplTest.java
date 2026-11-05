@@ -7,6 +7,8 @@ import org.openea.eap.module.system.controller.admin.permission.vo.menu.MenuSave
 import org.openea.eap.module.system.dal.dataobject.permission.MenuDO;
 import org.openea.eap.module.system.dal.mysql.permission.MenuMapper;
 import org.openea.eap.module.system.enums.permission.MenuTypeEnum;
+import org.openea.eap.module.system.service.language.I18nDataService;
+import org.openea.eap.module.system.service.language.I18nJsonDataService;
 import org.openea.eap.module.system.service.tenant.TenantService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -44,6 +46,10 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
     private PermissionService permissionService;
     @MockBean
     private TenantService tenantService;
+    @MockBean
+    private I18nDataService i18nDataService;
+    @MockBean
+    private I18nJsonDataService i18nJsonDataService;
 
     @Test
     public void testCreateMenu_success() {
@@ -139,8 +145,8 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         List<MenuDO> list = menuService.getMenuList();
         // 断言
         assertEquals(2, list.size());
-        assertPojoEquals(menu100, list.get(0));
-        assertPojoEquals(menu101, list.get(1));
+        assertPojoEquals(menu100, list.get(0), "i18nJson");
+        assertPojoEquals(menu101, list.get(1), "i18nJson");
     }
 
     @Test
@@ -159,7 +165,7 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         List<MenuDO> result = menuService.getMenuList(reqVO);
         // 断言
         assertEquals(1, result.size());
-        assertPojoEquals(menuDO, result.get(0));
+        assertPojoEquals(menuDO, result.get(0), "i18nJson");
     }
 
     @Test
@@ -184,7 +190,7 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         List<MenuDO> result = menuService.getMenuListByTenant(reqVO);
         // 断言
         assertEquals(1, result.size());
-        assertPojoEquals(menu100, result.get(0));
+        assertPojoEquals(menu100, result.get(0), "i18nJson");
     }
 
     @Test
@@ -207,11 +213,14 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
     @Test
     public void testGetMenuListByPermission() {
         // mock 数据
-        MenuDO menu100 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus()));
+        MenuDO menu100 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus())
+                .setParentId(ID_ROOT));
         menuMapper.insert(menu100);
-        MenuDO menu101 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.DISABLE.getStatus())); // 禁用菜单
+        MenuDO menu101 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.DISABLE.getStatus())
+                .setParentId(ID_ROOT)); // 禁用菜单
         menuMapper.insert(menu101);
-        MenuDO menu102 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus()));
+        MenuDO menu102 = randomPojo(MenuDO.class, o -> o.setStatus(CommonStatusEnum.ENABLE.getStatus())
+                .setParentId(ID_ROOT));
         menuMapper.insert(menu102);
         // 准备参数
         String permission = menu100.getPermission();
@@ -221,7 +230,7 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         
         // 断言
         assertEquals(1, menuList.size());
-        assertPojoEquals(menu100, menuList.get(0));
+        assertPojoEquals(menu100, menuList.get(0), "i18nJson");
     }
 
     @Test
@@ -238,7 +247,7 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         List<MenuDO> list = menuService.getMenuList(ids);
         // 断言
         assertEquals(1, list.size());
-        assertPojoEquals(menu100, list.get(0));
+        assertPojoEquals(menu100, list.get(0), "i18nJson");
     }
 
     @Test
@@ -252,7 +261,7 @@ public class MenuServiceImplTest extends BaseDbUnitTest {
         // 调用
         MenuDO dbMenu = menuService.getMenu(id);
         // 断言
-        assertPojoEquals(menu, dbMenu);
+        assertPojoEquals(menu, dbMenu, "i18nJson");
     }
 
     @Test
