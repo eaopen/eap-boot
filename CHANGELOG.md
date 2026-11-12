@@ -1,5 +1,7 @@
 # 开发线 2.9.4-SNAPSHOT
 
+- 合并 `main/2.9.3.1` 发布历史，完整继承热修复；保留 dev 已有的后续升级。
+
 - 在 `2.9.3.1` 正式发布后推进开发版本，保持 Java 17 / Spring Boot 3.5.16；不包含 Boot 4。
 - 与同版 eap-common 对齐；保留 Redis 旧 Key 读取、Access/Refresh Token 隔离及重复 Token 拒绝逻辑，并补充旧缓存回归验证。
 - 默认前缀为 `oauth2_access_token:%s`，保留 `eap.oauth2.access-token-key-prefix` 配置；v2 缓存不会自动迁移。
@@ -11,7 +13,25 @@
 - 本仓是 eap-common 的消费方：**框架与 BOM 层变更以 [eap-common 更新日志](../eap-common/CHANGELOG.md) 为准**，本文件不重复记录。
 - 升级操作见 [升级指南](doc/升级指南.md)（正文在 eap-common）。
 
-## [Unreleased]
+- 补齐正式线已有的 H2 时间精度、七牛短信回执时区和过期 Token 测试边界修正。
+
+## [2.9.3.1] - 2026-11-13
+
+### Fixed
+
+- 沿用 main 已包含的最新 Redis Access Token 前缀配置修复，默认 Key 恢复旧格式 oauth2_access_token:{token}。
+- 修正旧前缀缓存回归测试：有效 Access Token 可继续读取，旧 Refresh Token 别名仍必须拒绝并清理。
+- 与 eap-common 2.9.3.1 同版发布；不改变认证安全边界，不要求清空 Redis。
+
+## [2.9.3] - 2026-11-06
+
+### Fixed
+
+- OAuth2 access token 查询与撤销兼容历史重复 JWT：读取时拒绝身份不明确的重复 token，登出时批量撤销全部
+  access-token 与关联 refresh-token；无 jti 的历史 JWT 在新鉴权链路中直接拒绝并要求重新登录，
+  refresh-token 不得作为 Bearer 访问凭证；
+  新 JWT 与普通 UUID access-token 保留缓存快路径，避免管理端和会员端触发 TooManyResultsException。
+- OAuth2 RPC 签发恢复透传 `userKey`；保留仅传 `userId` 的原有调用方式，兼容紧密系统与外部集成系统。
 
 ### Fixed
 

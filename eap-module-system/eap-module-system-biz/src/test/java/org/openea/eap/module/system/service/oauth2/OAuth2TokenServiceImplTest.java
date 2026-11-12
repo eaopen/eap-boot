@@ -1,6 +1,6 @@
 package org.openea.eap.module.system.service.oauth2;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
+
 import org.openea.eap.framework.common.enums.UserTypeEnum;
 import org.openea.eap.framework.common.exception.ErrorCode;
 import org.openea.eap.framework.common.pojo.PageResult;
@@ -266,7 +266,7 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 准备参数
         String accessToken = refreshTokenDO.getRefreshToken();
 
-        // Historical cache must never allow a refresh credential to authenticate as access.
+        // Historical Redis namespace must never authorize a refresh credential as access.
         OAuth2AccessTokenDO oldAlias = new OAuth2AccessTokenDO().setAccessToken(accessToken)
                 .setRefreshToken(accessToken).setUserId(refreshTokenDO.getUserId())
                 .setUserType(refreshTokenDO.getUserType()).setExpiresTime(refreshTokenDO.getExpiresTime());
@@ -343,7 +343,7 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 测试 userType 不匹配
         oauth2AccessTokenMapper.insert(cloneIgnoreId(dbAccessToken, o -> o.setClientId("it_client")));
         // 测试 expireTime 不匹配
-        oauth2AccessTokenMapper.insert(cloneIgnoreId(dbAccessToken, o -> o.setExpiresTime(LocalDateTimeUtil.now())));
+        oauth2AccessTokenMapper.insert(cloneIgnoreId(dbAccessToken, o -> o.setExpiresTime(LocalDateTime.now().minusMinutes(5))));
         // 准备参数
         OAuth2AccessTokenPageReqVO reqVO = new OAuth2AccessTokenPageReqVO();
         reqVO.setUserId(10L);

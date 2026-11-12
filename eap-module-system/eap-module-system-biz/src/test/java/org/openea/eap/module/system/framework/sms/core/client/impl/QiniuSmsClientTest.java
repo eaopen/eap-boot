@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockedStatic;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.openea.eap.framework.test.core.util.RandomUtils.randomLongId;
@@ -111,7 +112,8 @@ public class QiniuSmsClientTest extends BaseMockitoUnitTest {
         SmsReceiveRespDTO status = statuses.get(0);
         assertTrue(status.getSuccess());
         assertEquals("DELIVRD", status.getErrorMsg());
-        assertEquals(LocalDateTime.of(2024, 8, 25, 21, 14, 26), status.getReceiveTime());
+        assertEquals(Instant.ofEpochSecond(1724591666L).atZone(ZoneId.systemDefault()).toLocalDateTime(),
+                status.getReceiveTime());
         assertEquals("18881234567", status.getMobile());
         assertEquals("10135515063508004167", status.getSerialNo());
         assertEquals(123, status.getLogId());
