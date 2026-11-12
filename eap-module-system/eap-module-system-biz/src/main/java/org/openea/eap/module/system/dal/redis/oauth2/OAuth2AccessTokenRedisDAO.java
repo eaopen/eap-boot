@@ -4,6 +4,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import org.openea.eap.framework.common.util.collection.CollectionUtils;
 import org.openea.eap.framework.common.util.json.JsonUtils;
 import org.openea.eap.module.system.dal.dataobject.oauth2.OAuth2AccessTokenDO;
+import org.openea.eap.module.system.framework.oauth2.config.OAuth2Properties;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.openea.eap.module.system.dal.redis.RedisKeyConstants.OAUTH2_ACCESS_TOKEN;
-
 /**
  * {@link OAuth2AccessTokenDO} 的 RedisDAO
  *
@@ -25,6 +24,9 @@ public class OAuth2AccessTokenRedisDAO {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @Resource
+    private OAuth2Properties oauth2Properties;
 
     public OAuth2AccessTokenDO get(String accessToken) {
         String redisKey = formatKey(accessToken);
@@ -47,12 +49,12 @@ public class OAuth2AccessTokenRedisDAO {
     }
 
     public void deleteList(Collection<String> accessTokens) {
-        List<String> redisKeys = CollectionUtils.convertList(accessTokens, OAuth2AccessTokenRedisDAO::formatKey);
+        List<String> redisKeys = CollectionUtils.convertList(accessTokens, this::formatKey);
         stringRedisTemplate.delete(redisKeys);
     }
 
-    private static String formatKey(String accessToken) {
-        return String.format(OAUTH2_ACCESS_TOKEN, accessToken);
+    private String formatKey(String accessToken) {
+        return String.format(oauth2Properties.getAccessTokenKeyPrefix(), accessToken);
     }
 
 }
