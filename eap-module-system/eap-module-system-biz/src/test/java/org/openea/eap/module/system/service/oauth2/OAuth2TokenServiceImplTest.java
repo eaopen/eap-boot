@@ -17,6 +17,7 @@ import org.openea.eap.module.system.dal.dataobject.user.AdminUserDO;
 import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2AccessTokenMapper;
 import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2RefreshTokenMapper;
 import org.openea.eap.module.system.dal.redis.oauth2.OAuth2AccessTokenRedisDAO;
+import org.openea.eap.module.system.framework.oauth2.config.OAuth2Configuration;
 import org.openea.eap.module.system.service.user.AdminUserService;
 import jakarta.annotation.Resource;
 import org.assertj.core.util.Lists;
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.when;
  * {@link OAuth2TokenServiceImpl} 的单元测试类
  *
  */
-@Import({OAuth2TokenServiceImpl.class, OAuth2AccessTokenRedisDAO.class})
+@Import({OAuth2TokenServiceImpl.class, OAuth2AccessTokenRedisDAO.class, OAuth2Configuration.class})
 public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
 
     @Resource
@@ -240,6 +241,23 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
     }
 
     @Test
+    public void testGetAccessToken_readsHistoricalRedisKey() {
+        String accessToken = randomString();
+        OAuth2AccessTokenDO oldCached = new OAuth2AccessTokenDO()
+                .setAccessToken(accessToken)
+                .setRefreshToken(randomString())
+                .setExpiresTime(LocalDateTime.now().plusDays(1));
+        String historicalKey = "oauth2_access_token:" + accessToken;
+        stringRedisTemplate.opsForValue().set(historicalKey, JsonUtils.toJsonString(oldCached));
+
+        OAuth2AccessTokenDO resolved = oauth2TokenService.getAccessToken(accessToken);
+
+        assertNotNull(resolved);
+        assertEquals(accessToken, resolved.getAccessToken());
+        assertNotNull(stringRedisTemplate.opsForValue().get(historicalKey));
+    }
+
+    @Test
     public void testCheckAccessToken_refreshTokenMustNotAuthenticate() {
         // mock 数据（访问令牌）
         OAuth2RefreshTokenDO refreshTokenDO = randomPojo(OAuth2RefreshTokenDO.class)
@@ -248,7 +266,7 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         // 准备参数
         String accessToken = refreshTokenDO.getRefreshToken();
 
-        // An old application may already have cached the refresh credential as an access identity.
+        // Historical Redis namespace must never authorize a refresh credential as access.
         OAuth2AccessTokenDO oldAlias = new OAuth2AccessTokenDO().setAccessToken(accessToken)
                 .setRefreshToken(accessToken).setUserId(refreshTokenDO.getUserId())
                 .setUserType(refreshTokenDO.getUserType()).setExpiresTime(refreshTokenDO.getExpiresTime());
@@ -259,7 +277,7 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
         assertServiceException(() -> oauth2TokenService.checkAccessToken(accessToken),
                 new ErrorCode(401, "访问令牌不存在"));
         assertNull(oauth2AccessTokenRedisDAO.get(accessToken));
-        assertNotNull(stringRedisTemplate.opsForValue().get(oldCacheKey));
+        assertNull(stringRedisTemplate.opsForValue().get(oldCacheKey));
         assertNotNull(oauth2RefreshTokenMapper.selectByRefreshToken(accessToken));
     }
 
