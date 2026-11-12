@@ -16,4 +16,4 @@ spring:
 # 日志文件配置
 logging:
   level:
-    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 3.X 存在部分错误的 WARN 提示
+    org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR # TODO 芋艿：先禁用，Spring Boot 4.1 存在部分错误的 WARN 提示

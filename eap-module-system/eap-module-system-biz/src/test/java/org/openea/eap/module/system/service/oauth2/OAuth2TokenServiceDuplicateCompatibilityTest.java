@@ -13,7 +13,7 @@ import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2AccessTokenMapper;
 import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2RefreshTokenMapper;
 import org.openea.eap.module.system.dal.redis.oauth2.OAuth2AccessTokenRedisDAO;
 import org.openea.eap.module.system.service.user.AdminUserService;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
@@ -86,13 +86,13 @@ class OAuth2TokenServiceDuplicateCompatibilityTest extends BaseDbUnitTest {
     @Resource
     private OAuth2RefreshTokenMapper refreshTokenMapper;
 
-    @MockBean
+    @MockitoBean
     private OAuth2AccessTokenRedisDAO accessTokenRedisDAO;
-    @MockBean
+    @MockitoBean
     private OAuth2ClientService clientService;
-    @MockBean
+    @MockitoBean
     private AdminUserService adminUserService;
-    @MockBean
+    @MockitoBean
     private SecurityProperties securityProperties;
 
     @Test
