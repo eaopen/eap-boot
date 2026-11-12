@@ -11,7 +11,7 @@ import org.openea.eap.module.system.dal.mysql.oauth2.OAuth2ApproveMapper;
 import jakarta.annotation.Resource;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
@@ -42,7 +42,7 @@ public class OAuth2ApproveServiceImplTest extends BaseDbUnitTest {
     @Resource
     private OAuth2ApproveMapper oauth2ApproveMapper;
 
-    @MockBean
+    @MockitoBean
     private OAuth2ClientService oauth2ClientService;
 
     @Test
@@ -222,7 +222,8 @@ public class OAuth2ApproveServiceImplTest extends BaseDbUnitTest {
         String clientId = randomString();
         String scope = randomString();
         Boolean approved = randomBoolean();
-        LocalDateTime expireTime = LocalDateTime.ofInstant(randomDay(1, 30).toInstant(), ZoneId.systemDefault());
+        LocalDateTime expireTime = LocalDateTime.ofInstant(randomDay(1, 30).toInstant(), ZoneId.systemDefault())
+                .truncatedTo(ChronoUnit.SECONDS);
         // mock 方法
 
         // 调用
@@ -250,7 +251,8 @@ public class OAuth2ApproveServiceImplTest extends BaseDbUnitTest {
         String clientId = approve.getClientId();
         String scope = approve.getScope();
         Boolean approved = randomBoolean();
-        LocalDateTime expireTime = LocalDateTime.ofInstant(randomDay(1, 30).toInstant(), ZoneId.systemDefault());
+        LocalDateTime expireTime = LocalDateTime.ofInstant(randomDay(1, 30).toInstant(), ZoneId.systemDefault())
+                .truncatedTo(ChronoUnit.SECONDS);
         // mock 方法
 
         // 调用

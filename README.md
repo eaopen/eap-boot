@@ -1,15 +1,15 @@
 # EAP Boot 项目
 
-开发线使用配套 `2.9.4-SNAPSHOT`，承接 `2.9.3.1` 热修复；保持 Java 17 / Spring Boot 3.5.16，与 Boot 4 预览线隔离。开发快照不替代正式制品。迁移及制品验证见 [升级指南](doc/升级指南.md)。
+`dev` 已承接 Boot 4，使用 Java 21 / Spring Boot 4.1.2 / `3.0.1-SNAPSHOT`；2.x 维护请切换到 `2.x`。分支、PR 和发布规则见 [分支与发布策略](doc/分支与发布策略.md)。
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.java.net/projects/jdk/17/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.16-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/projects/jdk/21/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Maven](https://img.shields.io/badge/Maven-3.6+-red.svg)](https://maven.apache.org/)
 
 ## 项目简介
 
-EAP Boot 是一个基于 Spring Boot 3.x 的企业级应用开发脚手架（yudao二次开发），提供了完整的后端解决方案。
+EAP Boot 是一个基于 Spring Boot 4.1 的企业级应用开发脚手架（yudao二次开发），提供了完整的后端解决方案。
 项目采用模块化设计，支持单体应用和微服务架构，为企业级应用开发提供了坚实的基础。
 
 ## 人机协作
@@ -18,11 +18,9 @@ EAP Boot 是一个基于 Spring Boot 3.x 的企业级应用开发脚手架（yud
 
 推荐协作流程：先确认模块、接口调用方和已有测试 → 做最小范围修改 → 运行相关测试 → 更新 README/技术文档 → 在交付说明中记录验证结果。涉及共享框架时，先安装同级 `eap-common`，再编译或测试本仓。
 
-升级本仓前先阅读 [升级指南](doc/升级指南.md)（正文在 eap-common，本文件只列本仓特有事项）；版本变更见 [更新日志](CHANGELOG.md)，框架/BOM 层变更见 [eap-common 更新日志](../eap-common/CHANGELOG.md)。
-
 ## 核心特性
 
-- 🚀 **现代化技术栈**：基于 Spring Boot 3.5 + Java 17
+- 🚀 **现代化技术栈**：基于 Spring Boot 4.1 + Java 21
 - 🏗️ **模块化架构**：清晰的模块划分，易于维护和扩展
 - 🔐 **完整的权限系统**：用户、角色、权限管理
 - 📊 **基础设施支持**：定时任务、代码生成、接口文档等
@@ -33,14 +31,14 @@ EAP Boot 是一个基于 Spring Boot 3.x 的企业级应用开发脚手架（yud
 ## 技术栈
 
 ### 后端技术
-- **核心框架**：Spring Boot 3.5
+- **核心框架**：Spring Boot 4.1
 - **数据访问**：MyBatis Plus
 - **安全框架**：Spring Security
 - **缓存**：Redis
 - **消息队列**：RabbitMQ
 - **数据库**：MySQL、PostgreSQL、Oracle 等
 - **构建工具**：Maven 3.6+
-- **Java版本**：JDK 17
+- **Java版本**：JDK 21
 
 ### 微服务技术
 - **服务网关**：Spring Cloud Gateway
@@ -75,11 +73,25 @@ eap-boot-pom/
 
 ### 环境要求
 
-- JDK 17+
+- JDK 21+
 - Maven 3.6+
 - MySQL 8.0+ / PostgreSQL 12+
 - Redis 6.0+
 - Node.js 16+ (前端开发)
+
+### Boot4 稳定版更新候选：3.0.1-SNAPSHOT
+
+- 统一使用 JDK21、Spring Boot **4.1.2** 与同版本线 eap-common **3.0.1-SNAPSHOT**；MyBatis-Plus / springdoc / Cloud 版本由同一 BOM 管理。
+- 将 dev 与 maintenance/2.9.0、maintenance/2.8.5 认证变更中适用于 Boot4 的 JWT jti、重复 Access/Refresh Token 拒绝和撤销语义引入候选分支；必须在真实授权与历史会话样例下回归。
+- 技术升级**不得要求事先迁移旧业务数据或旧表单**；Boot4 上旧业务必须完整新增、编辑、提交及审批。
+- 未验证的生产部署、数据库兼容与 Boot4 完整测试不得写成已通过；详见 [本轮升级和验证记录](doc/boot4-stable-refresh-2026-11-05.md)。
+
+### 3.0 升级说明
+
+- 历史初始 `boot4` 分支的项目版本为 3.0.0，曾将运行与构建基线升级为 JDK 21、Spring Boot 4.1.0；本候选已更新为 3.0.1-SNAPSHOT / Boot 4.1.2。
+- 微服务依赖原先采用 Spring Cloud 2025.1.2；本候选升级到 2025.1.4，Spring Cloud Alibaba 继续保持 2025.1.0.0。
+- 单元测试已从已移除的 `@MockBean` 迁移到 `@MockitoBean`；自定义测试基类同步采用 Boot 4 的 JDBC、Redis 和 SQL 初始化自动配置。
+- 本候选须先安装同一版本线的 `eap-common` 3.0.1-SNAPSHOT，旧版 2.x 或 3.0.0 BOM 与本候选不能混用。
 
 ### 共享框架依赖
 
@@ -97,7 +109,7 @@ mvn -q -Dflatten.skip=true test
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/eaopen/eap-boot.git
+git clone https://github.com/eaopen/openea-eap.git
 cd openea-eap
 ```
 
@@ -249,8 +261,8 @@ kubectl apply -f k8s/
 
 ## 联系我们
 
-- 项目地址：https://github.com/eaopen/eap-boot
-- 问题反馈：https://github.com/eaopen/eap-boot/issues
+- 项目地址：https://github.com/eaopen/openea-eap
+- 问题反馈：https://github.com/eaopen/openea-eap/issues
 - 邮箱：github@eaopen.github.io
 
 ## 致谢

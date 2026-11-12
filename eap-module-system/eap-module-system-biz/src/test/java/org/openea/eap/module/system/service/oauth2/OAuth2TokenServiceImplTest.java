@@ -22,7 +22,7 @@ import org.openea.eap.module.system.service.user.AdminUserService;
 import jakarta.annotation.Resource;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
@@ -58,11 +58,11 @@ public class OAuth2TokenServiceImplTest extends BaseDbAndRedisUnitTest {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    @MockBean
+    @MockitoBean
     private OAuth2ClientService oauth2ClientService;
-    @MockBean
+    @MockitoBean
     private AdminUserService adminUserService;
-    @MockBean
+    @MockitoBean
     private SecurityProperties securityProperties;
 
     @Test

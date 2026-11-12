@@ -34,7 +34,7 @@ public class CorsResponseHeaderFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return chain.filter(exchange).then(Mono.defer(() -> {
             // https://gitee.com/zhijiantianya/eap-cloud/pulls/177/
-            List<String> keysToModify = exchange.getResponse().getHeaders().entrySet().stream()
+            List<String> keysToModify = exchange.getResponse().getHeaders().headerSet().stream()
                     .filter(kv -> (kv.getValue() != null && kv.getValue().size() > 1))
                     .filter(kv -> (kv.getKey().equals(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN)
                             || kv.getKey().equals(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS)))
