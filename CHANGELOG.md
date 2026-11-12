@@ -1,8 +1,3 @@
-# 2.9.3 发布候选（尚未上传 Maven Central）
-
-- 回流维护线已验证的认证边界与运行依赖修复，保留 dev 现有第三方版本，不回退平台。
-- 本分支从 2.9.3-SNAPSHOT 开发线构建 2.9.3 候选；不覆盖已有版本，二奢商城/Spider 验收前不得发布 Maven Central。
-
 # 更新日志（Changelog）
 
 本文件记录 eap-boot 各版本的对外变更，格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
@@ -10,13 +5,21 @@
 - 本仓是 eap-common 的消费方：**框架与 BOM 层变更以 [eap-common 更新日志](../eap-common/CHANGELOG.md) 为准**，本文件不重复记录。
 - 升级操作见 [升级指南](doc/升级指南.md)（正文在 eap-common）。
 
-## [2.9.3] - 待正式发布
+## [2.9.3.1] - 待发布
+
+### Fixed
+
+- 沿用 main 已包含的最新 Redis Access Token 前缀配置修复，默认 Key 恢复旧格式 oauth2_access_token:{token}。
+- 修正旧前缀缓存回归测试：有效 Access Token 可继续读取，旧 Refresh Token 别名仍必须拒绝并清理。
+- 与 eap-common 2.9.3.1 同版发布；不改变认证安全边界，不要求清空 Redis。
+
+## [2.9.3] - 2026-11-06
 
 ### Fixed
 
 - OAuth2 access token 查询与撤销兼容历史重复 JWT：读取时拒绝身份不明确的重复 token，登出时批量撤销全部
   access-token 与关联 refresh-token；无 jti 的历史 JWT 在新鉴权链路中直接拒绝并要求重新登录，
-  refresh-token 不得作为 Bearer 访问凭证；Redis 访问缓存使用独立 v2 命名空间，
+  refresh-token 不得作为 Bearer 访问凭证；
   新 JWT 与普通 UUID access-token 保留缓存快路径，避免管理端和会员端触发 TooManyResultsException。
 - OAuth2 RPC 签发恢复透传 `userKey`；保留仅传 `userId` 的原有调用方式，兼容紧密系统与外部集成系统。
 
