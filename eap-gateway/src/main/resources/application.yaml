@@ -250,4 +250,4 @@ knife4j:
 
 eap:
   info:
-    version: 2.9.2
+    version: 2.9.4-SNAPSHOT

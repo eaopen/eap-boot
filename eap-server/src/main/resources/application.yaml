@@ -347,7 +347,7 @@ eap:
 
 eap:
   info:
-    version: 2.8.0
+    version: 2.9.4-SNAPSHOT
     base-package: org.openea.eap
   web:
     admin-ui:

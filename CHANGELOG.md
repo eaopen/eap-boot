@@ -1,7 +1,8 @@
-# 开发线 2.9.3-SNAPSHOT
+# 开发线 2.9.4-SNAPSHOT
 
-- 回流维护线已验证的认证边界与运行依赖修复，保留 dev 现有第三方版本，不回退平台。
-- 快照与维护候选独立构建，不覆盖已发布的 2.9.2 或 2.9.0 制品。
+- 在 `2.9.3.1` 正式发布后推进开发版本，保持 Java 17 / Spring Boot 3.5.16；不包含 Boot 4。
+- 与同版 eap-common 对齐；保留 Redis 旧 Key 读取、Access/Refresh Token 隔离及重复 Token 拒绝逻辑，并补充旧缓存回归验证。
+- 默认前缀为 `oauth2_access_token:%s`，保留 `eap.oauth2.access-token-key-prefix` 配置；v2 缓存不会自动迁移。
 
 # 更新日志（Changelog）
 
