@@ -1,6 +1,6 @@
 # EAP Boot 项目
 
-开发线使用配套 `2.9.4-SNAPSHOT`，承接 `2.9.3.1` 热修复；保持 Java 17 / Spring Boot 3.5.16，与 Boot 4 预览线隔离。开发快照不替代正式制品。迁移及制品验证见 [升级指南](doc/升级指南.md)。
+`2.x` 是 Java 17 / Spring Boot 3.5.16 维护线，当前版本 `2.9.4-SNAPSHOT`；主干 3.x 开发位于 `dev`。分支、PR 和发布规则见 [分支与发布策略](doc/分支与发布策略.md)。
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.java.net/projects/jdk/17/)

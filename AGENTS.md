@@ -39,3 +39,7 @@ mvn -q -DskipTests install
 mvn -q -Dflatten.skip=true test
 mvn -q -U -DskipTests -Dflatten.skip=true compile
 ```
+
+## 双线协作
+
+分支职责及发布规则以 [分支与发布策略](doc/分支与发布策略.md) 为准。维护修复 PR 指向 `2.x`（JDK 17），3.x PR 指向 `dev`（JDK 21）；跨线修复逐项移植，不能整体互相合并。
