@@ -13,6 +13,12 @@ import static org.openea.eap.framework.common.util.date.DateUtils.FORMAT_YEAR_MO
 @Data
 public class ApiAccessLogPageReqVO extends PageParam {
 
+    @Schema(description = "客户端 IP，精确匹配")
+    private String userIp;
+
+    @Schema(description = "链路追踪编号，精确匹配")
+    private String traceId;
+
     @Schema(description = "用户编号", example = "666")
     private Long userId;
 
