@@ -1,6 +1,7 @@
 package org.openea.eap.module.infra.controller.admin.logger.vo.apiaccesslog;
 
-import org.openea.eap.framework.common.pojo.PageParam;
+import org.openea.eap.module.infra.controller.admin.logger.vo.ApiLogCorrelationPageParam;
+import lombok.EqualsAndHashCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,13 +12,8 @@ import static org.openea.eap.framework.common.util.date.DateUtils.FORMAT_YEAR_MO
 
 @Schema(description = "管理后台 - API 访问日志分页 Request VO")
 @Data
-public class ApiAccessLogPageReqVO extends PageParam {
-
-    @Schema(description = "客户端 IP，精确匹配")
-    private String userIp;
-
-    @Schema(description = "链路追踪编号，精确匹配")
-    private String traceId;
+@EqualsAndHashCode(callSuper = true)
+public class ApiAccessLogPageReqVO extends ApiLogCorrelationPageParam {
 
     @Schema(description = "用户编号", example = "666")
     private Long userId;
