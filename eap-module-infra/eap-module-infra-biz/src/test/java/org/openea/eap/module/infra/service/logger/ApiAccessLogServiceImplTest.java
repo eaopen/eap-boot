@@ -42,6 +42,8 @@ public class ApiAccessLogServiceImplTest extends BaseDbUnitTest {
             o.setResultCode(GlobalErrorCodeConstants.SUCCESS.getCode());
         });
         apiAccessLogMapper.insert(apiAccessLogDO);
+        apiAccessLogMapper.insert(cloneIgnoreId(apiAccessLogDO, o -> o.setUserIp("192.0.2.2")));
+        apiAccessLogMapper.insert(cloneIgnoreId(apiAccessLogDO, o -> o.setTraceId("another-trace")));
         // 测试 userId 不匹配
         apiAccessLogMapper.insert(cloneIgnoreId(apiAccessLogDO, o -> o.setUserId(3344L)));
         // 测试 userType 不匹配
@@ -58,6 +60,8 @@ public class ApiAccessLogServiceImplTest extends BaseDbUnitTest {
         apiAccessLogMapper.insert(cloneIgnoreId(apiAccessLogDO, o -> o.setResultCode(2)));
         // 准备参数
         ApiAccessLogPageReqVO reqVO = new ApiAccessLogPageReqVO();
+        reqVO.setUserIp(apiAccessLogDO.getUserIp());
+        reqVO.setTraceId(apiAccessLogDO.getTraceId());
         reqVO.setUserId(2233L);
         reqVO.setUserType(UserTypeEnum.ADMIN.getValue());
         reqVO.setApplicationName("eap-test");

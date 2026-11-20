@@ -20,6 +20,8 @@ public interface ApiAccessLogMapper extends BaseMapperX<ApiAccessLogDO> {
 
     default PageResult<ApiAccessLogDO> selectPage(ApiAccessLogPageReqVO reqVO) {
         return selectPage(reqVO, new LambdaQueryWrapperX<ApiAccessLogDO>()
+                .eqIfPresent(ApiAccessLogDO::getUserIp, reqVO.getUserIp())
+                .eqIfPresent(ApiAccessLogDO::getTraceId, reqVO.getTraceId())
                 .eqIfPresent(ApiAccessLogDO::getUserId, reqVO.getUserId())
                 .eqIfPresent(ApiAccessLogDO::getUserType, reqVO.getUserType())
                 .eqIfPresent(ApiAccessLogDO::getApplicationName, reqVO.getApplicationName())

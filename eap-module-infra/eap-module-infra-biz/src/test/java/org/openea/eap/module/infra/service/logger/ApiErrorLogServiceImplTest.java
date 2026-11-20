@@ -48,6 +48,8 @@ public class ApiErrorLogServiceImplTest extends BaseDbUnitTest {
             o.setProcessStatus(ApiErrorLogProcessStatusEnum.INIT.getStatus());
         });
         apiErrorLogMapper.insert(apiErrorLogDO);
+        apiErrorLogMapper.insert(cloneIgnoreId(apiErrorLogDO, o -> o.setUserIp("192.0.2.2")));
+        apiErrorLogMapper.insert(cloneIgnoreId(apiErrorLogDO, o -> o.setTraceId("another-trace")));
         // 测试 userId 不匹配
         apiErrorLogMapper.insert(cloneIgnoreId(apiErrorLogDO, o -> o.setUserId(3344L)));
         // 测试 userType 不匹配
@@ -62,6 +64,8 @@ public class ApiErrorLogServiceImplTest extends BaseDbUnitTest {
         apiErrorLogMapper.insert(cloneIgnoreId(apiErrorLogDO, logDO -> logDO.setProcessStatus(ApiErrorLogProcessStatusEnum.DONE.getStatus())));
         // 准备参数
         ApiErrorLogPageReqVO reqVO = new ApiErrorLogPageReqVO();
+        reqVO.setUserIp(apiErrorLogDO.getUserIp());
+        reqVO.setTraceId(apiErrorLogDO.getTraceId());
         reqVO.setUserId(2233L);
         reqVO.setUserType(UserTypeEnum.ADMIN.getValue());
         reqVO.setApplicationName("eap-test");
